@@ -1,0 +1,110 @@
+---
+title: "Technical Debt at AI Speed: How to Stay Disciplined When Shipping Is This Easy"
+subtitle: "The temptation to ship fast and the strategies that keep me from regretting it"
+summary: "AI makes shipping code so fast that it's tempting to skip the discipline. Here's how I maintain code quality standards when the speed of implementation has increased 10x."
+image: "/images/gallery/horizontal-4.jpg"
+publishedAt: "2026-02-14"
+tag: "AI Engineering"
+---
+
+## The Temptation
+
+I can implement a feature in 2 hours that used to take 2 days. The code works. It passes tests. It solves the problem.
+
+So why not ship it?
+
+This is the question I ask myself regularly. AI has made implementation so fast that the bottleneck has shifted from "can I build this?" to "should I build this well?"
+
+The answer is yes. But saying no to technical debt is harder when the cost of doing it right feels much higher relative to the speed of doing it wrong.
+
+## What Changed (And What Didn't)
+
+**What changed:**
+- Implementation speed: much faster
+- Time to first working version: minutes instead of hours
+- Cost of experimentation: much lower
+
+**What didn't change:**
+- Cost of maintaining bad code: still high
+- Cost of refactoring later: still higher than doing it right
+- Cost of bugs in production: still bad
+
+The math is the same. The psychology is different.
+
+When implementation was slow, I had time to think. I'd consider the architecture while typing. I'd notice the code smell as I wrote it. Now, the code appears so quickly that I have to consciously pause to evaluate it.
+
+## How I Stay Disciplined
+
+I've developed a few strategies to maintain quality without slowing down too much:
+
+### 1. The "Would I Be Embarrassed?" Test
+
+Before shipping, I ask: "If I had to explain this code to a senior engineer in 6 months, would I be embarrassed?"
+
+This isn't about perfection—it's about avoiding the obviously bad decisions. The quick hack that saves 10 minutes but will cost hours later. The function that works but is completely unreadable.
+
+If the answer is yes, I refactor. Even if it takes another 30 minutes.
+
+### 2. The Architecture Checkpoint
+
+For any feature that touches multiple systems, I force myself to step back and think about architecture before implementation.
+
+I'll ask Claude: "Here's what I'm building. What are the architectural implications? What will I regret in 6 months?"
+
+This takes 5 minutes and has saved me from many bad decisions. AI is good at implementation, not so good at architecture. I use it to think through the design, then implement.
+
+### 3. The "One Thing Well" Rule
+
+I've noticed that AI-generated code often tries to do too much. A function that handles 5 edge cases when 2 would suffice. A component that's both a form and a data fetcher.
+
+My rule: each piece of code should do one thing well. If AI generates something that does multiple things, I split it. Even if it works as-is.
+
+This adds 10-15 minutes per feature, but the code is easier to maintain and debug.
+
+### 4. The Refactor Budget
+
+I allocate about 20% of my development time to refactoring. Not "when I have time"—actually scheduled.
+
+This forces me to clean up the quick hacks and technical debt before it accumulates. It's easier to refactor code I wrote last week than code I wrote 6 months ago.
+
+### 5. The Code Review Reality Check
+
+I review my own AI-generated code with the same standards I'd use for a teammate's PR. If I wouldn't approve it from someone else, I don't ship it from myself.
+
+This is harder than it sounds. It's tempting to be lenient with your own code, especially when you're moving fast. But the standards should be the same.
+
+## What I've Learned to Let Go
+
+Not everything needs to be perfect. Here's what I've learned to accept:
+
+**Minor code smells** — If it's isolated and won't affect other code, I'll ship it and refactor later.
+
+**Incomplete error handling** — For non-critical paths, I'll add basic error handling and improve it if issues arise.
+
+**Documentation gaps** — I'll add comments for complex logic, but I don't document every function.
+
+**Test coverage** — I write tests for critical paths, but I don't aim for 100% coverage on every feature.
+
+The key is distinguishing between "not perfect" and "actually bad." The former is acceptable. The latter is not.
+
+## Looking Back
+
+I've been using AI for 6 months now. When I look back at code I wrote in the first month, I can see the places where I cut corners. Some of it I've refactored. Some of it is still technical debt.
+
+But the code I'm writing now is better than the code I wrote 6 months ago, even though I'm moving faster. I've learned which corners are safe to cut and which ones will haunt me.
+
+The discipline gets easier with practice. The "would I be embarrassed?" test becomes automatic. The architecture checkpoint becomes a habit.
+
+## The Bottom Line
+
+AI makes it easy to ship bad code fast. The solution isn't to slow down—it's to maintain discipline at speed.
+
+The strategies that work are the same ones that always worked: think before you build, review your code, refactor regularly. The difference is that you have to be more intentional about them now.
+
+When implementation is this fast, the only thing standing between you and technical debt is your own discipline.
+
+---
+
+*This is part of my Senior Engineer's Perspective series. Next: "The Architecture Decisions AI Can't Make For You."*
+
+*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*

@@ -1,0 +1,150 @@
+---
+title: "The 5-Minute Code Review: How I Evaluate AI-Generated Code Without Getting Burned"
+subtitle: "A mental model for quickly spotting problems in AI output"
+summary: "When AI generates code, you need to review it fast—but not so fast you miss critical issues. Here's my checklist for evaluating AI output in minutes, not hours."
+image: "/images/gallery/horizontal-3.jpg"
+publishedAt: "2026-02-07"
+tag: "AI Engineering"
+---
+
+## The Speed vs. Safety Problem
+
+Here's the thing: AI can generate code in seconds, but reviewing it thoroughly takes time. If you review everything with the same rigor you'd use for a junior engineer's PR, you've eliminated the speed advantage.
+
+But if you skip the review, you'll spend hours debugging production issues that could have been caught in minutes.
+
+After reviewing a lot of AI-generated code, I've developed a way to evaluate it quickly without missing critical issues. It's not perfect, but it catches most problems in under 5 minutes.
+
+## The 5-Minute Review
+
+I don't use a physical checklist—this is just how I think about it. I scan for these issues in order of severity:
+
+### 1. Security Issues (30 seconds)
+
+I look for:
+- **User input not sanitized** — SQL injection, XSS, command injection
+- **Authentication/authorization missing** — Can anyone call this?
+- **Secrets in code** — API keys, passwords, tokens
+- **Insecure defaults** — Weak encryption, permissive CORS
+
+This is the highest priority. A security bug can be catastrophic, and AI often misses these because it doesn't understand the threat model of your specific system.
+
+### 2. Error Handling (1 minute)
+
+I check:
+- **What happens when this fails?** — Does it crash, return null, throw an exception?
+- **Are edge cases handled?** — Empty arrays, null values, network failures
+- **Is the error message useful?** — Will I be able to debug this in production?
+
+AI is particularly bad at error handling. It'll implement the happy path perfectly, then return `undefined` when something goes wrong. I've seen this many times.
+
+### 3. Performance Red Flags (1 minute)
+
+I scan for:
+- **N+1 queries** — Loops that make database calls
+- **Unbounded operations** — No limits on loops, array operations
+- **Missing indexes** — Database queries without proper indexing
+- **Synchronous blocking** — Operations that should be async
+
+AI doesn't think about scale. It'll write code that works fine for 10 users and breaks at 1000.
+
+### 4. Integration Points (1 minute)
+
+I verify:
+- **Does this match the existing API?** — Function signatures, data formats
+- **Are dependencies correct?** — Right versions, actually available
+- **Will this break other code?** — Side effects, shared state
+
+This is where AI struggles most. It doesn't understand your codebase's conventions or hidden dependencies.
+
+### 5. Code Quality (1.5 minutes)
+
+Finally, I check:
+- **Is this maintainable?** — Will I understand this in 6 months?
+- **Are there obvious bugs?** — Logic errors, typos, off-by-one errors
+- **Does it follow our patterns?** — Consistent with the rest of the codebase
+
+This is the lowest priority. If the code works and isn't dangerous, style issues can be fixed later.
+
+## Why This Works
+
+The reason I can do this in 5 minutes is pattern recognition. After 15 years of debugging, I've seen these mistakes before. I know where to look.
+
+I'm not reading every line. I'm scanning for patterns I know are problematic:
+
+- **Suspicious function names** — `getUserData()` without authentication
+- **Missing try/catch** — Operations that can fail
+- **Hardcoded values** — Magic numbers, URLs, credentials
+- **No validation** — User input used directly
+
+I'm pattern matching against known failure modes, not doing a line-by-line review.
+
+## Examples: What I Caught (And What I Missed)
+
+**Caught in 30 seconds:**
+```python
+def get_user_data(user_id):
+    query = f"SELECT * FROM users WHERE id = {user_id}"
+    return db.execute(query)
+```
+
+SQL injection. AI generated this because I didn't specify parameterized queries. I caught it immediately because I always check database queries.
+
+**Caught in 2 minutes:**
+```javascript
+async function fetchUserPosts(userId) {
+    const user = await getUser(userId);
+    const posts = [];
+    for (const postId of user.postIds) {
+        posts.push(await getPost(postId));
+    }
+    return posts;
+}
+```
+
+N+1 query problem. If a user has 100 posts, this makes 101 database calls. Should be a single query with a JOIN or IN clause instead.
+
+**Missed (found in production):**
+```python
+def process_payment(amount, currency):
+    if currency == "USD":
+        return stripe.charge(amount)
+    return None
+```
+
+The function returns `None` for non-USD currencies without any indication of failure. The calling code assumed it would raise an exception, so payments silently failed. I caught the security and performance issues but missed the error handling.
+
+## When to Do a Deeper Review
+
+The 5-minute review catches most issues, but sometimes you need to go deeper:
+
+- **Security-critical code** — Authentication, payment processing, data access
+- **Code that affects multiple systems** — Shared libraries, API changes
+- **Complex algorithms** — Where correctness is non-obvious
+- **Code you don't understand** — If the AI's approach is unfamiliar
+
+In these cases, I'll do a full review: read every line, trace execution paths, even write tests to verify behavior.
+
+## The Tradeoff
+
+This approach isn't perfect. I'll miss some bugs. But here's the tradeoff:
+
+- **5-minute review:** Catches most issues, misses some subtle bugs
+- **30-minute review:** Catches more issues, but eliminates the speed advantage
+- **No review:** Fast, but you'll spend hours debugging in production
+
+I've chosen the 5-minute review because the bugs I miss are usually fixable quickly, while the time saved adds up over many code generations.
+
+## The Bottom Line
+
+Reviewing AI-generated code is a new skill. You can't use the same process you'd use for human-written code—the failure modes are different, and there's more of it.
+
+The key is pattern recognition: knowing where AI is likely to fail and checking those spots first. After months of practice, I can spot most problems in minutes.
+
+But I still miss things. And that's okay—as long as I'm catching the critical issues, the occasional bug is an acceptable tradeoff for faster development.
+
+---
+
+*This is part of my AI Workflow Series. Previous: "My AI Coding Stack." Next: "Prompt Engineering for Backend vs. Frontend: Why Context Matters."*
+
+*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*

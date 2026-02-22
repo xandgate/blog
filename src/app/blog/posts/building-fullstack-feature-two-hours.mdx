@@ -1,0 +1,178 @@
+---
+title: "Building a Full-Stack Feature in 2 Hours: A Real-Time Walkthrough"
+subtitle: "End-to-end demo of AI-augmented development"
+summary: "Watch me build a complete feature from database schema to frontend UI in 2 hours using AI. This is what modern development looks like when you leverage AI effectively."
+image: "/images/gallery/vertical-2.jpg"
+publishedAt: "2026-02-28"
+tag: "AI Engineering"
+---
+
+## What We're Building
+
+I'm going to build a "favorite articles" feature for a blog: users can save articles to read later, view their favorites, and remove them. Simple, but it touches the full stack:
+
+- Database schema changes
+- API endpoints (GET, POST, DELETE)
+- Frontend UI components
+- State management
+- Error handling
+
+Normally, this would take me a day. With AI, I'm aiming for 2 hours. Let's see if I can do it.
+
+## The Setup
+
+**Tech stack:**
+- Backend: Python (FastAPI)
+- Frontend: Svelte
+- Database: PostgreSQL
+- AI tools: Cursor for implementation, Claude for architecture review
+
+**Starting point:** Existing blog application with user authentication already implemented.
+
+## Hour 1: Backend (0:00 - 1:00)
+
+### Step 1: Database Schema (10 minutes)
+
+I ask Cursor: "Create a database migration for a favorites table. Users can favorite articles. Include user_id, article_id, and created_at. Add a unique constraint on user_id + article_id."
+
+Cursor generates:
+```python
+# migrations/003_add_favorites.py
+from alembic import op
+import sqlalchemy as sa
+
+def upgrade():
+    op.create_table(
+        'favorites',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('user_id', sa.Integer(), nullable=False),
+        sa.Column('article_id', sa.Integer(), nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('user_id', 'article_id', name='uq_user_article'),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id']),
+        sa.ForeignKeyConstraint(['article_id'], ['articles.id']),
+    )
+    op.create_index('ix_favorites_user_id', 'favorites', ['user_id'])
+
+def downgrade():
+    op.drop_table('favorites')
+```
+
+I review it: looks good. The unique constraint prevents duplicates, the index will help with queries. I run the migration.
+
+### Step 2: API Endpoints (30 minutes)
+
+I ask Cursor: "Create FastAPI endpoints for favorites: POST /api/favorites to add, GET /api/favorites to list user's favorites, DELETE /api/favorites/{'{article_id}'} to remove. Include authentication and error handling."
+
+Cursor generates the endpoints. I review them and catch a few issues:
+- Missing validation for article existence
+- No pagination on the list endpoint
+- Error messages aren't user-friendly
+
+I fix these and move on. Total time: 30 minutes including review.
+
+### Step 3: Tests (20 minutes)
+
+I ask Cursor: "Write pytest tests for the favorites endpoints. Test adding, listing, removing, and edge cases like duplicate favorites and non-existent articles."
+
+Cursor generates comprehensive tests. I run them, they pass. I'm done with the backend.
+
+**Backend time: 1 hour exactly.**
+
+## Hour 2: Frontend (1:00 - 2:00)
+
+### Step 1: API Client Functions (15 minutes)
+
+I ask Cursor: "Create Svelte functions to call the favorites API: addFavorite, getFavorites, removeFavorite. Use fetch with proper error handling."
+
+Cursor generates the functions. I review and add loading states. Done.
+
+### Step 2: UI Components (30 minutes)
+
+I ask Cursor: "Create a Svelte component for the favorites feature. Include a button to add/remove favorites, and a page to view all favorites. Match the existing design system."
+
+Cursor generates the components. I review them:
+- The button component looks good
+- The favorites list page needs pagination
+- Missing empty state
+
+I ask Cursor to add these, then integrate the components into the existing pages.
+
+### Step 3: State Management (10 minutes)
+
+I need to update the UI when favorites change. I ask Cursor: "Create a Svelte store for favorites that syncs with the API and updates UI reactively."
+
+Cursor generates a store using Svelte's writable. I integrate it with the components.
+
+### Step 4: Polish and Testing (5 minutes)
+
+I test the feature manually:
+- Add a favorite → works
+- View favorites → works
+- Remove favorite → works
+- Try to add duplicate → shows error (good!)
+- Test with no favorites → shows empty state (good!)
+
+Everything works. I'm done.
+
+**Frontend time: 1 hour exactly.**
+
+## Total Time: 2 Hours
+
+I built a complete full-stack feature in 2 hours. Here's the breakdown:
+
+- Database: 10 minutes
+- Backend API: 30 minutes
+- Backend tests: 20 minutes
+- Frontend API client: 15 minutes
+- Frontend UI: 30 minutes
+- State management: 10 minutes
+- Testing/polish: 5 minutes
+
+**Total: 2 hours**
+
+## What Made This Fast
+
+**1. Clear requirements:** I knew exactly what I was building before I started.
+
+**2. Good prompts:** I gave Cursor enough context to generate useful code on the first try.
+
+**3. Quick review process:** I used my 5-minute review checklist to catch issues fast.
+
+**4. Existing patterns:** The codebase already had authentication, API structure, and design system, so Cursor could follow existing patterns.
+
+**5. No over-engineering:** I built what was needed, not what was possible.
+
+## What I Would Do Differently
+
+If I were doing this for production:
+
+- **Add more tests:** I'd write integration tests and E2E tests
+- **Add analytics:** Track how many users use favorites
+- **Add notifications:** Email users about new articles from favorited authors
+- **Optimize queries:** Add caching for frequently accessed favorites
+
+But for an MVP, 2 hours was the right amount of time.
+
+## The Reality Check
+
+This was a simple feature. For something more complex—like real-time collaboration or complex data processing—it would take longer. AI doesn't eliminate complexity; it just speeds up implementation.
+
+But for standard CRUD features, this is pretty typical now.
+
+## The Bottom Line
+
+AI-augmented development isn't about replacing thinking—it's about speeding up implementation. I still had to:
+- Design the feature
+- Review the code
+- Make architectural decisions
+- Test thoroughly
+
+But I didn't have to type out every line of code. And that's the difference between 2 hours and 8 hours.
+
+---
+
+*This is part of my Practical Tutorials series. Next: "Refactoring Legacy Code with AI: From Spaghetti to Clean in One Afternoon."*
+
+*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*

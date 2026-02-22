@@ -1,0 +1,128 @@
+---
+title: "My AI Coding Stack: Claude, Cursor, and the Art of Knowing When to Intervene"
+subtitle: "The tools I actually use, the prompts that work, and when to take the wheel"
+summary: "After months of experimenting with AI coding assistants, here's my actual workflow with Claude and Cursor—including real prompts that consistently produce good results."
+image: "/images/gallery/horizontal-2.jpg"
+publishedAt: "2026-01-31"
+tag: "AI Engineering"
+---
+
+## What I Actually Use
+
+I've tried most of the AI coding tools. After six months of daily use, here's what stuck:
+
+**Claude** — I use this for thinking through architecture decisions, debugging tricky issues, and reviewing code. It's good at reasoning through problems.
+
+**Cursor** — This is what I use while coding. It understands the context of what I'm working on, which saves me from explaining everything repeatedly.
+
+**GitHub Copilot** — Still handy for autocomplete, but I don't use it for anything that requires actual thinking.
+
+That's it. Two main tools. More than that and I spend too much time switching between them.
+
+## Prompts That Work
+
+Most prompt engineering advice is theoretical. These are prompts I actually use, and they work reasonably well.
+
+### For Architecture Decisions
+
+```
+I'm building a [feature] that needs to [requirement]. The system currently [current state]. 
+I'm considering [option A] vs [option B]. 
+
+Constraints:
+- Must integrate with [existing system]
+- Performance requirement: [metric]
+- Team size: [number] engineers
+- Timeline: [timeframe]
+
+Walk me through the tradeoffs and recommend an approach with reasoning.
+```
+
+This works because it gives Claude enough context to actually reason about the decision, not just list pros and cons. The constraints help it think practically.
+
+### For Debugging
+
+```
+I'm seeing [specific error/behavior]. Here's the relevant code:
+
+[code snippet]
+
+The system is [expected behavior] but instead [actual behavior]. I've already checked [things you've verified]. 
+
+What's the most likely cause, and what should I check next?
+```
+
+This helps because it stops Claude from suggesting things you've already tried, and asking for the "most likely cause" makes it prioritize.
+
+### For Code Review
+
+```
+Review this code for:
+1. Security vulnerabilities
+2. Performance issues
+3. Maintainability concerns
+4. Edge cases that aren't handled
+
+[code]
+
+Focus on issues that would cause problems in production, not style preferences.
+```
+
+This keeps Claude focused on real issues rather than style preferences, and the "production problems" constraint keeps it practical.
+
+## When to Let AI Lead vs. When to Take Over
+
+This took me a while to figure out. Here's what I've learned:
+
+**Let AI handle it when:**
+- The problem is clear and the solution is straightforward
+- You're implementing something you've done before
+- The code is isolated and won't affect other systems
+- You have time to review it
+
+**Take over when:**
+- The decision affects multiple systems or long-term architecture
+- You're working with legacy code that has hidden dependencies
+- The requirements are unclear or likely to change
+- You're doing something you've never done before
+
+The main thing: AI is good at implementation, not so good at judgment. If the task needs judgment, you should be in charge.
+
+## My Daily Workflow
+
+Here's what a typical day looks like:
+
+**Morning planning (10 minutes):**
+I use Claude to break down the day's tasks. I paste in the ticket/requirements and ask: "What are the implementation steps, potential blockers, and dependencies I should be aware of?"
+
+**Active development (2-4 hours):**
+I'm in Cursor, using inline suggestions and chat for implementation. I'll ask Cursor to implement a function, then immediately review it before moving on.
+
+**Code review (30 minutes):**
+I paste larger chunks into Claude for review, especially for security and performance. It catches things I miss because it doesn't have my blind spots.
+
+**End-of-day reflection (5 minutes):**
+I ask Claude: "What patterns did I implement today that I should document or reuse?" This helps me build a library of solutions.
+
+## Mistakes I Made
+
+**Trusting AI output without review**
+Early on, I'd ask Cursor to implement something and commit it without much review. This led to bugs that took hours to find. Now I review everything, even when it looks fine.
+
+**Using AI for everything**
+I tried using AI for tasks that were faster to do manually—like renaming variables or simple refactors. Explaining the context took longer than just doing it.
+
+**Not providing enough context**
+I'd ask for code without explaining the broader system. The AI would generate something that worked alone but broke when integrated. Now I always include system context.
+
+## The Bottom Line
+
+The best setup isn't about having the latest tools—it's about knowing when to use them and when to trust your own judgment. After six months, I've settled on two tools and a workflow that works for me.
+
+The real skill isn't prompt engineering. It's knowing when to step in.
+
+---
+
+*This is part of my AI Workflow Series. Next: "The 5-Minute Code Review: How I Evaluate AI-Generated Code Without Getting Burned."*
+
+*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*

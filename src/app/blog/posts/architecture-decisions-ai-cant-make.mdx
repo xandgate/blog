@@ -1,0 +1,107 @@
+---
+title: "The Architecture Decisions AI Can't Make For You"
+subtitle: "High-stakes choices that still require human judgment"
+summary: "AI can implement almost anything, but some decisions require context, judgment, and experience that AI simply doesn't have. Here are the architecture choices I still make myself."
+image: "/images/gallery/vertical-1.jpg"
+publishedAt: "2026-02-21"
+tag: "AI Engineering"
+---
+
+## The Limits of AI
+
+I asked Claude to help me decide between microservices and a monolith for a new project. It gave me a thoughtful analysis of tradeoffs, listed pros and cons, and even recommended an approach.
+
+It was wrong for my situation.
+
+Not because the analysis was bad—it was actually quite good. But because AI doesn't understand the context that matters: my team's experience, the political constraints, the maintenance burden we can actually handle, the timeline we're working with.
+
+This is the fundamental limit of AI: it can reason about code, but it can't reason about context. And architecture decisions are all about context.
+
+## The Decisions I Still Make Myself
+
+After months of using AI for implementation, here are the architecture decisions I still make myself—and why:
+
+### 1. System Boundaries
+
+**The decision:** Where does one system end and another begin? What belongs in the monolith vs. a separate service?
+
+**Why AI can't help:** This requires understanding team structure, deployment capabilities, communication patterns, and organizational politics. AI can list the technical tradeoffs, but it can't tell you that splitting this service will require coordination across three teams that don't talk to each other.
+
+**My process:** I map the organizational structure first, then the technical boundaries. If the teams don't align, I adjust the architecture to match reality, not the ideal.
+
+### 2. Data Model Design
+
+**The decision:** How should data be structured? Normalized vs. denormalized? SQL vs. NoSQL? What are the access patterns?
+
+**Why AI can't help:** This requires understanding how the business actually works, not just how it's documented. What queries will users actually run? What will change in 6 months? What are the performance requirements that aren't written down? AI doesn't know any of this.
+
+**My process:** I talk to users, look at existing queries, and make assumptions based on experience. Then I design for the most likely future, not the documented present.
+
+### 3. Technology Choices
+
+**The decision:** Which framework, database, language, or tool should we use?
+
+**Why AI can't help:** It can list options and tradeoffs, but it can't evaluate team expertise, hiring constraints, or ecosystem maturity. It doesn't know that your team has 5 years of Python experience but zero Go experience, even if Go might be technically better.
+
+**My process:** I start with what the team knows, then evaluate if the technical benefits justify the learning curve. Most of the time, they don't.
+
+### 4. Performance vs. Maintainability Tradeoffs
+
+**The decision:** Should we optimize this now, or keep it simple and optimize later?
+
+**Why AI can't help:** This requires understanding the actual scale, the cost of optimization, and the likelihood that requirements will change. AI will optimize everything because it doesn't understand that premature optimization is usually a mistake.
+
+**My process:** I optimize for maintainability first, performance second. I'll only optimize if I have data showing it's necessary, or if the performance requirement is non-negotiable (like real-time systems).
+
+### 5. Failure Modes and Resilience
+
+**The decision:** How should the system fail? What happens when dependencies are down? What's the recovery strategy?
+
+**Why AI can't help:** It can implement retry logic and circuit breakers, but it can't tell you which failures are acceptable and which are catastrophic. It doesn't understand the business impact of downtime.
+
+**My process:** I think through failure scenarios, map them to business impact, and design resilience for the failures that matter. Everything else fails fast and fails loudly.
+
+## The Pattern: Context Matters
+
+The common thread in all these decisions is context. AI is good at reasoning about code in isolation, but architecture decisions require understanding:
+
+- **Organizational context** — Team structure, communication patterns, politics
+- **Business context** — What actually matters, what will change, what's negotiable
+- **Historical context** — What's been tried before, what's worked, what hasn't
+- **Future context** — What's likely to change, what constraints will emerge
+
+AI doesn't have access to this context. You do.
+
+## How I Use AI for Architecture
+
+I still use AI for architecture work, but differently:
+
+**For exploring options:** "What are the architectural patterns for [problem]? What are the tradeoffs?"
+
+**For implementation details:** "How would I implement [pattern] in [language]? What are the gotchas?"
+
+**For reviewing designs:** "Here's my architecture. What are the potential issues I should consider?"
+
+But I never ask: "What architecture should I use?" Because that's a question only I can answer.
+
+## The Real Skill: Knowing What You Don't Know
+
+The hardest part of architecture isn't making the decision—it's knowing what information you need to make it well.
+
+AI can't tell you what questions to ask. It can't tell you that you're missing critical context. It can't warn you that this decision will be hard to reverse.
+
+That's where experience matters. After 15 years, I've learned which decisions are reversible and which aren't. I know which questions to ask before committing. I know when to prototype and when to plan.
+
+## The Bottom Line
+
+AI is a useful tool for implementation, but architecture is still a human skill. It requires judgment, context, and the ability to make decisions with incomplete information.
+
+The engineers who thrive in the AI era won't be the ones who can implement fastest—they'll be the ones who can make the right architectural decisions. Because those decisions determine whether the code you ship today will be maintainable in 6 months, or whether you'll be rewriting it.
+
+And AI can't make those decisions for you. Not yet, anyway.
+
+---
+
+*This is part of my Senior Engineer's Perspective series. Previous: "Technical Debt at AI Speed." Next: "From IC to Architect: How AI Accelerated My Career Trajectory."*
+
+*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*
