@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
-import { detectGeoLocation, buildAffinityProfile, determineSegment } from "@/lib/geo";
+import { buildAffinityProfile, determineSegment } from "@/lib/geo";
+import { detectGeoLocation } from "@/lib/geo/detect-server";
 import type { VisitorContext } from "@/lib/geo/types";
 
-// Using nodejs runtime - works both locally and on Vercel
-// Edge runtime would be faster but requires static export declaration
-
+/**
+ * Visitor Context API
+ * Returns geo location and content segment for personalization
+ * US visitors: Drupal/govtech messaging
+ * International: AI-enabled architect messaging
+ */
 export async function GET() {
   try {
     const geo = await detectGeoLocation();
@@ -26,7 +30,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error detecting visitor context:", error);
 
-    // Return default context on error
+    // Return default US context on error
     const defaultContext: VisitorContext = {
       geo: {
         country: "United States",
@@ -41,7 +45,7 @@ export async function GET() {
         segment: "general",
         greeting: "Welcome",
         avatarVariant: "/images/avatar.jpg",
-        contextualMessage: "15+ years building enterprise platforms with Drupal and React.",
+        contextualMessage: "Drupal architect with 20 years delivering government platforms. Federal & state agency experience.",
       },
     };
 

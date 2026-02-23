@@ -119,7 +119,13 @@ export default async function Project({
         </Row>
       </Row>
       {post.metadata.images.length > 0 && (
-        <Media priority aspectRatio="16 / 9" radius="m" alt="image" src={post.metadata.images[0]} />
+        <Media 
+          priority 
+          aspectRatio="16 / 9" 
+          radius="m" 
+          alt="image" 
+          src={post.metadata.images[0]}
+        />
       )}
       <Column style={{ margin: "auto" }} as="article" maxWidth="xs">
         <CustomMDX source={post.content} />
@@ -129,7 +135,7 @@ export default async function Project({
         <Heading as="h2" variant="heading-strong-xl" marginBottom="24">
           Related projects
         </Heading>
-        <Projects exclude={[post.slug]} range={[2]} />
+        <Projects posts={getPosts(["src", "app", "work", "projects"])} exclude={[post.slug]} range={[2]} />
       </Column>
       <ScrollToHash />
     </Column>

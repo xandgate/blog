@@ -1,6 +1,8 @@
-import { getPosts } from "@/utils/utils";
+"use client";
+
 import { Grid } from "@once-ui-system/core";
 import Post from "./Post";
+import { usePersonalizedContent, type PostData } from "@/components/PersonalizedContent";
 
 interface PostsProps {
   range?: [number] | [number, number];
@@ -8,29 +10,27 @@ interface PostsProps {
   thumbnail?: boolean;
   direction?: "row" | "column";
   exclude?: string[];
+  posts: PostData[]; // Required: posts must be fetched server-side and passed as props
 }
 
+/**
+ * Posts component with optional content-based personalization.
+ * Reorders blog posts to show most relevant first based on visitor context.
+ */
 export function Posts({
-  range,
+  range = [1],
   columns = "1",
   thumbnail = false,
   exclude = [],
   direction,
+  posts,
 }: PostsProps) {
-  let allBlogs = getPosts(["src", "app", "blog", "posts"]);
+  // Normalize range to [number, number?] format
+  const normalizedRange: [number, number?] =
+    range.length === 2 ? [range[0], range[1]] : [range[0]];
 
-  // Exclude by slug (exact match)
-  if (exclude.length) {
-    allBlogs = allBlogs.filter((post) => !exclude.includes(post.slug));
-  }
-
-  const sortedBlogs = allBlogs.sort((a, b) => {
-    return new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime();
-  });
-
-  const displayedBlogs = range
-    ? sortedBlogs.slice(range[0] - 1, range.length === 2 ? range[1] : sortedBlogs.length)
-    : sortedBlogs;
+  // Use personalized content ordering if enabled
+  const displayedBlogs = usePersonalizedContent(posts, normalizedRange, exclude);
 
   return (
     <>

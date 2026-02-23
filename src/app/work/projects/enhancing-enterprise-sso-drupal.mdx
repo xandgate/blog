@@ -1,0 +1,104 @@
+---
+title: "Enhancing Enterprise SSO: Drupal SAML Authentication"
+publishedAt: "2024-08"
+summary: "Improved single sign-on reliability by extending the saml_auth module to support environment-specific configurations"
+images:
+  - "/images/projects/sso/cover.jpg"
+team:
+  - name: "Varun Baker"
+    role: "Senior Software Engineer"
+    avatar: "/images/avatar.jpg"
+link: "https://www.drupal.org/project/saml_auth"
+---
+
+## Overview
+
+Improved single sign-on reliability and security by extending the `saml_auth` module to store Identity Provider (IdP) and Service Provider (SP) settings in environment variables instead of Drupal's database-stored configuration. This shift addressed a critical DevOps challenge: SSO settings typically differ across dev, staging, and production environments, and database-stored config made environment-specific deployments error-prone and manual. By externalizing these settings, teams could deploy code confidently across environments while maintaining proper SSO configuration for each, reducing deployment friction and testing overhead.
+
+## The Problem
+
+Traditional Drupal configuration lives in the database, synced via config management. This works well for most settings, but creates friction for environment-specific values like SSO endpoints:
+
+**Development**: Points to test IdP with relaxed security
+**Staging**: Points to pre-production IdP mimicking production
+**Production**: Points to live enterprise IdP with strict security
+
+Storing these in the database meant:
+- Manual reconfiguration after each environment refresh
+- Risk of accidentally deploying wrong IdP settings
+- Complicated testing workflows
+- Configuration drift between environments
+
+## Solution Architecture
+
+**Environment Variable Integration**
+- Extended `saml_auth` module to read IdP/SP settings from environment variables
+- Maintained backward compatibility with database config
+- Provided clear precedence: environment variables override database values
+
+**Key Configuration Points**
+- IdP entity ID and SSO endpoint URLs
+- Service Provider entity ID and ACS URLs
+- Certificate paths and security settings
+- Attribute mapping (when environment-specific)
+
+**Implementation Pattern**
+```php
+// Pseudo-code example
+$idp_entity_id = getenv('SAML_IDP_ENTITY_ID') 
+  ?: $config->get('idp_entity_id');
+```
+
+**Deployment Workflow**
+1. Define environment-specific variables in hosting platform
+2. Deploy code across all environments
+3. SSO automatically configures per-environment
+4. Test with confidence—no manual configuration
+
+## Technologies Used
+
+- **Drupal 9/10**: Enterprise CMS platform
+- **saml_auth module**: Drupal SAML authentication integration
+- **SimpleSAMLphp**: SAML 2.0 authentication library
+- **Environment variables**: 12-factor app configuration pattern
+
+## DevOps Benefits
+
+**Reliable Deployments**
+- Zero manual configuration post-deployment
+- Consistent behavior across environment refreshes
+- Reduced deployment documentation
+
+**Testing Improvements**
+- Developers can test SSO locally with test IdP
+- Staging environment accurately mimics production
+- Faster QA cycles with working authentication
+
+**Security Enhancements**
+- Production credentials never in version control
+- Clear separation between environment configurations
+- Easier credential rotation
+
+## Challenges & Solutions
+
+**Challenge**: Supporting both legacy database config and new environment variable approach
+**Solution**: Implemented graceful fallback with clear precedence rules
+
+**Challenge**: Different teams had different hosting platforms with varying environment variable support
+**Solution**: Documented multiple approaches (`.env` files, platform-specific configs, Docker secrets)
+
+**Challenge**: Debugging SAML issues when config sources weren't obvious
+**Solution**: Added admin UI indicators showing config source for each setting
+
+## Impact
+
+- **Eliminated** manual SSO reconfiguration after database refreshes
+- **Reduced** deployment errors related to SSO misconfiguration
+- **Accelerated** testing cycles with reliable environment-specific configs
+- **Improved** security posture through environment variable best practices
+
+## Outcome
+
+The enhancement transformed SSO from a deployment pain point into a non-issue. DevOps teams could deploy confidently knowing SSO would "just work" in each environment. The pattern proved valuable enough that the team adopted it for other environment-specific configurations beyond SAML.
+
+This project demonstrated that sometimes the most impactful engineering work isn't building new features—it's removing friction from existing workflows.

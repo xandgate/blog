@@ -24,6 +24,8 @@ export type VisitorSegment =
   | "international" // Outside US
   | "general"; // Default
 
+export type ContentInterest = "frontend" | "drupal" | "govtech" | "general";
+
 export interface AffinityProfile {
   segment: VisitorSegment;
   greeting: string;
@@ -31,6 +33,7 @@ export interface AffinityProfile {
   accentColor?: string;
   featuredContent?: string;
   contextualMessage?: string;
+  interest?: ContentInterest; // Detected or explicit content interest
 }
 
 // Geographic mapping configurations

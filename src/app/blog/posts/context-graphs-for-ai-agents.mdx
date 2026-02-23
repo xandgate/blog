@@ -1,0 +1,143 @@
+---
+title: "Your Second Brain Just Got a Memory"
+subtitle: "Why the future of AI isn't about smarter models—it's about giving them access to how you actually think"
+summary: "AI can write code and summarize articles, but it can't remember what you told it yesterday. Your notes can. Here's how to bridge that gap."
+image: "/images/blog/goldfish.jpg"
+publishedAt: "2026-02-01"
+tag: "AI Engineering"
+---
+
+## The Goldfish Problem
+
+You know that friend who's brilliant but has the memory of a goldfish? That's your AI assistant.
+
+It can write code, debug errors, explain quantum physics. But ask it about that conversation you had yesterday? Blank stare. Every chat is a fresh start. Every question requires re-explaining everything.
+
+Meanwhile, your notes remember *everything*. That meeting from three months ago. The connection you made between two ideas last week. The web of thoughts you've been building for years.
+
+Your AI is smart. Your notes have context. And they've never met.
+
+## How We Actually Think
+
+Here's the thing about knowledge: it's not about storing facts. It's about connecting them.
+
+You don't remember ideas in isolation. You remember that Block A reminded you of Block B, which contradicted Block C, which led you to Block D. Your brain builds a web—a **context graph**—where every idea links to others.
+
+This is what makes knowledge useful. Facts are cheap. Context is everything.
+
+Tools like Logseq get this. Instead of treating notes as flat documents, they organize them as **blocks**—individual thoughts that reference each other. Write `((block-uuid))` and you create a living link. Change the original, and every reference updates. Build enough connections, and you have a thinking machine.
+
+But here's the problem: AI can't read it. Not really. It can search your notes, sure. But it can't *navigate* them. It doesn't know that block A references block B, which has backlinks from blocks D, E, and F. It sees flat files, not the web of meaning you've built.
+
+## Teaching AI to Think Like You
+
+[MCP-Logseq](https://gitlab.com/varunbaker/mcp-logseq) is a bridge that lets AI assistants read your knowledge graph the way you do. It connects tools like Claude, Cursor, and Windsurf to your Logseq notes with full understanding of blocks and references.
+
+Instead of seeing flat files, your AI can now:
+- Read individual thoughts (blocks), not just whole documents
+- Follow the links between ideas
+- Trace backlinks to see what connects to what
+- Create new connections as it learns
+- Navigate your context graph the way a human collaborator would
+
+It's like giving your AI assistant a map of how you think.
+
+## What This Actually Looks Like
+
+Imagine you're researching AI architectures. You've got notes scattered across months of journals and project pages. Some connect. Some contradict. Some you forgot existed.
+
+**The old way:**
+You ask your AI about it. It says "search your notes." You get 50 results. You read through them. You copy-paste the relevant bits into the chat. You explain how they connect. Repeat for every follow-up question.
+
+**The new way:**
+Your AI searches your blocks, reads the most relevant one, checks what links to it, expands those references, and now has the full context. It's traversing your knowledge graph the way you would—starting with an idea, seeing what connects, diving deeper, coming back up.
+
+You're not managing context anymore. Your notes are.
+
+## Building a Memory Over Time
+
+Here's where it gets powerful. Every time your AI works with your notes, it's learning how they connect:
+
+- Searches for relevant blocks
+- Reads specific thoughts with their relationships
+- Checks backlinks to see what else cares about this idea
+- Creates new references between related concepts
+- Expands connections to build context
+
+Over time, the AI develops a working model of your knowledge graph. It knows which ideas connect. It can surface context you forgot. It can suggest connections you missed.
+
+This is what "personal knowledge management" was supposed to be—except now your AI can actually navigate it.
+
+The difference between searching files and understanding how you think.
+
+## Under the Hood (For the Curious)
+
+MCP-Logseq gives your AI a toolkit for working with Logseq graphs:
+
+**Working with pages** (standard stuff):
+- Read, write, search your notes
+- List directories, manage tags, get metadata
+
+**Working with blocks** (the magic):
+- Read individual thoughts by their UUID
+- Check backlinks to see what references a block
+- Create references to link ideas
+- Expand connections inline for full context
+
+Your AI isn't reading files anymore. It's navigating a web of addressable thoughts, just like you do.
+
+## How to Use It
+
+Three steps:
+
+1. **Install Node.js** (v18 or newer)
+
+2. **Add this to your AI tool's config** (like Cursor):
+
+```json
+{
+  "mcpServers": {
+    "logseq": {
+      "command": "npx",
+      "args": ["mcp-logseq", "/path/to/your/logseq/graph"]
+    }
+  }
+}
+```
+
+3. **Try it:**
+   - "List my Logseq files"
+   - "Find blocks about machine learning"
+   - "Show me what references this block"
+
+Done. No API keys. No cloud uploads. Your notes stay local. The AI just gets better tools to work with them.
+
+## Why This Matters Beyond Logseq
+
+We're at a turning point in how AI works.
+
+**The old model:** Prompt-based AI. You explain everything. The AI has no memory. Every conversation starts from zero.
+
+**The new model:** Context-aware AI. The AI has access to your knowledge graph. It can look things up. Follow connections. Remember (by reading your notes). Build on what came before.
+
+This is what "AI agents" should actually mean—not just tools that execute commands, but collaborators who understand how you think.
+
+Logseq's block-reference system makes this possible. Every thought has a stable ID. References are first-class. The graph is explicit and navigable. MCP-Logseq turns that structure into something AI can work with.
+
+Now your AI can reason about your knowledge, not just your prompts. That's a different game entirely.
+
+## Get Started
+
+[**MCP-Logseq on GitLab**](https://gitlab.com/varunbaker/mcp-logseq)
+
+MIT licensed. Works with Claude, Cursor, Windsurf, and any other MCP-compatible tool.
+
+If you use Logseq to think and AI to build, this is the bridge between them.
+
+---
+
+**Note:** This started as a port of [mcp-obsidian](https://github.com/bitbonsai/mcp-obsidian) and evolved to handle Logseq's block-first model. If you're on Obsidian, check out the original—it's excellent.
+
+Same goal though: give AI access to your knowledge graph, not just your files.
+
+Context isn't a feature. It's the whole point.

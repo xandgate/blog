@@ -2,7 +2,6 @@ import {
   Heading,
   Text,
   Button,
-  Avatar,
   RevealFx,
   Column,
   Badge,
@@ -12,9 +11,10 @@ import {
   Line,
 } from "@once-ui-system/core";
 import { home, about, person, baseURL, routes } from "@/resources";
-import { Mailchimp } from "@/components";
+import { Mailchimp, PersonalizedAvatar, PersonalizedFeaturedBadge, PersonalizedHeadline, PersonalizedSubline } from "@/components";
 import { Projects } from "@/components/work/Projects";
 import { Posts } from "@/components/blog/Posts";
+import { getPosts } from "@/utils/utils";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -26,7 +26,11 @@ export async function generateMetadata() {
   });
 }
 
-export default function Home() {
+export default async function Home() {
+  // Fetch posts server-side
+  const allProjects = getPosts(["src", "app", "work", "projects"]);
+  const allBlogPosts = getPosts(["src", "app", "blog", "posts"]);
+
   return (
     <Column maxWidth="m" gap="xl" paddingY="12" horizontal="center">
       <Schema
@@ -44,36 +48,20 @@ export default function Home() {
       />
       <Column fillWidth horizontal="center" gap="m">
         <Column maxWidth="s" horizontal="center" align="center">
-          {home.featured.display && (
-            <RevealFx
-              fillWidth
-              horizontal="center"
-              paddingTop="16"
-              paddingBottom="32"
-              paddingLeft="12"
-            >
-              <Badge
-                background="brand-alpha-weak"
-                paddingX="12"
-                paddingY="4"
-                onBackground="neutral-strong"
-                textVariant="label-default-s"
-                arrow={false}
-                href={home.featured.href}
-              >
-                <Row paddingY="2">{home.featured.title}</Row>
-              </Badge>
-            </RevealFx>
-          )}
+          <RevealFx
+            fillWidth
+            horizontal="center"
+            paddingTop="16"
+            paddingBottom="32"
+            paddingLeft="12"
+          >
+            <PersonalizedFeaturedBadge />
+          </RevealFx>
           <RevealFx translateY="4" fillWidth horizontal="center" paddingBottom="16">
-            <Heading wrap="balance" variant="display-strong-l">
-              {home.headline}
-            </Heading>
+            <PersonalizedHeadline fallback={home.headline} />
           </RevealFx>
           <RevealFx translateY="8" delay={0.2} fillWidth horizontal="center" paddingBottom="32">
-            <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl">
-              {home.subline}
-            </Text>
+            <PersonalizedSubline fallback={home.subline} />
           </RevealFx>
           <RevealFx paddingTop="12" delay={0.4} horizontal="center" paddingLeft="12">
             <Button
@@ -87,10 +75,9 @@ export default function Home() {
             >
               <Row gap="8" vertical="center" paddingRight="4">
                 {about.avatar.display && (
-                  <Avatar
+                  <PersonalizedAvatar
                     marginRight="8"
                     style={{ marginLeft: "-0.75rem" }}
-                    src={person.avatar}
                     size="m"
                   />
                 )}
@@ -101,7 +88,7 @@ export default function Home() {
         </Column>
       </Column>
       <RevealFx translateY="16" delay={0.6}>
-        <Projects range={[1, 1]} />
+        <Projects range={[1, 1]} posts={allProjects} />
       </RevealFx>
       {routes["/blog"] && (
         <Column fillWidth gap="24" marginBottom="l">
@@ -115,7 +102,7 @@ export default function Home() {
               </Heading>
             </Row>
             <Row flex={3} paddingX="20">
-              <Posts range={[1, 2]} columns="2" />
+              <Posts range={[1, 2]} columns="2" posts={allBlogPosts} />
             </Row>
           </Row>
           <Row fillWidth paddingLeft="64" horizontal="end">
@@ -123,7 +110,7 @@ export default function Home() {
           </Row>
         </Column>
       )}
-      <Projects range={[2]} />
+      <Projects range={[2]} posts={allProjects} />
       <Mailchimp />
     </Column>
   );

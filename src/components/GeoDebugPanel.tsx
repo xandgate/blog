@@ -5,7 +5,7 @@ import { Column, Row, Text, Button, Badge } from "@once-ui-system/core";
 import { useVisitorContext } from "./VisitorContextProvider";
 
 // Set to true to always show the debug panel, false to hide in production
-const FORCE_SHOW_DEBUG = true;
+const FORCE_SHOW_DEBUG = false;
 
 /**
  * Debug panel to inspect current visitor context.
@@ -56,14 +56,14 @@ export function GeoDebugPanel() {
       radius="l"
       background="surface"
       border="neutral-alpha-medium"
-      style={{
-        position: "fixed",
-        bottom: "16px",
-        right: "16px",
-        zIndex: 9999,
-        maxWidth: "320px",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.2)",
-      }}
+        style={{
+          position: "fixed",
+          bottom: "16px",
+          right: "16px",
+          zIndex: 9998,
+          maxWidth: "320px",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.2)",
+        }}
     >
       <Row horizontal="between" vertical="center">
         <Text variant="label-strong-s">Geo Debug Panel</Text>
@@ -105,24 +105,15 @@ export function GeoDebugPanel() {
 
           <Column gap="4">
             <Text variant="label-default-s" onBackground="neutral-weak">
-              Affinity Profile
+              Messaging
             </Text>
             <Text variant="body-default-xs">
-              Greeting: {affinity?.greeting}
-            </Text>
-            <Text variant="body-default-xs">
-              Avatar: {affinity?.avatarVariant}
-            </Text>
-          </Column>
-
-          <Column gap="4">
-            <Text variant="label-default-s" onBackground="neutral-weak">
-              Contextual Message
+              {segment === 'international' ? 'AI-Enabled Architect' : 'Drupal & GovTech'}
             </Text>
             <Text
               variant="body-default-xs"
               onBackground="neutral-weak"
-              style={{ fontStyle: "italic" }}
+              style={{ fontStyle: "italic", marginTop: "4px" }}
             >
               {affinity?.contextualMessage}
             </Text>
@@ -130,9 +121,25 @@ export function GeoDebugPanel() {
         </>
       )}
 
-      <Text variant="body-default-xs" onBackground="neutral-weak">
-        Edit src/middleware.ts to test different segments
-      </Text>
+      <Column gap="4">
+        <Text variant="label-default-s" onBackground="neutral-weak">
+          Testing
+        </Text>
+        <Text variant="body-default-xs" onBackground="neutral-weak">
+          Add query params to test:
+          <br />
+          • <code>?test-segment=local</code>
+          <br />
+          • <code>?test-city=Fairfax&test-region=VA</code>
+          <br />
+          • <code>?test-geo=gb</code> (international)
+          <br />
+          See src/proxy.ts for all options
+        </Text>
+        <Text variant="body-default-xs" onBackground="neutral-weak" style={{ marginTop: "8px" }}>
+          Check browser console for segment details
+        </Text>
+      </Column>
     </Column>
   );
 }

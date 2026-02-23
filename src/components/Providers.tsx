@@ -20,8 +20,14 @@ import {
 import { style, dataStyle } from "../resources";
 import { iconLibrary } from "../resources/icons";
 import { VisitorContextProvider } from "./VisitorContextProvider";
+import type { VisitorContext } from "@/lib/geo/types";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+interface ProvidersProps {
+  children: React.ReactNode;
+  initialContext?: VisitorContext;
+}
+
+export function Providers({ children, initialContext }: ProvidersProps) {
   return (
     <LayoutProvider>
       <ThemeProvider
@@ -50,7 +56,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         >
           <ToastProvider>
             <IconProvider icons={iconLibrary}>
-              <VisitorContextProvider>{children}</VisitorContextProvider>
+              <VisitorContextProvider initialContext={initialContext}>
+                {children}
+              </VisitorContextProvider>
             </IconProvider>
           </ToastProvider>
         </DataThemeProvider>

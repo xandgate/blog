@@ -1,0 +1,60 @@
+---
+title: "Modernizing Data Visualization: Technical Debt Reduction & Accessibility"
+publishedAt: "2024-06"
+summary: "Eliminated technical debt by refactoring custom data visualization to leverage Chart.js's latest version while improving accessibility across Evernorth.com"
+images:
+  - "/images/projects/data-viz/cover.jpg"
+team:
+  - name: "Varun Baker"
+    role: "Senior Software Engineer"
+    avatar: "/images/avatar.jpg"
+link: "https://www.evernorth.com/"
+---
+
+## Overview
+
+Eliminated technical debt by refactoring a custom data visualization system to leverage Chart.js's latest version, while simultaneously improving accessibility across Evernorth.com's data presentations. The upgrade streamlined maintenance, enhanced performance, and ensured compliance with WCAG standards—making complex health data insights available to all users.
+
+## The Challenge
+
+The legacy data visualization implementation had accumulated significant technical debt:
+- Built on an outdated version of Chart.js with limited support
+- Custom workarounds for features now available natively
+- Inconsistent accessibility implementation across different chart types
+- Difficult to maintain as the codebase evolved
+
+## Solution
+
+**Modern Chart.js Migration**
+- Upgraded to Chart.js 4.x, leveraging improved tree-shaking and performance
+- Replaced custom plugins with native Chart.js features
+- Standardized chart configuration across the platform
+
+**Accessibility Improvements**
+- Implemented ARIA labels and live regions for dynamic chart updates
+- Added keyboard navigation support for interactive elements
+- Provided text alternatives and data tables for screen readers
+- Ensured WCAG 2.1 AA compliance across all visualizations
+
+**Technical Debt Reduction**
+- Consolidated scattered chart implementations into reusable components
+- Reduced bundle size by 30% through proper tree-shaking
+- Simplified maintenance with standardized patterns
+
+## Technologies Used
+
+- **Chart.js 4.x**: Modern charting library with built-in accessibility features
+- **React**: Component-based architecture for reusable visualizations
+- **TypeScript**: Type-safe chart configurations
+- **ARIA**: Accessible Rich Internet Applications standards
+
+## Impact
+
+- **30% reduction** in visualization bundle size
+- **100% WCAG 2.1 AA compliance** across all data visualizations
+- Simplified maintenance reducing future development time
+- Enhanced user experience for assistive technology users
+
+## Learnings
+
+This project reinforced the value of staying current with dependencies. What started as technical debt remediation became an opportunity to dramatically improve accessibility—proving that refactoring isn't just about cleaning up code, it's about delivering better experiences for all users.

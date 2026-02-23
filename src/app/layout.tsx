@@ -13,7 +13,10 @@ import {
   RevealFx,
   SpacingToken,
 } from "@once-ui-system/core";
-import { Footer, Header, RouteGuard, Providers, GeoDebugPanel } from "@/components";
+import { Footer, Header, RouteGuard, Providers, GeoDebugPanel, TransparencyNotice, SegmentIndicator, ContentInteractionTracker } from "@/components";
+import { buildAffinityProfile, determineSegment } from "@/lib/geo";
+import { detectGeoLocation } from "@/lib/geo/detect-server";
+import type { VisitorContext } from "@/lib/geo/types";
 import { baseURL, effects, fonts, style, dataStyle, home } from "@/resources";
 
 export async function generateMetadata() {
@@ -31,6 +34,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Detect visitor context server-side for initial render
+  let initialContext: VisitorContext | undefined;
+  try {
+    const geo = await detectGeoLocation();
+    const segment = determineSegment(geo);
+    const affinity = buildAffinityProfile(geo);
+    initialContext = { geo, segment, affinity };
+  } catch (error) {
+    // If detection fails, VisitorContextProvider will fetch client-side
+    console.error("Server-side geo detection failed:", error);
+  }
+
   return (
     <Flex
       suppressHydrationWarning
@@ -47,6 +62,7 @@ export default async function RootLayout({
       <head>
         <script
           id="theme-init"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: Required for theme initialization before React hydration
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
@@ -103,7 +119,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <Providers>
+      <Providers initialContext={initialContext}>
         <Column
           as="body"
           background="page"
@@ -164,6 +180,9 @@ export default async function RootLayout({
           </Flex>
           <Footer />
           <GeoDebugPanel />
+          <TransparencyNotice />
+          <SegmentIndicator showInUI={process.env.NODE_ENV === "development"} />
+          <ContentInteractionTracker />
         </Column>
       </Providers>
     </Flex>
