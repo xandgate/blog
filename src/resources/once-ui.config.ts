@@ -11,7 +11,7 @@ import {
   SocialSharingConfig,
   StyleConfig,
 } from "@/types";
-import { home } from "./index";
+import { home, person } from "./content";
 
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
 const baseURL: string = "https://varunbaker.com";
@@ -188,9 +188,9 @@ const mailchimp: MailchimpConfig = {
 const schema: SchemaConfig = {
   logo: "",
   type: "Person",
-  name: "Varun Baker",
+  name: person.name,
   description: home.description,
-  email: "varun.baker@gmail.com",
+  email: person.email,
 };
 
 // social links

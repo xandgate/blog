@@ -1,0 +1,106 @@
+# Accessibility Isn't a Feature, It's the Baseline
+**What I've learned building Section 508 compliant platforms**
+
+
+- **Slug:** `accessibility-isnt-a-feature`
+- **Published:** 2026-02-08
+- **Tag:** GovTech
+- **Image:** /images/blog/accessibility-baseline.jpg
+
+## Summary (for cards/SEO)
+
+After years of building government web platforms, here's my take on why accessibility keeps getting deprioritized—and the practical fixes that actually work.
+
+---
+
+## Full copy (for review / edit in notes)
+
+## The Conversation That Keeps Happening
+
+I was in a project kickoff last month. Stakeholders around the table. Someone asks about the timeline.
+
+"We've got 16 weeks to launch. We'll do accessibility testing in week 15."
+
+I've heard this exact sentence at least a dozen times in my career. It's not a plan. It's a prayer.
+
+## Why Accessibility Gets Deprioritized
+
+It's not malice. It's usually one of these:
+
+**"We'll fix it later."** Accessibility debt compounds faster than technical debt. A non-compliant component used 200 times means 200 instances to fix.
+
+**"Our users don't have disabilities."** Government websites serve everyone. You don't get to choose your audience.
+
+**"The tool handles it."** No CMS makes your content accessible automatically. The tool provides capabilities. Humans still have to use them correctly.
+
+**"We passed automated testing."** Automated tools catch maybe 30% of accessibility issues. The rest requires manual testing and human judgment.
+
+## What Actually Works
+
+After building platforms for federal and state agencies, here's what I've seen succeed:
+
+### 1. Accessible Component Libraries
+
+Don't let developers build buttons from scratch. Give them accessible buttons that work out of the box.
+
+Every component should ship with:
+- Proper ARIA attributes
+- Keyboard navigation
+- Focus management
+- Screen reader testing documentation
+
+Build once, use everywhere. Accessibility becomes the path of least resistance.
+
+### 2. Content Author Training
+
+The prettiest, most accessible template becomes non-compliant the moment someone:
+- Uploads an image without alt text
+- Creates a table without headers
+- Uses color alone to convey information
+- Writes a link that says "click here"
+
+Train content authors. Then train them again. Then build guardrails.
+
+### 3. Continuous Testing, Not Launch Testing
+
+Add accessibility checks to your CI/CD pipeline. Catch issues before they merge.
+
+Use a mix of:
+- Automated scanning (axe-core, WAVE)
+- Manual keyboard testing
+- Screen reader testing (actual users, not just developers)
+
+When a build fails accessibility, it fails. Period.
+
+### 4. Real User Testing
+
+I've watched sighted developers "test" with screen readers for five minutes and declare victory.
+
+Budget for testing with actual users who rely on assistive technology. The insights are humbling and invaluable.
+
+### 5. Executive Buy-In
+
+Accessibility needs teeth. Someone with authority has to be willing to delay launches for compliance issues.
+
+If accessibility can always be overridden by "business priorities," it will be.
+
+## The Business Case (If You Need One)
+
+- Section 508 is law. Non-compliance is legal risk.
+- Accessible sites work better for everyone, including mobile users, people in bright sunlight, and users with temporary injuries.
+- Accessible code is usually cleaner code. Semantic HTML benefits SEO, maintainability, and performance.
+- Retrofitting accessibility is 10x more expensive than building it in.
+
+But honestly, the best reason is simpler: government websites exist to serve citizens. All of them.
+
+## The Standard I Hold
+
+When I build a government platform, the goal isn't "pass an audit." The goal is: a person using a screen reader can accomplish every task a sighted user can, with equivalent effort.
+
+That's a higher bar. It's the right bar.
+
+---
+
+*This is part of my GovTech Insights series. Previous: "What Government Gets Wrong About Website Migrations." Next: "Why Drupal Still Dominates Government."*
+
+*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*

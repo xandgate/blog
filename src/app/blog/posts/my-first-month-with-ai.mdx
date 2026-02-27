@@ -7,128 +7,56 @@ publishedAt: "2026-03-14"
 tag: "AI Engineering"
 ---
 
-## Week 1: The Honeymoon Phase
+I installed Cursor on a Monday in January. By that Friday I had shipped more code than in the previous two weeks combined. By the following Wednesday I was staring at a production bug I couldn't explain, wondering if I had fundamentally broken my ability to write software.
 
-I installed Cursor on a Monday. By Wednesday, I was pretty excited about it.
-
-I asked it to implement a feature I'd been putting off—a complex form with validation, error handling, and API integration. It generated 200 lines of code in 30 seconds. I reviewed it, made a few tweaks, and shipped it.
-
-I felt like I'd discovered something useful.
-
-That week, I implemented three features that would have taken me days. I was moving faster than usual. I was solving problems I'd been avoiding.
-
-It seemed too good to be true.
-
-## Week 2: The Reality Check
-
-The bugs started appearing.
-
-A function that worked in isolation but broke when integrated. An API call that succeeded but returned the wrong data. A validation rule that looked correct but allowed invalid input.
-
-I spent more time debugging AI-generated code than I'd spent writing code the old way.
-
-I was frustrated. I'd expected faster development, but I was actually moving slower because I had to review everything so carefully.
-
-I almost gave up. I thought: "This isn't worth it. I'll just write the code myself."
-
-But then I realized: the problem wasn't AI. The problem was me. I was using AI like a code generator, not like a coding assistant. I was trusting it too much and reviewing it too little.
-
-## Week 3: Finding the Balance
-
-I changed my approach. Instead of asking AI to implement entire features, I started using it for smaller tasks:
-
-- Generate a function, then review it immediately
-- Ask for a code review before committing
-- Use it to explore options, then implement myself
-- Let it handle boilerplate, but write the logic myself
-
-The speed advantage was smaller, but the code quality was better. I was catching issues before they became bugs.
-
-I also started using AI differently for different tasks:
-
-**For well-defined problems:** Let AI implement, review thoroughly
-**For ambiguous problems:** Use AI to explore, implement myself
-**For learning:** Ask AI to explain, then implement to reinforce
-
-This was the turning point. I wasn't fighting AI anymore—I was collaborating with it.
-
-## Week 4: The Flow State
-
-By the fourth week, I'd found my rhythm.
-
-I knew when to let AI lead (routine implementation) and when to take the wheel (architecture, debugging, learning). I had a review process that caught most issues in minutes. I was moving faster than before, but with better code quality.
-
-I was also learning faster. Instead of spending hours implementing something I'd done before, I could focus on new problems. AI handled the repetition; I handled the thinking.
-
-This is when it clicked: AI isn't replacing my job. It's making me more effective.
-
-## What Surprised Me
-
-**1. How bad AI is at error handling**
-
-AI will implement the happy path perfectly, then return `undefined` when something goes wrong. I've learned to always check error handling in AI-generated code.
-
-**2. How useful AI is at code review**
-
-When I paste my code into Claude and ask for a review, it catches things I miss. It doesn't have my blind spots. It's like having a second pair of eyes.
-
-**3. How much context matters**
-
-The difference between a good AI output and a bad one is almost entirely about context. The more context I provide, the better the results.
-
-**4. How quickly I adapted**
-
-I thought it would take months to get comfortable with AI. It took weeks. The learning curve was steeper than I expected, but shorter.
-
-## What I Wish I'd Known
-
-**Start small:** Don't try to use AI for everything immediately. Pick one task, get good at it, then expand.
-
-**Review everything:** Even if the code looks perfect, review it. AI makes mistakes, and they're often subtle.
-
-**Provide context:** The more context you give AI, the better the output. Don't be lazy with your prompts.
-
-**Use the right tool:** Cursor is great for implementation. Claude is great for reasoning. Use each for what it's good at.
-
-**It's okay to write code yourself:** Sometimes, writing code is faster than explaining what you want to AI. Don't force it.
-
-## The Mistakes I Made
-
-**Trusting AI too much:** I shipped code without reviewing it. This led to bugs.
-
-**Not providing enough context:** I'd ask for code without explaining the system. AI would generate something that worked in isolation but broke when integrated.
-
-**Using AI for everything:** I tried to use AI for tasks that were faster to do manually. The overhead wasn't worth it.
-
-**Giving up too early:** I almost quit in week 2. I'm glad I didn't.
-
-## Where I Am Now
-
-Six months in, AI is part of my daily workflow. I use it for:
-
-- Routine implementation (80% of my code)
-- Code review (every PR)
-- Exploring options (architecture decisions)
-- Learning (understanding new patterns)
-
-I don't use it for:
-
-- Architecture decisions (still my job)
-- Debugging complex issues (I'm faster)
-- Writing tests (I write them myself for now)
-
-The balance feels right. I'm moving faster, writing better code, and learning more. But I'm still in control.
-
-## The Bottom Line
-
-The first month was hard. There was a learning curve. There were frustrations. There were moments I wanted to give up.
-
-But I'm glad I stuck with it. AI has made me a better engineer. Not because it writes code for me, but because it forces me to think more clearly about what I'm building and why.
-
-The engineers who thrive with AI won't be the ones who use it the most. They'll be the ones who learn to use it well.
+That arc — from astonishment to terror to something that finally feels like competence — is the story of my first month. I want to tell it honestly, which means telling you about the Wednesday.
 
 ---
 
-*This is part of my Personal/Relatable Posts series. Next: "The Tasks I Still Do By Hand (And Why)."*
+The first few days were genuinely intoxicating. I asked Cursor to implement a complex intake form I'd been avoiding: twelve fields, conditional validation logic, an API integration that needed to handle partial failures gracefully. The kind of task I'd normally break into a half-day project, plan out on paper, then execute carefully.
 
-*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*
+The AI did it in forty seconds.
+
+I reviewed the code, made a handful of tweaks, ran it through QA, shipped it. The whole thing took maybe an hour. I remember sitting back in my chair with the particular feeling of having cheated on a test and gotten away with it — which, I now recognize, was a warning sign I should have paid more attention to.
+
+The next ten days were like that. Feature after feature, faster than I'd ever moved. I started picking up tickets I'd deprioritized for weeks. I stopped blocking on unfamiliar APIs because I could just ask. I felt, genuinely, like a different kind of engineer.
+
+What I was not doing was understanding the code I was shipping.
+
+---
+
+That brings me to the Wednesday.
+
+I was working on a data export feature for a government client — nothing exotic, just pulling records and formatting them as CSV. The AI wrote the function in a minute. I reviewed it, it looked fine, it passed my tests, I shipped it.
+
+Three days later, a client email: some of the exported files were corrupted. Not all of them. Just the ones with records containing commas in text fields.
+
+I pulled up the code. The CSV serialization had no quoting logic. If a description field contained a comma, the output would split that field across two columns, shifting every subsequent column offset by one. The function had passed my tests because my test data was clean strings. The AI had written a CSV serializer that didn't handle the most fundamental CSV edge case.
+
+Here's what unnerved me: I had *read* that code. I looked at it before shipping. But I read it the way you read something you expect to be right — skimming for structure, not interrogating for failure modes. The AI's code was confident and clean, and confidence reads as correctness when you're moving fast.
+
+I spent four hours on that bug, including an hour just understanding what had gone wrong well enough to explain it to the client. That hour was the worst part. I'm used to owning my bugs. This one felt borrowed — someone else had written it, I'd nodded it through, and now I was accountable for it.
+
+I almost stopped using the AI tools entirely that afternoon. Not out of anger at the tools — rationally I knew the bug was mine to catch — but because I didn't trust my own judgment anymore. If I had missed that, what else was I missing? I had shipped ten features in two weeks. How many of them had quiet landmines I hadn't triggered yet?
+
+---
+
+I didn't stop. But I changed how I worked.
+
+The shift was conceptual before it was practical: I stopped thinking of AI as a code generator and started thinking of it as a first draft. A first draft is useful. A first draft is not finished. The value isn't that you don't have to write — it's that you start with something to react to instead of a blank page.
+
+With that reframe, my review process got sharper. I started interrogating generated code the way I'd interrogate a junior developer's PR: not just "does this look right" but "what are the inputs this breaks on, what does it return when the external call fails, what happens at scale." The CSV bug would have died there.
+
+I also started being more deliberate about what I handed off. Routine implementation — database queries, API wrappers, serialization logic — AI drafts first, I review carefully. Ambiguous problems where I'm not sure what I want yet — I think first, use AI to pressure-test, implement myself. Architecture — mine entirely.
+
+The speed advantage dropped when I got rigorous. But the code quality came back up, and more importantly, I trusted what I was shipping again. That trust is not a soft metric. It affects how you work, how fast you move, and frankly how you feel at the end of the day.
+
+---
+
+By the end of the month I was better at this than I had been at the start, which is obvious. Less obviously: I was also better at writing software than I had been before I started. Not because the AI taught me anything explicitly — but because the volume of code I was reviewing forced me to articulate, clearly and quickly, why a piece of code was right or wrong. That kind of rapid-fire code review is the fastest path to sharper judgment I've found in fifteen years.
+
+The engineers who get the most from these tools, I've come to believe, are not the ones who prompt best. They're the ones who can look at a hundred lines of generated code and know, within two minutes, whether it's sound. That's a skill built over years of writing, debugging, and shipping real systems. AI didn't obsolete it. It made it the limiting factor.
+
+---
+
+*A question I think about: at what point does heavy AI use start to atrophy the skills that make you good at reviewing AI output? I don't have a clean answer. But if you're early in your career and leaning heavily on these tools, it's worth sitting with.*

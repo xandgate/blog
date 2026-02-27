@@ -7,35 +7,28 @@ publishedAt: "2026-02-28"
 tag: "AI Engineering"
 ---
 
-## What We're Building
+## What Actually Happened
 
-I'm going to build a "favorite articles" feature for a blog: users can save articles to read later, view their favorites, and remove them. Simple, but it touches the full stack:
+I want to be honest with you: most "I built X in Y hours with AI" posts are laundered fiction. The author compresses three days of false starts into a clean two-hour narrative, strips out every wrong turn, and presents a tutorial where real development used to be. I've read dozens of them. I've written one. You're looking at the replacement.
 
-- Database schema changes
-- API endpoints (GET, POST, DELETE)
-- Frontend UI components
-- State management
-- Error handling
+This is a real account of building a "saved articles" feature for a blog platform — users can bookmark posts, view their list, remove items. Full stack: database migration, API endpoints, frontend components, state management. I ran a timer. I kept notes. The parts where AI failed are in here too, because that's where the actual learning lives.
 
-Normally, this would take me a day. With AI, I'm aiming for 2 hours. Let's see if I can do it.
+The stack: FastAPI on the backend, Svelte on the frontend, PostgreSQL, Alembic for migrations. AI tools: Cursor with Claude for implementation, Claude directly when I needed to think through architecture. Existing codebase with auth already wired up.
 
-## The Setup
+Final time: 2 hours 38 minutes. Not two hours. Here's where the extra 38 went.
 
-**Tech stack:**
-- Backend: Python (FastAPI)
-- Frontend: Svelte
-- Database: PostgreSQL
-- AI tools: Cursor for implementation, Claude for architecture review
+---
 
-**Starting point:** Existing blog application with user authentication already implemented.
+## Hour One: Backend
 
-## Hour 1: Backend (0:00 - 1:00)
+### The Migration (Expected: 10 min / Actual: 10 min)
 
-### Step 1: Database Schema (10 minutes)
+This one actually went clean. I gave Cursor a specific prompt:
 
-I ask Cursor: "Create a database migration for a favorites table. Users can favorite articles. Include user_id, article_id, and created_at. Add a unique constraint on user_id + article_id."
+> *"Create an Alembic migration for a favorites table. Columns: id (PK), user_id (FK to users), article_id (FK to articles), created_at. Add a unique constraint on user_id + article_id. Add an index on user_id for query performance."*
 
-Cursor generates:
+It generated exactly what I asked for:
+
 ```python
 # migrations/003_add_favorites.py
 from alembic import op
@@ -47,11 +40,11 @@ def upgrade():
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('article_id', sa.Integer(), nullable=False),
-        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('created_at', sa.DateTime(), server_default=sa.func.now(), nullable=False),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('user_id', 'article_id', name='uq_user_article'),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id']),
-        sa.ForeignKeyConstraint(['article_id'], ['articles.id']),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['article_id'], ['articles.id'], ondelete='CASCADE'),
     )
     op.create_index('ix_favorites_user_id', 'favorites', ['user_id'])
 
@@ -59,120 +52,112 @@ def downgrade():
     op.drop_table('favorites')
 ```
 
-I review it: looks good. The unique constraint prevents duplicates, the index will help with queries. I run the migration.
+The `ondelete='CASCADE'` was a nice touch I hadn't specified — if a user or article is deleted, their favorites go too. I'd have added it anyway but I didn't have to ask. This is AI at its best: filling in the obvious implication you didn't think to say explicitly.
 
-### Step 2: API Endpoints (30 minutes)
+Migration ran clean. Moved on.
 
-I ask Cursor: "Create FastAPI endpoints for favorites: POST /api/favorites to add, GET /api/favorites to list user's favorites, DELETE /api/favorites/{'{article_id}'} to remove. Include authentication and error handling."
+### The API Endpoints (Expected: 30 min / Actual: 55 min)
 
-Cursor generates the endpoints. I review them and catch a few issues:
-- Missing validation for article existence
-- No pagination on the list endpoint
-- Error messages aren't user-friendly
+This is where the session got interesting.
 
-I fix these and move on. Total time: 30 minutes including review.
+My prompt:
 
-### Step 3: Tests (20 minutes)
+> *"Create three FastAPI endpoints: POST /api/favorites to add an article to the current user's favorites, GET /api/favorites to return the user's list with article metadata, DELETE /api/favorites/{article_id} to remove. Use the existing auth dependency pattern from the codebase. Include error handling for duplicate favorites and non-existent articles."*
 
-I ask Cursor: "Write pytest tests for the favorites endpoints. Test adding, listing, removing, and edge cases like duplicate favorites and non-existent articles."
+The first generation looked right at a glance. Clean structure, proper HTTP status codes, used the `get_current_user` dependency from auth. I almost moved on.
 
-Cursor generates comprehensive tests. I run them, they pass. I'm done with the backend.
+I didn't, because I noticed something: the GET endpoint returned a list of `favorite` records with just `article_id`. No article title, no URL, no metadata. Completely useless for a frontend that needs to display a list of saved articles. The prompt said "article metadata" and the AI technically produced code that queries the favorites table — it just didn't join to the articles table.
 
-**Backend time: 1 hour exactly.**
+So I refined:
 
-## Hour 2: Frontend (1:00 - 2:00)
+> *"The GET /api/favorites endpoint should return full article details, not just IDs. Join favorites with articles and return title, slug, published_at, and summary for each."*
 
-### Step 1: API Client Functions (15 minutes)
+Second generation fixed that, but introduced a new problem: it used a raw SQL join instead of SQLAlchemy's ORM relationship. The rest of the codebase uses the ORM. I could have left it — it would have worked — but inconsistent patterns are how codebases turn into archaeology projects six months later.
 
-I ask Cursor: "Create Svelte functions to call the favorites API: addFavorite, getFavorites, removeFavorite. Use fetch with proper error handling."
+Third prompt:
 
-Cursor generates the functions. I review and add loading states. Done.
+> *"Rewrite using SQLAlchemy ORM with a relationship between Favorite and Article models. The existing Article model is in models/article.py."*
 
-### Step 2: UI Components (30 minutes)
+I had to give it the file path explicitly. Without that, it invented a schema that didn't match ours. This is a pattern I've hit repeatedly: AI generates confident, syntactically correct code against a model of your codebase that doesn't exist. The code is right — just not for your project.
 
-I ask Cursor: "Create a Svelte component for the favorites feature. Include a button to add/remove favorites, and a page to view all favorites. Match the existing design system."
+Third generation was correct. I added one thing by hand: pagination on the GET endpoint. AI had skipped it. Not wrong exactly, but a favorites list with no limit is a ticking time bomb for users who've saved three hundred articles.
 
-Cursor generates the components. I review them:
-- The button component looks good
-- The favorites list page needs pagination
-- Missing empty state
+Total API time: 55 minutes, not 30.
 
-I ask Cursor to add these, then integrate the components into the existing pages.
+### Tests (Expected: 20 min / Actual: 20 min)
 
-### Step 3: State Management (10 minutes)
+Prompt:
 
-I need to update the UI when favorites change. I ask Cursor: "Create a Svelte store for favorites that syncs with the API and updates UI reactively."
+> *"Write pytest tests for the three favorites endpoints. Test: adding an article, retrieving favorites (verify article metadata is included), removing a favorite, attempting to add a duplicate (expect 409), attempting to remove a non-existent favorite (expect 404), and accessing the endpoints without authentication (expect 401)."*
 
-Cursor generates a store using Svelte's writable. I integrate it with the components.
+The tests generated cleanly and passed on first run. One observation: when I gave AI a specific list of test cases, it nailed it. When I've said "write comprehensive tests" without specifics, I get tests that check status codes but nothing meaningful about the response body. The specificity of the prompt determines the quality of the output.
 
-### Step 4: Polish and Testing (5 minutes)
-
-I test the feature manually:
-- Add a favorite → works
-- View favorites → works
-- Remove favorite → works
-- Try to add duplicate → shows error (good!)
-- Test with no favorites → shows empty state (good!)
-
-Everything works. I'm done.
-
-**Frontend time: 1 hour exactly.**
-
-## Total Time: 2 Hours
-
-I built a complete full-stack feature in 2 hours. Here's the breakdown:
-
-- Database: 10 minutes
-- Backend API: 30 minutes
-- Backend tests: 20 minutes
-- Frontend API client: 15 minutes
-- Frontend UI: 30 minutes
-- State management: 10 minutes
-- Testing/polish: 5 minutes
-
-**Total: 2 hours**
-
-## What Made This Fast
-
-**1. Clear requirements:** I knew exactly what I was building before I started.
-
-**2. Good prompts:** I gave Cursor enough context to generate useful code on the first try.
-
-**3. Quick review process:** I used my 5-minute review checklist to catch issues fast.
-
-**4. Existing patterns:** The codebase already had authentication, API structure, and design system, so Cursor could follow existing patterns.
-
-**5. No over-engineering:** I built what was needed, not what was possible.
-
-## What I Would Do Differently
-
-If I were doing this for production:
-
-- **Add more tests:** I'd write integration tests and E2E tests
-- **Add analytics:** Track how many users use favorites
-- **Add notifications:** Email users about new articles from favorited authors
-- **Optimize queries:** Add caching for frequently accessed favorites
-
-But for an MVP, 2 hours was the right amount of time.
-
-## The Reality Check
-
-This was a simple feature. For something more complex—like real-time collaboration or complex data processing—it would take longer. AI doesn't eliminate complexity; it just speeds up implementation.
-
-But for standard CRUD features, this is pretty typical now.
-
-## The Bottom Line
-
-AI-augmented development isn't about replacing thinking—it's about speeding up implementation. I still had to:
-- Design the feature
-- Review the code
-- Make architectural decisions
-- Test thoroughly
-
-But I didn't have to type out every line of code. And that's the difference between 2 hours and 8 hours.
+**Backend total: 1 hour 25 minutes.**
 
 ---
 
-*This is part of my Practical Tutorials series. Next: "Refactoring Legacy Code with AI: From Spaghetti to Clean in One Afternoon."*
+## Hour Two: Frontend
 
-*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*
+### API Client (Expected: 15 min / Actual: 15 min)
+
+Prompt:
+
+> *"Create TypeScript-style JSDoc-annotated Svelte functions: addFavorite(articleId), getFavorites(), removeFavorite(articleId). Use fetch, handle errors by throwing with a message from the response body, return parsed JSON on success."*
+
+Clean output. I added loading state management by hand — three `let loading = false` guards around each async call. Not because AI couldn't have done it, but because I wanted to think through the UX myself. When should the button be disabled? Only during that specific action, or whenever any favorite operation is in flight? That's a product decision, not a code problem.
+
+### The UI Components (Expected: 30 min / Actual: 47 min)
+
+This is the part I've thought about most.
+
+The prompt:
+
+> *"Create a Svelte component FavoriteButton.svelte that shows a bookmark icon, toggling filled/outlined based on whether the current article is favorited. On click, call addFavorite or removeFavorite. Show a loading spinner during the operation. Match the design system — use the existing Button component and the lucide-svelte icon library."*
+
+First output: completely ignored the existing Button component, imported its own styling, used heroicons instead of lucide-svelte. Visually similar but architecturally wrong — now I have two icon libraries in a project that had one.
+
+The problem was scope. I said "match the design system" without giving it the design system. AI cannot read files it hasn't been shown.
+
+I restructured: opened `FavoriteButton.svelte`, dragged it into the Cursor context pane, then added the existing `Button.svelte` and the imports from another component I knew used lucide-svelte correctly. Regenerated.
+
+Second output was right. Icon, toggle logic, loading state, accessibility attributes (aria-label, aria-pressed). It even added a subtle scale animation on the icon toggle that I hadn't asked for and kept because it was good.
+
+The favorites list page was similar — one generation that misunderstood the routing structure, a context-enriched second that got it right, plus I wrote the empty state text by hand because AI's placeholder text ("No favorites yet. Start saving articles!") was too cheerful for my taste.
+
+**Frontend total: 1 hour 13 minutes.**
+
+---
+
+## Where the Time Actually Went
+
+A breakdown that reflects reality:
+
+| Task | Expected | Actual | Delta |
+|------|----------|--------|-------|
+| Database migration | 10 min | 10 min | — |
+| API endpoints | 30 min | 55 min | +25 min (join logic, ORM refactor) |
+| Backend tests | 20 min | 20 min | — |
+| Frontend API client | 15 min | 15 min | — |
+| UI components | 30 min | 47 min | +17 min (context + icon library) |
+| Integration + manual QA | 15 min | 11 min | -4 min |
+| **Total** | **2:00** | **2:38** | **+38 min** |
+
+The 38 extra minutes came from two places: AI generating code against an imagined version of my codebase, and me not front-loading enough context to prevent it. Both are correctable.
+
+The lesson isn't "AI is slower than advertised." It's that AI's accuracy is a direct function of the context you give it. The migration took 10 minutes because my prompt was airtight. The API endpoints took nearly an hour because I assumed "use the existing pattern" was sufficient instruction.
+
+## What Didn't Change
+
+I still made every architectural decision. Should favorites cascade on user delete? Yes — orphaned records create data integrity problems. Should I paginate the list? Yes — always paginate collections. Should the button be disabled during load? Yes — prevent double-submits. None of that came from AI. It came from having built enough production systems to know what breaks.
+
+What changed is that I didn't have to write the code to implement those decisions. I made the call, AI wrote the implementation, I reviewed and adjusted. That's a fundamentally different way to work, and it took me a few months to stop feeling guilty about it.
+
+## The Real Benchmark
+
+The question isn't whether I built this in two hours or two hours and thirty-eight minutes. It's whether I'd spend a full day on this without AI. I would have. The database migration alone — looking up Alembic syntax, getting the constraint naming right, verifying the index creation — would have burned thirty minutes. Multiply that friction across every piece of code and you get a day.
+
+AI collapsed that friction. Not to zero, but to something manageable. The overhead shifted from "remembering syntax" to "providing context," and that's a trade I'll take every time.
+
+---
+
+*If you've hit the "AI generated wrong-codebase code" problem I described above, I'd be curious how you solved it. Do you front-load context at session start, or build it prompt by prompt? That's the workflow question I'm still refining.*

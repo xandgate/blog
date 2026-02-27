@@ -1,0 +1,110 @@
+# Why Drupal Still Dominates Government Websites
+**It's not just legacy. There are real reasons.**
+
+
+- **Slug:** `why-drupal-dominates-government`
+- **Published:** 2026-02-01
+- **Tag:** GovTech
+- **Image:** /images/blog/drupal-government.jpg
+
+## Summary (for cards/SEO)
+
+Drupal runs whitehouse.gov, state portals, and countless agency sites. After 20 years building government Drupal platforms, here's why it persists—and when to consider alternatives.
+
+---
+
+## Full copy (for review / edit in notes)
+
+## The Numbers
+
+Drupal powers whitehouse.gov, weather.gov, and hundreds of state and local government sites. It's not an accident, and it's not just inertia.
+
+I've been building government Drupal platforms for nearly two decades. I've seen the RFPs that specify it, the teams that struggle with it, and the projects that succeed because of it. Here's the honest assessment.
+
+## Why Drupal Works for Government
+
+### 1. Security Gets Taken Seriously
+
+Drupal has a dedicated security team. Vulnerabilities get CVEs. Patches get coordinated releases. There's a clear process.
+
+Compare that to the WordPress ecosystem, where your security depends on which of 60,000 plugins you installed and whether some solo developer in another timezone is still maintaining it.
+
+Government IT has to justify their technology choices. "There's a security team with a documented process" is an easy conversation. "We're trusting random plugins" is not.
+
+### 2. Enterprise Content Modeling
+
+Government content is complex. A "page" might need:
+- Multiple content types (press releases, policies, forms, services)
+- Multilingual support with different content per language
+- Complex workflows (draft → legal review → communications → director → publish)
+- Granular permissions (editors can only edit their division's content)
+
+Drupal's content modeling is overkill for a blog. It's exactly right for a state agency with 50 programs, 200 content editors, and legal compliance requirements.
+
+### 3. Accessibility Tooling
+
+Drupal 8+ ships with accessibility baked in. ARIA landmarks, skip links, proper heading structure—it's in core, not an afterthought.
+
+CKEditor has accessibility plugins. Views generates semantic markup. The admin interface itself is accessible.
+
+Is it perfect? No. But the foundation is solid, and the community prioritizes a11y improvements.
+
+### 4. The Contrib Ecosystem
+
+Need to integrate with a government single sign-on system? There's a module.
+Need to meet FedRAMP hosting requirements? There are documented patterns.
+Need to export content for records management? Someone's solved it.
+
+The government Drupal community is mature. Problems that seem unique usually aren't.
+
+### 5. Vendor Independence
+
+Drupal is open source with a diverse ecosystem of vendors. Agencies aren't locked into a single company's roadmap or pricing.
+
+When your contract with Vendor A ends, Vendor B can pick up the codebase. Try that with a proprietary platform.
+
+## Where Drupal Struggles
+
+### Complexity Tax
+
+Drupal's flexibility comes with overhead. Setting up a simple site requires decisions that WordPress or Squarespace handle automatically.
+
+For small agencies or simple sites, Drupal is overkill.
+
+### Developer Availability
+
+Finding good Drupal developers is harder than finding React developers. The talent pool is smaller and often more expensive.
+
+If your agency can't retain technical staff, maintaining a complex Drupal site becomes a contractor dependency.
+
+### Modern Frontend Expectations
+
+Drupal's traditional architecture couples frontend and backend. Decoupled/headless Drupal exists, but it's more complex than using a headless CMS built for that model.
+
+If your priority is a cutting-edge frontend experience with React or Vue, Drupal adds friction.
+
+## When to Use Something Else
+
+Drupal isn't always the answer:
+
+- **Simple sites:** Static site generators (Hugo, Eleventy) or managed platforms (Squarespace, Webflow) can be dramatically simpler.
+- **Pure headless needs:** Contentful, Sanity, or Strapi might fit better.
+- **Rapid prototyping:** WordPress or no-code tools let you move faster.
+
+The right answer depends on content complexity, team capabilities, and long-term maintenance plans.
+
+## My Take
+
+Drupal dominates government because it solves government problems well: complex content, granular permissions, enterprise workflows, accessibility requirements, and vendor independence.
+
+It's not trendy. That's okay. Governments need reliability more than novelty.
+
+When agencies ask me whether to use Drupal, my first question is: "What's your content complexity and who's maintaining this in three years?"
+
+If the answer is "complex" and "we're not sure," Drupal is usually the right call.
+
+---
+
+*This is part of my GovTech Insights series. Previous: "Accessibility Isn't a Feature, It's the Baseline."*
+
+*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*

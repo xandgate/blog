@@ -7,90 +7,93 @@ publishedAt: "2026-02-07"
 tag: "AI Engineering"
 ---
 
-## The Speed vs. Safety Problem
+## The Bug That Changed How I Review
 
-Here's the thing: AI can generate code in seconds, but reviewing it thoroughly takes time. If you review everything with the same rigor you'd use for a junior engineer's PR, you've eliminated the speed advantage.
+The function looked fine:
 
-But if you skip the review, you'll spend hours debugging production issues that could have been caught in minutes.
+```python
+def process_payment(amount, currency):
+    if currency == "USD":
+        return stripe.charge(amount)
+    return None
+```
 
-After reviewing a lot of AI-generated code, I've developed a way to evaluate it quickly without missing critical issues. It's not perfect, but it catches most problems in under 5 minutes.
+I reviewed it, approved it, shipped it. What I didn't catch: the function returns `None` for every non-USD currency with no exception, no error code, no signal that anything went wrong. The calling code upstream assumed failure would raise an exception — so when a Canadian user tried to pay in CAD, the payment silently evaporated. No charge, no error message, no log entry. Just nothing.
 
-## The 5-Minute Review
+We caught it three days later during a billing reconciliation. The payment processor had no record of the transactions. I had to trace back through logs to figure out what had happened and why, then explain it to a client who had been wondering why their Canadian signups weren't converting.
 
-I don't use a physical checklist—this is just how I think about it. I scan for these issues in order of severity:
+I had reviewed that code. I checked the security, I checked the SQL queries, I spot-checked the happy path. What I had not done was ask: *what happens when this function takes a code path that isn't the happy path?* The answer, in this case, was "nothing at all."
 
-### 1. Security Issues (30 seconds)
+That's the bug type AI is most reliably bad at: not broken logic, but absent logic. The unhandled case. The path that exists and isn't covered. The function that succeeds at what it's supposed to do and silently fails at what it's supposed to prevent.
 
-I look for:
-- **User input not sanitized** — SQL injection, XSS, command injection
-- **Authentication/authorization missing** — Can anyone call this?
-- **Secrets in code** — API keys, passwords, tokens
-- **Insecure defaults** — Weak encryption, permissive CORS
+Since then, my review process has been built around that failure mode first.
 
-This is the highest priority. A security bug can be catastrophic, and AI often misses these because it doesn't understand the threat model of your specific system.
+---
 
-### 2. Error Handling (1 minute)
+## How to Actually Review AI Code in Five Minutes
 
-I check:
-- **What happens when this fails?** — Does it crash, return null, throw an exception?
-- **Are edge cases handled?** — Empty arrays, null values, network failures
-- **Is the error message useful?** — Will I be able to debug this in production?
+The five minutes is real, but it requires pattern recognition — knowing where AI fails so you can check those spots directly instead of reading line by line. Here's the order that matters:
 
-AI is particularly bad at error handling. It'll implement the happy path perfectly, then return `undefined` when something goes wrong. I've seen this many times.
+### Error Handling First
 
-### 3. Performance Red Flags (1 minute)
+This is where AI consistently falls short. It implements the happy path with confidence and handles failure as an afterthought, often by not handling it at all. What I check:
 
-I scan for:
-- **N+1 queries** — Loops that make database calls
-- **Unbounded operations** — No limits on loops, array operations
-- **Missing indexes** — Database queries without proper indexing
-- **Synchronous blocking** — Operations that should be async
+- What does this return when the external call fails? When the database is slow? When the input is empty?
+- If this function returns `None`, is the calling code prepared for that?
+- Are exceptions raised explicitly, or does the function silently swallow them?
+- What does the error message say when something goes wrong — will I be able to diagnose this in production, or will I be staring at "something went wrong"?
 
-AI doesn't think about scale. It'll write code that works fine for 10 users and breaks at 1000.
+The payment bug above would have died here. "What does this return for non-USD currency?" is a five-second question.
 
-### 4. Integration Points (1 minute)
+### Security Issues
 
-I verify:
-- **Does this match the existing API?** — Function signatures, data formats
-- **Are dependencies correct?** — Right versions, actually available
-- **Will this break other code?** — Side effects, shared state
+I look at this second because the failure mode is catastrophic rather than silent. The patterns I check immediately:
 
-This is where AI struggles most. It doesn't understand your codebase's conventions or hidden dependencies.
+- User input used directly in database queries (the classic SQL injection)
+- Endpoints with no authentication check — AI generates authenticated and unauthenticated versions with similar structure; it's easy to miss a missing `@require_auth` decorator
+- Secrets hardcoded in the function (API keys, connection strings that should be env vars)
+- Insecure defaults — permissive CORS, weak encryption parameters, logging that captures sensitive data
 
-### 5. Code Quality (1.5 minutes)
+AI misses these not because it doesn't know they exist but because it doesn't know your threat model. It generates code that's technically correct for an idealized system. Your system has actual users doing actual adversarial things.
 
-Finally, I check:
-- **Is this maintainable?** — Will I understand this in 6 months?
-- **Are there obvious bugs?** — Logic errors, typos, off-by-one errors
-- **Does it follow our patterns?** — Consistent with the rest of the codebase
+### Performance Red Flags
 
-This is the lowest priority. If the code works and isn't dangerous, style issues can be fixed later.
+Here I'm scanning for the structural problems that don't show up until load:
 
-## Why This Works
+- Loops that make database calls — the N+1 problem. Any `for` loop that contains a database query inside a request handler should be a red flag until I understand why it's there.
+- No upper bounds on collection operations — if this can return 10 records or 100,000 records and the code doesn't distinguish between those cases, you have a latency bomb.
+- Synchronous operations that should be async, especially for anything that hits a network or the filesystem.
 
-The reason I can do this in 5 minutes is pattern recognition. After 15 years of debugging, I've seen these mistakes before. I know where to look.
+AI doesn't think about scale. It writes code that works for the test case and doesn't think about what happens at ten thousand concurrent requests.
 
-I'm not reading every line. I'm scanning for patterns I know are problematic:
+### Integration Points
 
-- **Suspicious function names** — `getUserData()` without authentication
-- **Missing try/catch** — Operations that can fail
-- **Hardcoded values** — Magic numbers, URLs, credentials
-- **No validation** — User input used directly
+This is where context matters most and AI is most likely to guess wrong:
 
-I'm pattern matching against known failure modes, not doing a line-by-line review.
+- Does the function signature match what the calling code expects? Parameter names, order, return type?
+- Is the AI following existing patterns in the codebase, or has it invented its own?
+- Will this code break anything that depends on shared state?
 
-## Examples: What I Caught (And What I Missed)
+This is the "generated code against an imaginary codebase" problem I've written about before. Without explicit context, AI infers your conventions — and its inference is sometimes wrong.
 
-**Caught in 30 seconds:**
+### Readability
+
+Last, and genuinely last — will this code be readable by a developer who didn't write it? I'm not checking style preferences. I'm asking whether someone debugging this at 2am will be able to understand it quickly enough to fix it.
+
+---
+
+## The Catches and the Misses
+
+**Caught in seconds:**
 ```python
 def get_user_data(user_id):
     query = f"SELECT * FROM users WHERE id = {user_id}"
     return db.execute(query)
 ```
 
-SQL injection. AI generated this because I didn't specify parameterized queries. I caught it immediately because I always check database queries.
+SQL injection via f-string interpolation. This gets caught by the security check before I even get to the rest of the function.
 
-**Caught in 2 minutes:**
+**Caught in a minute:**
 ```javascript
 async function fetchUserPosts(userId) {
     const user = await getUser(userId);
@@ -102,49 +105,24 @@ async function fetchUserPosts(userId) {
 }
 ```
 
-N+1 query problem. If a user has 100 posts, this makes 101 database calls. Should be a single query with a JOIN or IN clause instead.
+N+1 query inside a request handler. If a user has 200 posts, this makes 201 sequential database calls. Found by the performance scan.
 
-**Missed (found in production):**
-```python
-def process_payment(amount, currency):
-    if currency == "USD":
-        return stripe.charge(amount)
-    return None
-```
-
-The function returns `None` for non-USD currencies without any indication of failure. The calling code assumed it would raise an exception, so payments silently failed. I caught the security and performance issues but missed the error handling.
-
-## When to Do a Deeper Review
-
-The 5-minute review catches most issues, but sometimes you need to go deeper:
-
-- **Security-critical code** — Authentication, payment processing, data access
-- **Code that affects multiple systems** — Shared libraries, API changes
-- **Complex algorithms** — Where correctness is non-obvious
-- **Code you don't understand** — If the AI's approach is unfamiliar
-
-In these cases, I'll do a full review: read every line, trace execution paths, even write tests to verify behavior.
-
-## The Tradeoff
-
-This approach isn't perfect. I'll miss some bugs. But here's the tradeoff:
-
-- **5-minute review:** Catches most issues, misses some subtle bugs
-- **30-minute review:** Catches more issues, but eliminates the speed advantage
-- **No review:** Fast, but you'll spend hours debugging in production
-
-I've chosen the 5-minute review because the bugs I miss are usually fixable quickly, while the time saved adds up over many code generations.
-
-## The Bottom Line
-
-Reviewing AI-generated code is a new skill. You can't use the same process you'd use for human-written code—the failure modes are different, and there's more of it.
-
-The key is pattern recognition: knowing where AI is likely to fail and checking those spots first. After months of practice, I can spot most problems in minutes.
-
-But I still miss things. And that's okay—as long as I'm catching the critical issues, the occasional bug is an acceptable tradeoff for faster development.
+**Missed initially, caught in testing:**
+A data import function that worked correctly when the input file was well-formed but hit an unhandled exception when a required column was missing — not caught because my test data was clean. Error handling check is first on the list now specifically because of patterns like this.
 
 ---
 
-*This is part of my AI Workflow Series. Previous: "My AI Coding Stack." Next: "Prompt Engineering for Backend vs. Frontend: Why Context Matters."*
+## When Five Minutes Isn't Enough
 
-*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*
+Some code warrants a full review regardless of time pressure:
+
+- Authentication and authorization logic — a mistake here is a breach
+- Payment processing — see above
+- Code that touches multiple systems or exports a shared interface
+- Anything using an algorithm or pattern I haven't seen before
+
+For these, I read every line, trace the execution paths through the edge cases, and write tests specifically designed to break the implementation before I trust it. The five-minute review is for routine implementation. There's no shortcut for the critical path.
+
+---
+
+*The silent failure bug — function returns None instead of raising — is the one I see most often in AI-generated code and least often caught in code review. What's the category of mistake you find yourself checking for first?*

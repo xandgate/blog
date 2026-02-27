@@ -7,104 +7,68 @@ publishedAt: "2026-02-14"
 tag: "AI Engineering"
 ---
 
-## The Temptation
-
-I can implement a feature in 2 hours that used to take 2 days. The code works. It passes tests. It solves the problem.
-
-So why not ship it?
-
-This is the question I ask myself regularly. AI has made implementation so fast that the bottleneck has shifted from "can I build this?" to "should I build this well?"
-
-The answer is yes. But saying no to technical debt is harder when the cost of doing it right feels much higher relative to the speed of doing it wrong.
-
-## What Changed (And What Didn't)
-
-**What changed:**
-- Implementation speed: much faster
-- Time to first working version: minutes instead of hours
-- Cost of experimentation: much lower
-
-**What didn't change:**
-- Cost of maintaining bad code: still high
-- Cost of refactoring later: still higher than doing it right
-- Cost of bugs in production: still bad
-
 The math is the same. The psychology is different.
 
-When implementation was slow, I had time to think. I'd consider the architecture while typing. I'd notice the code smell as I wrote it. Now, the code appears so quickly that I have to consciously pause to evaluate it.
+The cost of maintaining bad code hasn't changed. The cost of refactoring later hasn't changed. The cost of a production bug is exactly what it always was. What changed is the speed at which you can create the problem.
 
-## How I Stay Disciplined
+When implementation was slow, I had natural friction working in my favor. I'd think about architecture while typing. I'd notice the code smell as I wrote it. The twenty minutes it took to implement a function was twenty minutes for my brain to audit the decision. Now the code appears in seconds, and I have to consciously manufacture the pause that used to be built into the process.
 
-I've developed a few strategies to maintain quality without slowing down too much:
-
-### 1. The "Would I Be Embarrassed?" Test
-
-Before shipping, I ask: "If I had to explain this code to a senior engineer in 6 months, would I be embarrassed?"
-
-This isn't about perfection—it's about avoiding the obviously bad decisions. The quick hack that saves 10 minutes but will cost hours later. The function that works but is completely unreadable.
-
-If the answer is yes, I refactor. Even if it takes another 30 minutes.
-
-### 2. The Architecture Checkpoint
-
-For any feature that touches multiple systems, I force myself to step back and think about architecture before implementation.
-
-I'll ask Claude: "Here's what I'm building. What are the architectural implications? What will I regret in 6 months?"
-
-This takes 5 minutes and has saved me from many bad decisions. AI is good at implementation, not so good at architecture. I use it to think through the design, then implement.
-
-### 3. The "One Thing Well" Rule
-
-I've noticed that AI-generated code often tries to do too much. A function that handles 5 edge cases when 2 would suffice. A component that's both a form and a data fetcher.
-
-My rule: each piece of code should do one thing well. If AI generates something that does multiple things, I split it. Even if it works as-is.
-
-This adds 10-15 minutes per feature, but the code is easier to maintain and debug.
-
-### 4. The Refactor Budget
-
-I allocate about 20% of my development time to refactoring. Not "when I have time"—actually scheduled.
-
-This forces me to clean up the quick hacks and technical debt before it accumulates. It's easier to refactor code I wrote last week than code I wrote 6 months ago.
-
-### 5. The Code Review Reality Check
-
-I review my own AI-generated code with the same standards I'd use for a teammate's PR. If I wouldn't approve it from someone else, I don't ship it from myself.
-
-This is harder than it sounds. It's tempting to be lenient with your own code, especially when you're moving fast. But the standards should be the same.
-
-## What I've Learned to Let Go
-
-Not everything needs to be perfect. Here's what I've learned to accept:
-
-**Minor code smells** — If it's isolated and won't affect other code, I'll ship it and refactor later.
-
-**Incomplete error handling** — For non-critical paths, I'll add basic error handling and improve it if issues arise.
-
-**Documentation gaps** — I'll add comments for complex logic, but I don't document every function.
-
-**Test coverage** — I write tests for critical paths, but I don't aim for 100% coverage on every feature.
-
-The key is distinguishing between "not perfect" and "actually bad." The former is acceptable. The latter is not.
-
-## Looking Back
-
-I've been using AI for 6 months now. When I look back at code I wrote in the first month, I can see the places where I cut corners. Some of it I've refactored. Some of it is still technical debt.
-
-But the code I'm writing now is better than the code I wrote 6 months ago, even though I'm moving faster. I've learned which corners are safe to cut and which ones will haunt me.
-
-The discipline gets easier with practice. The "would I be embarrassed?" test becomes automatic. The architecture checkpoint becomes a habit.
-
-## The Bottom Line
-
-AI makes it easy to ship bad code fast. The solution isn't to slow down—it's to maintain discipline at speed.
-
-The strategies that work are the same ones that always worked: think before you build, review your code, refactor regularly. The difference is that you have to be more intentional about them now.
-
-When implementation is this fast, the only thing standing between you and technical debt is your own discipline.
+This is the AI-era technical debt problem, and it's not what most people mean when they talk about code quality. It's not about AI generating bad code. It's about the psychology of speed — specifically, how fast completion suppresses the instinct to interrogate what you just built.
 
 ---
 
-*This is part of my Senior Engineer's Perspective series. Next: "The Architecture Decisions AI Can't Make For You."*
+## What Actually Accelerated (And What Didn't)
 
-*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*
+When I track where time goes in a typical feature now, the acceleration is concentrated and the risk is proportional:
+
+**Faster:** Implementation of well-understood patterns. Boilerplate, CRUD, API wrappers, test scaffolding. This is where the 10x speed claims live, and they're not wrong.
+
+**Unchanged:** The cost of maintaining bad code. The cost of refactoring a wrong decision. The cost of explaining a bug to a client at 11pm. The penalty for skipping a design conversation. These numbers are the same as they were five years ago.
+
+The ratio — speed of creation to cost of correction — has inverted. When coding was slow, the pain of writing code was enough of a tax to make you think twice before starting down the wrong path. Now the tax is gone, and thinking twice has to be an active choice.
+
+Most engineers I talk to understand this abstractly. Almost none of them have changed their habits to match.
+
+---
+
+## The Embarrassment Test, With a Real Example
+
+The discipline strategy that's done more for my code quality than any other: before shipping, I ask myself whether I'd be embarrassed explaining this code to a senior engineer in six months. Not in a performance review. Not in a code review where I have time to prep. In a live debugging session at 2pm on a Tuesday when something is broken and someone is looking over my shoulder.
+
+This test sounds abstract until you apply it to a real situation.
+
+Last summer I was building a document processing pipeline for a government client — intake forms going through OCR, validation, routing. Deadline pressure. AI was generating clean, fast code. One component did three things: it called the OCR service, validated the response, and decided the routing. It worked perfectly. I almost shipped it.
+
+The embarrassment test: if this pipeline breaks at 3am and a developer who didn't write this code has to fix it, what do they find? They find a function with three responsibilities, where a failure in any one of them produces the same unhelpful error. They spend 40 minutes figuring out whether OCR failed, validation failed, or routing failed before they can even start debugging.
+
+That's a 2am production incident. I can feel it from here.
+
+I split the function. Took 20 minutes. The refactored version had clear boundaries — OCR errors raised a specific exception, validation failures had their own type, routing decisions were isolated and testable. Three weeks later, OCR had an outage. We diagnosed it in four minutes because the error was unambiguous.
+
+The embarrassment test works because it makes the future concrete. "Would this be embarrassing?" is too vague. "Would I be embarrassed if someone I respect debugged this at 2am under pressure?" forces you to actually see the failure scenario.
+
+---
+
+## The Architecture Checkpoint
+
+For any feature that touches more than one system, I force a pause before implementation to ask a different category of question — not about code quality but about design. I'll give Claude the problem statement and ask: *what are the architectural implications here, and what decision would I regret most in six months?*
+
+This takes five minutes. It has saved me from wrong decisions more times than I can count, and the wrong decisions it saves me from are the expensive ones — the structural choices that can't be refactored away without a significant rebuild.
+
+Two caveats on this: First, the quality of the AI's response depends entirely on how much context you provide. Technical requirements alone produce technically correct but contextually wrong recommendations. Include the team constraints, the maintenance expectations, the regulatory context if any. Second, use this to stress-test your thinking, not to outsource it. AI is good at identifying the failure mode you haven't considered. It is not good at weighing which failure modes matter most in your specific situation — that's still yours.
+
+---
+
+## The Refactor Budget
+
+I block 20% of development time for refactoring. Not aspirationally. In the calendar.
+
+In the pre-AI world this felt optional. Now it's load-bearing. The pace of generation has made it easy to accumulate six weeks of mild technical debt in two weeks of feature work. Without a scheduled forcing function, the refactoring never happens — there's always a new ticket that feels more urgent than cleaning up last sprint's corners.
+
+The refactor budget doesn't require perfection. It requires honesty. I go back through recent code, run it through the embarrassment test again with fresh eyes, and fix the things that don't pass. Minor code smells in isolated, low-traffic code? Leave them. A function that does three things in a path that will definitely grow? Fix it now, because in three months that function will be doing six things and no one will want to touch it.
+
+The discipline gets easier when you treat it as scheduled maintenance rather than optional polish. Maintenance is what keeps systems running. Polish is what makes engineers feel good about themselves. Know which one you're doing.
+
+---
+
+*The engineers I most want to hire: people who can ship fast and who slow themselves down voluntarily when the situation requires it. Both halves of that sentence matter. What's your version of the embarrassment test?*

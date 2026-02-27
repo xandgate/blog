@@ -1,0 +1,98 @@
+# What Government Gets Wrong About Website Migrations
+**Lessons from 20 years of public sector web projects**
+
+
+- **Slug:** `what-government-gets-wrong-about-website-migrations`
+- **Published:** 2026-02-15
+- **Tag:** GovTech
+- **Image:** /images/blog/govtech-migrations.jpg
+
+## Summary (for cards/SEO)
+
+Government website migrations fail predictably. After two decades of state and federal projects, here's what actually goes wrong—and how to avoid it.
+
+---
+
+## Full copy (for review / edit in notes)
+
+## The Pattern
+
+I was sitting in a kickoff meeting last year when the project manager pulled up the migration plan: "50,000 pages. 16 weeks. We got this."
+
+I've seen that confidence before. It rarely survives contact with reality.
+
+After 20 years of government website migrations—state agencies, federal departments, international governments—I can tell you that the projects that fail tend to fail the same way.
+
+It's not the technology. It's almost never the technology.
+
+## Mistake 1: Treating Migration as a Technical Project
+
+The RFP says "migrate 50,000 pages from legacy CMS to new platform." So the team focuses on content migration scripts, URL redirects, and template matching.
+
+Meanwhile, nobody asks:
+- Which of these 50,000 pages does anyone actually visit?
+- Who owns the content, and do they still work here?
+- What's the governance model after launch?
+
+I've seen agencies migrate content that hadn't been updated since 2008. Pages that got 12 visits a year. Forms for programs that no longer exist.
+
+**What works:** Treat migration as a content strategy project with a technical component, not the other way around. Audit ruthlessly. Archive generously. Migrate only what serves citizens.
+
+## Mistake 2: Underestimating Stakeholder Complexity
+
+In the private sector, you have a product owner. Maybe a steering committee. Decisions get made.
+
+In government, you have:
+- The agency leadership who approved the budget
+- The program offices who own the content
+- The communications team who controls the brand
+- The IT department who has to maintain it
+- The accessibility coordinator who has veto power
+- The security team who has to approve the architecture
+- The procurement office who has to approve every vendor
+
+Miss any of these, and your project stalls. I've watched six-figure projects die because someone forgot to loop in the records management office.
+
+**What works:** Map your stakeholders early. Identify decision-makers vs. influencers vs. blockers. Build relationships before you need approvals.
+
+## Mistake 3: Ignoring the Procurement Reality
+
+Private sector: "We need this tool, let's buy it."
+
+Government: "We need this tool. Let's write an RFP, wait 90 days, evaluate proposals, negotiate contracts, get legal approval, wait for budget allocation, and then maybe buy it. In 18 months."
+
+I've seen projects spec out a modern JAMstack architecture, then discover the agency's approved vendor list only includes two enterprise CMS platforms from 2015.
+
+**What works:** Know the constraints before you propose solutions. Work with procurement early. Sometimes the "right" technical choice is wrong for the context.
+
+## Mistake 4: Accessibility as Afterthought
+
+Section 508 compliance isn't optional. It's law. But it gets treated as a checkbox exercise at the end of the project.
+
+Then QA finds 2,000 accessibility violations, launch gets pushed, and everyone's frustrated.
+
+**What works:** Accessibility from day one. Bake it into templates, component libraries, and content entry training. Test continuously, not just at the end.
+
+## Mistake 5: No Plan for Day Two
+
+The migration launches. Everyone celebrates. The vendor moves on to the next project.
+
+Six months later:
+- Content is stale because nobody knows how to update it
+- New pages look nothing like the design system
+- The "temporary" workarounds are now permanent
+- The agency is already talking about the next redesign
+
+**What works:** Governance model before launch. Training before launch. Documentation before launch. If you can't answer "who updates the homepage and how," you're not ready.
+
+## The Uncomfortable Truth
+
+The best government website migrations I've worked on weren't the ones with the most sophisticated technology. They were the ones where someone had the authority and willingness to say "no" to scope creep, stakeholder demands, and legacy content.
+
+Technology can't fix organizational dysfunction. But good project leadership can navigate it.
+
+---
+
+*This is part of my GovTech Insights series. Next up: "Accessibility Isn't a Feature, It's the Baseline."*
+
+*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*

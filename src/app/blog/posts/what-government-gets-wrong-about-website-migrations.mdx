@@ -1,6 +1,6 @@
 ---
 title: "What Government Gets Wrong About Website Migrations"
-subtitle: "Lessons from 20 years of public sector web projects"
+subtitle: "I've seen that confidence before. It rarely survives contact with reality."
 summary: "Government website migrations fail predictably. After two decades of state and federal projects, here's what actually goes wrong—and how to avoid it."
 image: "/images/blog/govtech-migrations.jpg"
 publishedAt: "2026-02-15"
@@ -11,9 +11,7 @@ tag: "GovTech"
 
 I was sitting in a kickoff meeting last year when the project manager pulled up the migration plan: "50,000 pages. 16 weeks. We got this."
 
-I've seen that confidence before. It rarely survives contact with reality.
-
-After 20 years of government website migrations—state agencies, federal departments, international governments—I can tell you that the projects that fail tend to fail the same way.
+After 20 years of government website migrations — state agencies, federal departments, international governments — I can tell you that the projects that fail tend to fail the same way.
 
 It's not the technology. It's almost never the technology.
 
@@ -26,7 +24,7 @@ Meanwhile, nobody asks:
 - Who owns the content, and do they still work here?
 - What's the governance model after launch?
 
-I've seen agencies migrate content that hadn't been updated since 2008. Pages that got 12 visits a year. Forms for programs that no longer exist.
+I've seen agencies migrate content that hadn't been updated since 2008. Pages that got 12 visits a year. Forms for programs that no longer exist. One state project I inherited had a section of the site dedicated to a federal grant program that had ended four years earlier — still up, still being visited by confused constituents, never touched because "it wasn't in scope for migration."
 
 **What works:** Treat migration as a content strategy project with a technical component, not the other way around. Audit ruthlessly. Archive generously. Migrate only what serves citizens.
 
@@ -43,9 +41,9 @@ In government, you have:
 - The security team who has to approve the architecture
 - The procurement office who has to approve every vendor
 
-Miss any of these, and your project stalls. I've watched six-figure projects die because someone forgot to loop in the records management office.
+Miss any of these, and your project stalls. I've watched six-figure projects die because someone forgot to loop in the records management office — not because records management was being obstructionist, but because they had a legitimate legal requirement that the content couldn't simply be archived the way the technical team had planned.
 
-**What works:** Map your stakeholders early. Identify decision-makers vs. influencers vs. blockers. Build relationships before you need approvals.
+**What works:** Map your stakeholders in week one. Identify decision-makers, influencers, and blockers. Establish relationships before you need approvals — because by the time you're requesting sign-off on an architecture decision, it's too late to start building trust.
 
 ## Mistake 3: Ignoring the Procurement Reality
 
@@ -53,38 +51,38 @@ Private sector: "We need this tool, let's buy it."
 
 Government: "We need this tool. Let's write an RFP, wait 90 days, evaluate proposals, negotiate contracts, get legal approval, wait for budget allocation, and then maybe buy it. In 18 months."
 
-I've seen projects spec out a modern JAMstack architecture, then discover the agency's approved vendor list only includes two enterprise CMS platforms from 2015.
+I've seen projects spec out a modern architecture, then discover the agency's approved vendor list only includes two enterprise CMS platforms from 2015. I've seen hosting decisions unmade because the preferred cloud provider wasn't FedRAMP authorized for the data classification required. I've seen open-source tools rejected not because of technical merit but because procurement couldn't figure out how to process a $0 acquisition.
 
-**What works:** Know the constraints before you propose solutions. Work with procurement early. Sometimes the "right" technical choice is wrong for the context.
+**What works:** Know the constraints before you propose solutions. Work with procurement early — not as a formality, but as actual partners who can tell you what's feasible before you've committed to a direction. Sometimes the technically correct choice is contextually wrong, and knowing that in week two is far better than finding out in week twelve.
 
 ## Mistake 4: Accessibility as Afterthought
 
-Section 508 compliance isn't optional. It's law. But it gets treated as a checkbox exercise at the end of the project.
+Section 508 compliance isn't optional. It's law. But it consistently gets treated as a QA gate at the end of the project rather than a construction standard at the beginning.
 
-Then QA finds 2,000 accessibility violations, launch gets pushed, and everyone's frustrated.
+Here's what that pattern looks like in practice: the design gets approved without an accessibility review, the component library gets built without screen reader testing, the content authors get trained on publishing workflow but not on alt text or heading structure. Then, in week fourteen of a sixteen-week project, the accessibility audit comes back with two thousand findings.
 
-**What works:** Accessibility from day one. Bake it into templates, component libraries, and content entry training. Test continuously, not just at the end.
+Some of those findings are quick fixes. Many are not. A heading hierarchy baked into forty templates is not a quick fix. A form flow that was designed visually and never tested with keyboard-only navigation requires design rework, not just code changes. Launch gets pushed. Everyone is frustrated. The agency signs off on a remediation plan they don't have the budget or staffing to execute.
+
+I've watched this happen at projects with explicit Section 508 compliance requirements in the contract. The contract wasn't wrong; the process was wrong. Compliance was treated as an audit result rather than a continuous standard.
+
+**What works:** Accessibility integrated from the first sprint, not the last. That means: an accessible component library before a single feature is built, accessibility checks in the CI/CD pipeline that fail builds for violations, content author training that covers alt text, heading levels, and link text before the first content is published, and at least one round of testing with actual screen reader users — not developers with JAWS opened for the first time — before launch.
+
+For a deeper breakdown of what this looks like in practice, I've written about [building accessible government platforms](/blog/accessibility-isnt-a-feature) in more detail elsewhere.
 
 ## Mistake 5: No Plan for Day Two
 
 The migration launches. Everyone celebrates. The vendor moves on to the next project.
 
 Six months later:
-- Content is stale because nobody knows how to update it
-- New pages look nothing like the design system
-- The "temporary" workarounds are now permanent
+- Content is stale because nobody knows the publishing workflow well enough to update it confidently
+- New pages look nothing like the design system because there are no guardrails and no one reviewing consistency
+- The "temporary" workarounds from launch week are now permanent features
 - The agency is already talking about the next redesign
 
-**What works:** Governance model before launch. Training before launch. Documentation before launch. If you can't answer "who updates the homepage and how," you're not ready.
+**What works:** Governance model before launch. Training before launch. Documentation before launch. Runbook before launch. If you can't clearly answer "who updates the homepage, how, and what's the approval process," you are not ready to launch, regardless of what the technical checklist says.
 
-## The Uncomfortable Truth
-
-The best government website migrations I've worked on weren't the ones with the most sophisticated technology. They were the ones where someone had the authority and willingness to say "no" to scope creep, stakeholder demands, and legacy content.
-
-Technology can't fix organizational dysfunction. But good project leadership can navigate it.
+The projects I've seen succeed long-term weren't the ones with the most sophisticated technology. They were the ones where someone had the authority and willingness to say "no" — to scope creep, to stakeholder demands that bypassed the governance model, to legacy content that had no business being migrated. Technology can't fix organizational dysfunction. But clear authority and good process can navigate it.
 
 ---
 
-*This is part of my GovTech Insights series. Next up: "Accessibility Isn't a Feature, It's the Baseline."*
-
-*Have thoughts on this? Reach out on [LinkedIn](https://linkedin.com/in/varunbaker) or [GitHub](https://github.com/varunity).*
+*The accountability question that almost never gets asked in government migration kickoffs: who owns the quality of the content three years from now, and what does their job description say? If nobody can answer that, the governance problem will outlast the technology problem.*

@@ -191,8 +191,8 @@ jobs:
 ### Step 1: Push to GitHub
 
 ```bash
-cd /Users/varunbaker/dev/magic-portfolio
-git remote add origin https://github.com/varunity/magic-portfolio.git  # or your repo URL
+cd /path/to/your/blog  # clone from https://github.com/xandgate/blog
+git remote add origin https://github.com/xandgate/blog.git
 git push -u origin main
 ```
 
@@ -277,3 +277,10 @@ If you need them (for features like analytics, contact forms):
 | GitHub Pages | 30 min | Free | Medium | If you want DIY |
 
 **My recommendation:** Use Vercel. It's free, fast, and zero-config for Next.js. You'll be live in 5 minutes.
+
+---
+
+## Quick reference
+
+- **Pre-launch copy and checks:** See `LAUNCH_CHECKLIST.md`.
+- **Second blog / second domain from same repo:** See `MULTI_SITE_STRATEGY.md`.
