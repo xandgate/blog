@@ -64,17 +64,17 @@ export function TransparencyNotice() {
       }}
     >
       <Text variant="body-default-s" onBackground="neutral-strong">
-        This site shows different content based on your location.
+        This site adapts based on where you're coming from.
       </Text>
       <Text variant="body-default-xs" onBackground="neutral-weak">
-        Choose which version you'd like to see:
+        Pick the focus that fits you better:
       </Text>
       <Column gap="8">
         <Button variant="secondary" size="s" fillWidth onClick={() => handleSegmentChoice("govtech")}>
-          🏛️ Government/Healthcare Focus
+          🏛️ GovTech Focus
         </Button>
         <Button variant="secondary" size="s" fillWidth onClick={() => handleSegmentChoice("ai-enabled")}>
-          🤖 AI/Tech Focus
+          🤖 Agentic Musings Focus
         </Button>
         <Button variant="tertiary" size="s" fillWidth onClick={handleDismiss}>
           Keep auto-detected
