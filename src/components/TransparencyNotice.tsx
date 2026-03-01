@@ -74,7 +74,7 @@ export function TransparencyNotice() {
           🏛️ GovTech Focus
         </Button>
         <Button variant="secondary" size="s" fillWidth onClick={() => handleSegmentChoice("ai-enabled")}>
-          🤖 Agentic Musings Focus
+          🤖 AI Engineering Focus
         </Button>
         <Button variant="tertiary" size="s" fillWidth onClick={handleDismiss}>
           Keep auto-detected

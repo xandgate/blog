@@ -46,7 +46,7 @@ export function PersonalizedHeadline({ fallback }: PersonalizedHeadlineProps) {
   }
 
   // Explicit focus overrides take priority; fall back to geo-based detection.
-  // ai-enabled segment (manual or international geo) → Agentic Musings
+  // ai-enabled segment (manual or international geo) → AI Engineering Focus
   // everything else → GovTech
   const isAgenticFocus =
     visitorData.segment === "ai-enabled" || visitorData.segment === "international";

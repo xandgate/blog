@@ -24,7 +24,7 @@ export type VisitorSegment =
   | "international" // Outside US
   | "general" // Default
   | "govtech" // Manual override: GovTech Focus (Drupal + enterprise architecture)
-  | "ai-enabled"; // Manual override: Agentic Musings Focus (AI engineering)
+  | "ai-enabled"; // Manual override: AI Engineering Focus
 
 export type ContentInterest = "frontend" | "drupal" | "govtech" | "general";
 

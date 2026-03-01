@@ -164,7 +164,7 @@ export function getPersonalizedHeadline(segment: VisitorSegment, interest?: Cont
 
 /**
  * Build affinity profile from a manual segment override (no geo needed).
- * Used when the visitor explicitly picks GovTech Focus or Agentic Musings Focus.
+ * Used when the visitor explicitly picks GovTech Focus or AI Engineering Focus.
  */
 export function buildAffinityFromSegmentOverride(
   segment: "govtech" | "ai-enabled",
