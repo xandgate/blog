@@ -4,13 +4,13 @@ import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/
 // Same person, different context. This is the unfiltered version.
 
 const person: Person = {
-  firstName: "Varun",
-  lastName: "Baker",
-  name: "Varun Baker",
-  role: "thinking out loud",
+  firstName: "Intentionally",
+  lastName: "Blank",
+  name: "Intentionally Blank",
+  role: "Transforming blank pages",
   avatar: "/images/avatar.jpg",
   email: "varun.baker+online@gmail.com",
-  location: "America/New_York",
+  location: "America/Jamaica",
   languages: ["English"],
 };
 
