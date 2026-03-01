@@ -1,0 +1,104 @@
+---
+title: "Nobody Budgets for This. Everyone Eventually Pays for It."
+subtitle: "A case study in Drupal tech debt — and the value enterprise architects create that nobody bothers to track"
+summary: "Enterprise architects spend a lot of time fixing things that nobody asked to be fixed, preventing problems nobody will ever know were coming. Here's what that looks like in practice."
+image: "/images/blog/tech-debt-refactor.jpg"
+publishedAt: "2026-03-01"
+tag: "Enterprise Architecture"
+---
+
+There's a particular kind of professional satisfaction that comes from fixing something important that nobody will ever notice.
+
+No ticket. No sprint story. No stakeholder demo. The thing just... works better now. The people who would have suffered from the old version never suffer. The production incident that would have happened at the worst possible moment never happens. The only evidence is the absence of a problem.
+
+This is most of what enterprise architects actually do. And it is almost impossible to explain to someone holding a budget.
+
+## The Scene
+
+A large regulated enterprise platform. Complex web infrastructure. Like most systems that have been in production for a while, parts of it carry the fingerprints of decisions made quickly under pressure — by people who had a deadline, a working solution, and no particular reason to think about what year three would look like.
+
+I inherited one of those parts: a custom Drupal module handling data visualization. Charts, tables, interactive data displays. Functional. In production. Not going anywhere.
+
+Also: quietly accumulating debt at a rate nobody was tracking.
+
+## The Problem with "It Works"
+
+The module had been built by forking the Drupal Charts contributed module.
+
+For non-Drupal readers: the contributed module ecosystem is one of Drupal's biggest strengths. Thousands of community-maintained modules handle everything from media handling to complex workflows. When you need charts, you use the Charts module. The community maintains it, fixes security issues, adds features, and keeps it current with new Drupal versions.
+
+Unless you fork it.
+
+Forking means you take the community's code, modify it for your needs, and maintain your own diverged copy. From that moment on, every community security patch, every improvement, every compatibility update — none of it reaches you automatically. You're now responsible for manually porting anything you want, into a codebase that has drifted progressively further from the original.
+
+The module I inherited had done exactly this. The fork was several major versions behind. The underlying charting library — Chart.js — was outdated. And critically, the charts themselves failed accessibility standards: no way for screen reader users or keyboard-only users to access the underlying data.
+
+None of this was visible. The charts rendered. The graphs looked fine. The website worked.
+
+## The Refactor
+
+I rebuilt the module from scratch with one guiding principle: stop fighting the ecosystem and start working with it.
+
+### 1. The Architecture Fix: Stop Hacking Contrib
+
+Instead of maintaining a fork, the new module treats the Charts contributed module as a proper dependency. It doesn't modify it — it extends it, the way Drupal's architecture intends.
+
+The practical effect: every improvement the community makes to the Charts module now flows downstream automatically. Security patches apply cleanly. New chart types become available. Version upgrades happen without a bespoke merge process. The maintenance burden dropped from "someone has to watch this carefully" to "it handles itself."
+
+This is the change with zero visible impact on end users and the highest long-term value. The platform became significantly easier to maintain and significantly safer to run — overnight.
+
+### 2. Modernizing the Stack: Latest Chart.js
+
+The fork had locked the module to an older version of Chart.js. Moving to the current version wasn't just a version bump — it brought improved rendering performance, better responsive behavior, and access to chart types and configuration options that simply didn't exist before.
+
+It also means the platform is no longer running visualization code with known limitations that upstream has long since resolved.
+
+### 3. Accessibility: View as Table
+
+The previous implementation had no accessible alternative to the visual chart. For users relying on screen readers, or who simply prefer tabular data, the information was inaccessible.
+
+The refactor introduced a **View Chart as Table** toggle — a button that switches the visualization to a clean data table presenting the same underlying information. Same data. Different format. Zero information loss.
+
+This is the kind of change that feels small until you're the person who needed it. For Section 508 compliance purposes, it's also the difference between a platform that passes an audit and one that doesn't.
+
+### 4. Editorial Experience
+
+The previous module exposed a configuration interface built by engineers for engineers. Content editors managing charts had to navigate options designed for people who understood the underlying data model.
+
+The rebuild restructured the editorial interface around how editors actually think about charts — what they're trying to communicate, not how the system stores it. The result: faster content updates, fewer configuration errors, and less reliance on developer involvement for routine editorial tasks.
+
+## The Part That's Hard to Put in a Ticket
+
+Here's what this project didn't produce:
+
+- No new features (from the end user's perspective)
+- No visible design changes
+- No new page, product, or capability that anyone could demo
+
+Here's what it did produce:
+
+- A module that can now be upgraded without a custom merge process
+- Accessibility compliance for an entire visualization feature
+- A Chart.js version that will be supported going forward
+- An editorial workflow that doesn't require developer intervention
+- A codebase the next engineer can understand without reading the Git history
+
+The ROI is entirely counterfactual. The security vulnerability that doesn't require an emergency patch. The upgrade cycle that doesn't become a month-long project. The accessibility audit that doesn't surface a remediation backlog. The content editor who doesn't file a support ticket.
+
+None of that shows up in a dashboard. None of it gets celebrated in a sprint review.
+
+## What Enterprise Architects Actually Protect
+
+The business case for enterprise architecture is usually made in the language of strategic alignment, scalability, and governance — words that are accurate and also deeply unconvincing to anyone holding a budget line for the next quarter.
+
+The honest case is simpler: systems accumulate decisions. Most of those decisions are reasonable given the information available at the time. Some of them age badly. Left unaddressed, bad decisions compound — they constrain future options, increase maintenance costs, introduce risk, and eventually force expensive rewrites under pressure.
+
+The enterprise architect's job is to find those decisions before they compound, understand the trajectory, and fix them while fixing is still cheap.
+
+That's it. That's the whole value proposition. It just happens to be nearly impossible to put a number on, because the number you're measuring is the cost of something that didn't happen.
+
+---
+
+The visualization module is in production. The charts render. The graphs look fine. The website works.
+
+The difference is that now it's supposed to work that way.
