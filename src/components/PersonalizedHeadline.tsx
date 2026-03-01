@@ -45,25 +45,28 @@ export function PersonalizedHeadline({ fallback }: PersonalizedHeadlineProps) {
     return <>{fallback}</>;
   }
 
-  // US visitors (all segments except international) - Drupal/govtech focus
-  const isUSVisitor = visitorData.segment !== "international";
+  // Explicit focus overrides take priority; fall back to geo-based detection.
+  // ai-enabled segment (manual or international geo) → Agentic Musings
+  // everything else → GovTech
+  const isAgenticFocus =
+    visitorData.segment === "ai-enabled" || visitorData.segment === "international";
 
   return (
     <>
       <Heading wrap="balance" variant="display-strong-l">
-        {isUSVisitor ? (
-          <>
-            <Text as="span" size="xl" weight="strong">
-              Drupal architect.
-            </Text>{" "}
-            Government platforms.
-          </>
-        ) : (
+        {isAgenticFocus ? (
           <>
             <Text as="span" size="xl" weight="strong">
               AI writes code.
             </Text>{" "}
             I architect outcomes.
+          </>
+        ) : (
+          <>
+            <Text as="span" size="xl" weight="strong">
+              Drupal architect.
+            </Text>{" "}
+            Government platforms.
           </>
         )}
       </Heading>

@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { VisitorContext, AffinityProfile, GeoLocation, VisitorSegment, ContentInterest } from "@/lib/geo/types";
 import { getFeatureFlags } from "@/lib/features";
 import { detectContentInterest, storeInterest } from "@/lib/intent/detect";
-import { buildAffinityProfile } from "@/lib/geo/affinity";
+import { buildAffinityProfile, buildAffinityFromSegmentOverride } from "@/lib/geo/affinity";
 
 interface VisitorContextValue {
   geo: GeoLocation | null;
@@ -84,11 +84,18 @@ export function VisitorContextProvider({
   });
 
   useEffect(() => {
-    // If URL override is set, use it directly and skip fetching
+    // If URL override is set, use it directly and skip fetching.
+    // For the two explicit focus choices, also rebuild affinity so
+    // contextualMessage, featuredContent etc. reflect the chosen focus.
     if (urlSegmentOverride) {
+      const overrideAffinity =
+        urlSegmentOverride === "govtech" || urlSegmentOverride === "ai-enabled"
+          ? buildAffinityFromSegmentOverride(urlSegmentOverride)
+          : null;
       setContext((prev) => ({
         ...prev,
         segment: urlSegmentOverride,
+        affinity: overrideAffinity || prev.affinity,
         isLoading: false,
       }));
       return;

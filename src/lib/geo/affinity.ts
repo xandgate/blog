@@ -12,6 +12,8 @@ const GREETINGS: Record<VisitorSegment, string> = {
   healthcare: "Welcome",
   international: "Welcome from across the globe",
   general: "Welcome",
+  govtech: "Welcome",
+  "ai-enabled": "Welcome",
 };
 
 /**
@@ -43,6 +45,10 @@ const CONTEXTUAL_MESSAGES: Record<VisitorSegment, string> = {
   international:
     "AI-enabled full-stack architect. Leveraging LLMs and modern tooling to accelerate enterprise development.",
   general: "Drupal architect with 20 years delivering government platforms. Federal & state agency experience.",
+  govtech:
+    "20 years delivering Drupal platforms for federal and state agencies. Section 508, procurement cycles, multi-site at scale — I know the territory.",
+  "ai-enabled":
+    "Building with Claude, Cursor, and MCP servers. 15 years of engineering judgment, now running at machine speed.",
 };
 
 /**
@@ -59,13 +65,15 @@ const INTEREST_CONTEXTUAL_MESSAGES: Record<ContentInterest, string | null> = {
  * Featured content suggestions based on segment
  */
 const FEATURED_CONTENT_BY_SEGMENT: Record<VisitorSegment, string> = {
-  local: "/work/building-once-ui-a-customizable-design-system",
-  "tech-hub": "/work/building-once-ui-a-customizable-design-system",
-  federal: "/work/building-once-ui-a-customizable-design-system",
-  "drupal-community": "/work/building-once-ui-a-customizable-design-system",
-  healthcare: "/work/building-once-ui-a-customizable-design-system",
-  international: "/work/building-once-ui-a-customizable-design-system",
-  general: "/work/building-once-ui-a-customizable-design-system",
+  local: "/blog/why-drupal-dominates-government",
+  "tech-hub": "/blog/architecture-decisions-ai-cant-make",
+  federal: "/blog/why-drupal-dominates-government",
+  "drupal-community": "/blog/why-drupal-dominates-government",
+  healthcare: "/blog/what-government-gets-wrong-about-website-migrations",
+  international: "/blog/context-graphs-for-ai-agents",
+  general: "/blog/why-drupal-dominates-government",
+  govtech: "/blog/why-drupal-dominates-government",
+  "ai-enabled": "/blog/context-graphs-for-ai-agents",
 };
 
 // Map content slugs to interests for better matching
@@ -147,9 +155,27 @@ export function getPersonalizedHeadline(segment: VisitorSegment, interest?: Cont
     healthcare: "Drupal architect building HIPAA-compliant platforms",
     international: "AI-enabled architect building enterprise platforms faster",
     general: "Drupal architect & govtech consultant",
+    govtech: "Drupal architect. 20 years in government.",
+    "ai-enabled": "AI writes code. I architect what it builds.",
   };
 
   return headlines[segment];
+}
+
+/**
+ * Build affinity profile from a manual segment override (no geo needed).
+ * Used when the visitor explicitly picks GovTech Focus or Agentic Musings Focus.
+ */
+export function buildAffinityFromSegmentOverride(
+  segment: "govtech" | "ai-enabled",
+): AffinityProfile {
+  return {
+    segment,
+    greeting: GREETINGS[segment],
+    avatarVariant: "/images/avatar.jpg",
+    contextualMessage: CONTEXTUAL_MESSAGES[segment],
+    featuredContent: FEATURED_CONTENT_BY_SEGMENT[segment],
+  };
 }
 
 /**

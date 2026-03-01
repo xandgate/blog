@@ -22,7 +22,9 @@ export type VisitorSegment =
   | "drupal-community" // Drupal conference cities
   | "healthcare" // Healthcare industry regions
   | "international" // Outside US
-  | "general"; // Default
+  | "general" // Default
+  | "govtech" // Manual override: GovTech Focus (Drupal + enterprise architecture)
+  | "ai-enabled"; // Manual override: Agentic Musings Focus (AI engineering)
 
 export type ContentInterest = "frontend" | "drupal" | "govtech" | "general";
 

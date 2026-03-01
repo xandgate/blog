@@ -43,18 +43,19 @@ export function PersonalizedSubline({ fallback }: PersonalizedSublineProps) {
     return <>{fallback}</>;
   }
 
-  // US visitors (all segments except international) - Drupal/govtech focus
-  const isUSVisitor = visitorData.segment !== "international";
+  // Explicit focus overrides take priority; fall back to geo-based detection.
+  const isAgenticFocus =
+    visitorData.segment === "ai-enabled" || visitorData.segment === "international";
 
   return (
     <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl">
-      {isUSVisitor ? (
-        <>20 years delivering secure, accessible platforms for federal & state agencies.</>
-      ) : (
+      {isAgenticFocus ? (
         <>
           The code is automated.{" "}
           The judgment is not.
         </>
+      ) : (
+        <>Section 508, procurement cycles, multi-site at scale. 20 years in the field.</>
       )}
     </Text>
   );
