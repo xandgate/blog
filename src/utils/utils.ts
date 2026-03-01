@@ -72,3 +72,12 @@ export function getPosts(customPath = ["", "", "", ""]) {
   const postsDir = path.join(process.cwd(), ...customPath);
   return getMDXData(postsDir);
 }
+
+// Returns the correct blog posts directory for the active site tenant.
+// Used by blog/page.tsx and blog/[slug]/page.tsx so both stay in sync.
+export function getPostsDir(): string[] {
+  if (process.env.NEXT_PUBLIC_SITE_ID === "blankonpurpose") {
+    return ["src", "app", "blog", "posts.blankonpurpose"];
+  }
+  return ["src", "app", "blog", "posts"];
+}

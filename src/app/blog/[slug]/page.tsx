@@ -16,14 +16,14 @@ import {
 } from "@once-ui-system/core";
 import { baseURL, about, blog, person } from "@/resources";
 import { formatDate } from "@/utils/formatDate";
-import { getPosts } from "@/utils/utils";
+import { getPosts, getPostsDir } from "@/utils/utils";
 import { Metadata } from "next";
 import React from "react";
 import { Posts } from "@/components/blog/Posts";
 import { ShareSection } from "@/components/blog/ShareSection";
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const posts = getPosts(["src", "app", "blog", "posts"]);
+  const posts = getPosts(getPostsDir());
   return posts.map((post) => ({
     slug: post.slug,
   }));
@@ -39,7 +39,7 @@ export async function generateMetadata({
     ? routeParams.slug.join("/")
     : routeParams.slug || "";
 
-  const posts = getPosts(["src", "app", "blog", "posts"]);
+  const posts = getPosts(getPostsDir());
   let post = posts.find((post) => post.slug === slugPath);
 
   if (!post) return {};
@@ -59,7 +59,7 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
     ? routeParams.slug.join("/")
     : routeParams.slug || "";
 
-  let post = getPosts(["src", "app", "blog", "posts"]).find((post) => post.slug === slugPath);
+  let post = getPosts(getPostsDir()).find((post) => post.slug === slugPath);
 
   if (!post) {
     notFound();
@@ -147,7 +147,7 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
             <Text as="h2" id="recent-posts" variant="heading-strong-xl" marginBottom="24">
               Recent posts
             </Text>
-            <Posts posts={getPosts(["src", "app", "blog", "posts"])} exclude={[post.slug]} range={[1, 2]} columns="2" thumbnail direction="column" />
+            <Posts posts={getPosts(getPostsDir())} exclude={[post.slug]} range={[1, 2]} columns="2" thumbnail direction="column" />
           </Column>
           <ScrollToHash />
         </Column>
