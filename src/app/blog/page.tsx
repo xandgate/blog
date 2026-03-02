@@ -16,7 +16,9 @@ export async function generateMetadata() {
 
 export default async function Blog() {
   // Fetch blog posts server-side
-  const allBlogPosts = getPosts(getPostsDir());
+  const allBlogPosts = getPosts(getPostsDir()).filter(
+    (post) => post.metadata.published !== false
+  );
 
   return (
     <Column maxWidth="m" paddingTop="24">

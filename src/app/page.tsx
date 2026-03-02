@@ -28,8 +28,12 @@ export async function generateMetadata() {
 
 export default async function Home() {
   // Fetch posts server-side
-  const allProjects = getPosts(["src", "app", "work", "projects"]);
-  const allBlogPosts = getPosts(["src", "app", "blog", "posts"]);
+  const allProjects = getPosts(["src", "app", "work", "projects"]).filter(
+    (post) => post.metadata.published !== false
+  );
+  const allBlogPosts = getPosts(["src", "app", "blog", "posts"]).filter(
+    (post) => post.metadata.published !== false
+  );
 
   return (
     <Column maxWidth="m" gap="xl" paddingY="12" horizontal="center">

@@ -62,7 +62,9 @@ export default async function Project({
     ? routeParams.slug.join("/")
     : routeParams.slug || "";
 
-  let post = getPosts(["src", "app", "work", "projects"]).find((post) => post.slug === slugPath);
+  let post = getPosts(["src", "app", "work", "projects"]).find(
+    (post) => post.slug === slugPath
+  );
 
   if (!post) {
     notFound();
@@ -135,7 +137,13 @@ export default async function Project({
         <Heading as="h2" variant="heading-strong-xl" marginBottom="24">
           Related projects
         </Heading>
-        <Projects posts={getPosts(["src", "app", "work", "projects"])} exclude={[post.slug]} range={[2]} />
+        <Projects
+          posts={getPosts(["src", "app", "work", "projects"]).filter(
+            (p) => p.metadata.published !== false
+          )}
+          exclude={[post.slug]}
+          range={[2]}
+        />
       </Column>
       <ScrollToHash />
     </Column>

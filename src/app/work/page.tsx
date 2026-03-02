@@ -15,7 +15,9 @@ export async function generateMetadata() {
 
 export default async function Work() {
   // Fetch projects server-side
-  const allProjects = getPosts(["src", "app", "work", "projects"]);
+  const allProjects = getPosts(["src", "app", "work", "projects"]).filter(
+    (post) => post.metadata.published !== false
+  );
 
   return (
     <Column maxWidth="m" paddingTop="24">

@@ -19,6 +19,8 @@ type Metadata = {
   tag?: string;
   team: Team[];
   link?: string;
+  // When false, treat as a draft: hide from lists but allow direct access by URL.
+  published?: boolean;
 };
 
 import { notFound } from "next/navigation";
@@ -49,6 +51,8 @@ function readMDXFile(filePath: string) {
     tag: data.tag || [],
     team: data.team || [],
     link: data.link || "",
+     // Default to published=true unless explicitly set to false in frontmatter.
+    published: data.published !== false,
   };
 
   return { metadata, content };

@@ -147,7 +147,16 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
             <Text as="h2" id="recent-posts" variant="heading-strong-xl" marginBottom="24">
               Recent posts
             </Text>
-            <Posts posts={getPosts(getPostsDir())} exclude={[post.slug]} range={[1, 2]} columns="2" thumbnail direction="column" />
+            <Posts
+              posts={getPosts(getPostsDir()).filter(
+                (p) => p.metadata.published !== false
+              )}
+              exclude={[post.slug]}
+              range={[1, 2]}
+              columns="2"
+              thumbnail
+              direction="column"
+            />
           </Column>
           <ScrollToHash />
         </Column>
