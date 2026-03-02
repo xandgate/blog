@@ -64,9 +64,9 @@ export function PersonalizedHeadline({ fallback }: PersonalizedHeadlineProps) {
         ) : (
           <>
             <Text as="span" size="xl" weight="strong">
-              Drupal architect.
+            Mission-critical
             </Text>{" "}
-            Government platforms.
+            platforms.
           </>
         )}
       </Heading>

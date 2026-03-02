@@ -3,7 +3,7 @@ title: "Refactoring a Custom Drupal Data Visualization Module"
 publishedAt: "2024-06"
 summary: "Eliminated technical debt in a forked contrib module, modernized the Chart.js dependency, improved accessibility with a chart-to-table toggle, and pushed complex responsive chart decisions into governance rather than code."
 images:
-  - "/images/projects/data-viz/cover.jpg"
+  - "/images/projects/data-viz/cover.png"
 team:
   - name: "Varun Baker"
     role: "Senior Software Engineer"
@@ -26,6 +26,8 @@ None of this was visible to end users. The charts rendered. The website worked. 
 
 ## Solution
 
+![Chart and “View as table” toggle: same data, accessible alternative](/images/projects/data-viz/screenshotsChartsMobile.png)
+
 ### Stop Hacking Contrib
 
 The architectural fix: retire the fork entirely and treat the Charts contributed module as a proper dependency rather than a base to modify.
@@ -47,6 +49,8 @@ The refactor introduced a **View Chart as Table** toggle: a single button that s
 For Section 508 and WCAG compliance purposes, this is the difference between passing an audit and failing one. For users who rely on assistive technology, it is the difference between accessing the content and not.
 
 ### Editorial Experience
+
+![Charts module brings UX enhancements](/images/projects/data-viz/table-for-filling-out-chart-data.png)
 
 The previous configuration interface was built for engineers. Content editors managing charts had to navigate options designed around the underlying data model, not around the editorial task.
 

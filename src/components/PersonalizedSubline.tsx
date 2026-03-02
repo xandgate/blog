@@ -55,7 +55,10 @@ export function PersonalizedSubline({ fallback }: PersonalizedSublineProps) {
           The judgment is not.
         </>
       ) : (
-        <>Section 508, procurement cycles, multi-site at scale. 20 years in the field.</>
+        <>
+          The requirements are long.{" "}
+          The systems are built.
+        </>
       )}
     </Text>
   );

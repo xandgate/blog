@@ -108,7 +108,11 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        I design and deliver secure, compliant digital infrastructure for federal, state, and regulated enterprise organizations. My work focuses on architecting scalable, accessibility-aligned platforms that meet stringent governance, security, and operational requirements. I specialize in translating complex policy, compliance, and stakeholder needs into resilient, enterprise-grade systems built for long-term sustainability and modernization.
+        I design and deliver secure, compliant digital infrastructure for federal, state, and regulated enterprise organizations.
+        <br /><br />
+        My work focuses on architecting scalable, accessibility-aligned platforms that meet stringent governance, security, and operational requirements.
+        <br /><br />
+        I specialize in translating complex policy, compliance, and stakeholder needs into resilient, enterprise-grade systems built for long-term sustainability and modernization.
       </>
     ),
   },
