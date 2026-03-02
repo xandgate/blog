@@ -1,60 +1,87 @@
 ---
-title: "Modernizing Data Visualization: Technical Debt Reduction & Accessibility"
+title: "Refactoring a Custom Drupal Data Visualization Module"
 publishedAt: "2024-06"
-summary: "Eliminated technical debt by refactoring custom data visualization to leverage Chart.js's latest version while improving accessibility across Evernorth.com"
+summary: "Eliminated technical debt in a forked contrib module, modernized the Chart.js dependency, improved accessibility with a chart-to-table toggle, and pushed complex responsive chart decisions into governance rather than code."
 images:
   - "/images/projects/data-viz/cover.jpg"
 team:
   - name: "Varun Baker"
     role: "Senior Software Engineer"
     avatar: "/images/avatar.jpg"
-link: "https://www.evernorth.com/"
 ---
 
 ## Overview
 
-Eliminated technical debt by refactoring a custom data visualization system to leverage Chart.js's latest version, while simultaneously improving accessibility across Evernorth.com's data presentations. The upgrade streamlined maintenance, enhanced performance, and ensured compliance with WCAG standards—making complex health data insights available to all users.
+A large regulated enterprise platform was running a custom Drupal data visualization module that had accumulated significant technical debt. The module handled charts and interactive data displays across the site — functional, in production, and quietly becoming harder to maintain with every passing month.
 
-## The Challenge
+The refactor addressed four concrete problems: an unsustainable fork of a community module, an outdated charting library, inaccessible chart output, and an editorial interface that required developer involvement for routine content tasks. A fifth issue — complex charts on small screens — was deliberately resolved as a governance decision rather than a code problem.
 
-The legacy data visualization implementation had accumulated significant technical debt:
-- Built on an outdated version of Chart.js with limited support
-- Custom workarounds for features now available natively
-- Inconsistent accessibility implementation across different chart types
-- Difficult to maintain as the codebase evolved
+## The Problem
+
+The module had been built by forking the Drupal Charts contributed module. For anyone outside the Drupal ecosystem: the contrib module community is one of Drupal's core strengths. When you fork a community module, you diverge from it. Security patches, improvements, and compatibility updates from the community no longer reach you automatically — you're responsible for manually porting anything you need into a codebase that has drifted progressively further from the original.
+
+By the time of this engagement, the fork was multiple major versions behind. The underlying Chart.js library was outdated. Charts failed accessibility standards with no alternative for screen reader or keyboard-only users. And the editorial interface had been designed around the data model rather than around how content editors think.
+
+None of this was visible to end users. The charts rendered. The website worked. The debt was invisible, accumulating.
 
 ## Solution
 
-**Modern Chart.js Migration**
-- Upgraded to Chart.js 4.x, leveraging improved tree-shaking and performance
-- Replaced custom plugins with native Chart.js features
-- Standardized chart configuration across the platform
+### Stop Hacking Contrib
 
-**Accessibility Improvements**
-- Implemented ARIA labels and live regions for dynamic chart updates
-- Added keyboard navigation support for interactive elements
-- Provided text alternatives and data tables for screen readers
-- Ensured WCAG 2.1 AA compliance across all visualizations
+The architectural fix: retire the fork entirely and treat the Charts contributed module as a proper dependency rather than a base to modify.
 
-**Technical Debt Reduction**
-- Consolidated scattered chart implementations into reusable components
-- Reduced bundle size by 30% through proper tree-shaking
-- Simplified maintenance with standardized patterns
+The new module extends Charts without touching it. Security patches now apply cleanly. Community improvements flow downstream automatically. Version upgrades follow the standard Drupal update process rather than requiring a bespoke merge. The platform moved from "someone needs to watch this carefully" to "it handles itself."
 
-## Technologies Used
+This change had zero visible impact on end users. It has the highest long-term value of anything delivered in the project.
 
-- **Chart.js 4.x**: Modern charting library with built-in accessibility features
-- **React**: Component-based architecture for reusable visualizations
-- **TypeScript**: Type-safe chart configurations
-- **ARIA**: Accessible Rich Internet Applications standards
+### Modernize to Current Chart.js
+
+Moving to the current major version of Chart.js wasn't a cosmetic upgrade. It brought improved rendering performance, better responsive behavior, and access to chart types and configuration options unavailable in the previous version. It also removed a dependency on a release that upstream had effectively superseded.
+
+### Accessibility: View Chart as Table
+
+The previous implementation had no accessible alternative to the visual chart. For users relying on screen readers — or users who simply prefer structured data — the information was inaccessible in any meaningful sense.
+
+The refactor introduced a **View Chart as Table** toggle: a single button that switches the visualization to a clean data table presenting the same underlying information. Same data, different format, no information loss.
+
+For Section 508 and WCAG compliance purposes, this is the difference between passing an audit and failing one. For users who rely on assistive technology, it is the difference between accessing the content and not.
+
+### Editorial Experience
+
+The previous configuration interface was built for engineers. Content editors managing charts had to navigate options designed around the underlying data model, not around the editorial task.
+
+The rebuilt interface is organized around how editors think about charts: what they are trying to communicate, what data goes where, what the chart should show. The result is faster content updates, fewer configuration errors, and significantly reduced dependency on developer involvement for routine editorial work.
+
+## The Governance Decision
+
+Complex charts on small screens are a genuine UX problem. When a visualization has many data points, long axis labels, or fine-grained detail, a 375px viewport and a dense bar chart are fundamentally in tension. No amount of responsive CSS fully resolves that.
+
+The temptation in a refactor like this is to try to solve everything in code. The right call was not to.
+
+This is a design and content governance question, not a module question. The appropriate solution is an editorial standard: guidance on chart complexity thresholds, recommended data density limits per chart type, and a review process for visualizations intended for mobile audiences. Attempting to handle it in the module produces brittle workarounds. Handling it in governance produces a repeatable standard that improves every future chart, not just the cases the module happens to intercept.
+
+Identifying the boundary between what belongs in code and what belongs in a style guide is part of the work.
+
+## Technologies
+
+- **Drupal 10** — enterprise CMS platform
+- **Charts (contrib module)** — community-maintained charting integration, used as a dependency rather than a fork
+- **Chart.js** — underlying JavaScript charting library, upgraded to current major version
+- **PHP / Drupal module API** — custom extension layer
+- **ARIA / WCAG 2.1** — accessibility standards implementation
 
 ## Impact
 
-- **30% reduction** in visualization bundle size
-- **100% WCAG 2.1 AA compliance** across all data visualizations
-- Simplified maintenance reducing future development time
-- Enhanced user experience for assistive technology users
+- Eliminated the custom module fork and its associated maintenance burden
+- Restored community upgrade path for the Charts module and Chart.js
+- Achieved WCAG 2.1 AA compliance for all data visualizations
+- Reduced editorial dependency on developer involvement for chart content updates
+- Established governance framework for chart complexity on small screens
 
-## Learnings
+## Outcome
 
-This project reinforced the value of staying current with dependencies. What started as technical debt remediation became an opportunity to dramatically improve accessibility—proving that refactoring isn't just about cleaning up code, it's about delivering better experiences for all users.
+The module is in production. The charts render. The website works.
+
+The difference is that the platform is no longer one Chart.js security release away from a manual merge exercise, one accessibility audit away from a remediation backlog, or one content editor away from a support ticket.
+
+The most durable engineering work is often the kind that removes future problems before anyone knows they were coming.
