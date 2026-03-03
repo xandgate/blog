@@ -19,6 +19,9 @@ import { detectGeoLocation } from "@/lib/geo/detect-server";
 import type { VisitorContext } from "@/lib/geo/types";
 import { baseURL, effects, fonts, style, dataStyle, home } from "@/resources";
 
+// Geo-personalized layout uses request headers, so force dynamic rendering
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   return Meta.generate({
     title: home.title,
