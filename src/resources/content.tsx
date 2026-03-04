@@ -58,8 +58,8 @@ const home: Home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: `${person.name} – Enterprise Platform Architect`,
-  description: `Portfolio of ${person.name}: AI-augmented engineer shipping 100x faster through strategic architecture and modern AI tooling`,
+  title: `${person.name} – Software Architect`,
+  description: `Portfolio of ${person.name}: Enterprise platform modernization, accessibility & GovTech specialist`,
   headline: (
     <>
       <Text as="span" size="xl" weight="strong">AI writes code.</Text>{" "}
@@ -91,7 +91,7 @@ const about: About = {
   path: "/about",
   label: "About",
   title: `About – ${person.name}`,
-  description: `Meet ${person.name}, ${person.role} – Secure, compliant digital infrastructure for regulated and mission-critical organizations`,
+  description: `Meet ${person.name}, ${person.role} – Enterprise platform modernization, accessibility & GovTech specialist`,
   tableOfContent: {
     display: true,
     subItems: false,
@@ -122,103 +122,125 @@ const about: About = {
     experiences: [
       {
         company: "Express Scripts, The Cigna Group",
-        timeframe: "June 2024 - December 2025",
-        role: "Senior Software Engineer",
+        timeframe: "Jun 2024 – Dec 2025",
+        role: "Software Architect / Senior Drupal Engineer",
         achievements: [
           <>
-            Senior technical lead for enterprise healthcare platforms in highly regulated
-            environments, leading major version upgrades with full regression testing and
-            zero-downtime deployments.
+            Led frontend architecture modernization across 8 public-facing healthcare
+            platforms (including{" "}
+            <a href="https://www.cigna.com" target="_blank" rel="noreferrer">cigna.com</a>
+            {" "}and{" "}
+            <a href="https://www.evernorth.com" target="_blank" rel="noreferrer">evernorth.com</a>
+            ), including properties with 4M+ monthly visits; standardized Drupal 10/11 theme
+            architecture to improve scalability, governance, and long-term maintainability.
           </>,
           <>
-            Owned release management across 15+ production deployments, including
-            configuration synchronization, rollback planning, and deployment runbooks
-            for mission-critical healthcare platforms.
+            Influencing enterprise design system standards by identifying
+            accessibility and editor experience gaps, then architecting and deploying a reusable,
+            accessible charting framework adopted across all properties.
           </>,
           <>
-            Integrated enterprise identity solutions including SAML-based SSO and MFA
-            across 8+ healthcare platforms, supporting thousands of authenticated users
-            with HIPAA-compliant security measures.
+            Leading data migration from a legacy custom charting implementation to the new
+            reusable framework, mapping 250+ existing charts across 5 chart types into a
+            modern configuration model without data loss or interruption to production traffic.
           </>,
           <>
-            Designed and maintained CI/CD pipelines supporting automated builds, tests,
-            and deployments. Partnered with security teams on vulnerability remediation
-            and CSP configurations.
+            Implementing SAML-based single sign-on and MFA across 8+ healthcare platforms,
+            aligning identity flows with enterprise IAM policies and HIPAA requirements.
+          </>,
+          <>
+            Improved platform security and upgrade resilience by refactoring vulnerable custom
+            modules and supporting proactive Drupal core/contrib security releases, enabling
+            4 major releases per quarter for flagship properties.
+          </>,
+          <>
+            Contributed architectural oversight within a 20-person engineering team,
+            conducting daily PR reviews, enforcing frontend standards, and mentoring 9
+            engineers weekly while collaborating with 40+ offshore team members.
           </>,
         ],
         images: [],
       },
       {
         company: "Zyxware Technologies",
-        timeframe: "January 2019 - May 2024",
-        role: "Senior Software Engineer (React/Full-Stack)",
+        timeframe: "Jan 2019 – May 2024",
+        role: "Senior Software Engineer / Solution Architect",
         achievements: [
           <>
-            Led modernization and migration of 30+ enterprise websites for Arizona
-            Strategic Enterprise Technology (ASET) Office on cloud infrastructure,
-            resulting in a 61% decrease in support costs.
+            Architected a scalable Drupal distribution powering 150+ state agency websites,
+            standardizing reusable components and governance controls to accelerate new
+            agency launches and reduce duplication.
           </>,
           <>
-            Architected enterprise CMS distribution serving 170+ state agencies,
-            conducting requirements gathering and designing scalable digital
-            experience solutions.
+            Led large-scale modernization initiatives, migrating 30 Drupal websites in 3
+            months (Drupal 7→9→10, 10→11), significantly reducing security exposure
+            and technical debt in government and enterprise environments.
           </>,
           <>
-            Achieved 100% reduction of project delivery delays through improved CI/CD
-            pipeline automation, deploying from git repositories to cloud hosting
-            environments.
+            Delivered high-traffic public sector and enterprise platforms including{" "}
+            <a href="https://efile.dol.gov" target="_blank" rel="noreferrer">efile.dol.gov</a>
+            {", "}
+            <a href="https://azdot.gov" target="_blank" rel="noreferrer">azdot.gov</a>
+            {" "}(AZ DOT/DMV),{" "}
+            <a href="https://www.iteris.com" target="_blank" rel="noreferrer">iteris.com</a>
+            {", and "}
+            <a href="https://www.luxvt.com" target="_blank" rel="noreferrer">luxvt.com</a>
+            {", "}
+            implementing accessible, responsive, and performance-optimized architectures.
           </>,
           <>
-            Rebuilt integrated document gateway for U.S. Department of Labor OCIO,
-            implementing robust caching mechanisms and API integrations with Appian.
+            Led distributed engineering teams of 20+ developers and coordinated with 40+
+            offshore contributors, implementing structured Git workflows, daily PR reviews,
+            and architectural standards that improved code quality and release predictability.
           </>,
           <>
-            Led accessibility remediation efforts ensuring Section 508 and WCAG
-            compliance across federal platforms, extending USWDS-based themes for
-            federal frontend standards.
+            Mentored 9 engineers and directly supervised 7 reports, conducting weekly
+            coaching sessions and pair programming to elevate technical maturity and
+            architectural thinking across teams.
           </>,
         ],
         images: [],
       },
       {
         company: "Digital Development International LLC",
-        timeframe: "November 2011 - December 2018",
-        role: "CTO",
+        timeframe: "Nov 2011 – Dec 2018",
+        role: "Chief Technology Officer",
         achievements: [
           <>
-            Developed and deployed Open Data Portals for the Governments of Jamaica
-            and St. Lucia, later upgrading to modern decoupled architecture with
-            React front-end.
+            Founded and led a 10-person digital consultancy delivering government and
+            enterprise web platforms, securing public-sector contracts in Jamaica and St.
+            Lucia through technical leadership and proposal strategy.
           </>,
           <>
-            Architected end-to-end AWS solutions (VPC, Route 53, RDS, EC2, ECS/EKS,
-            S3, CloudWatch, CloudFront) for government and enterprise clients,
-            processing large financial datasets with BI tools.
+            Architected and launched an AgTech startup platform, securing $30,000 in grant
+            funding and delivering a scalable production-ready solution.
           </>,
           <>
-            Designed custom APIs for mobile and desktop applications, authored
-            automation scripts for load testing and security analysis to ensure
-            high performance.
+            Implemented internal DevOps modernization, building CI/CD pipelines in GitLab
+            using Docker and Jenkins, reducing deployment risk and improving release velocity.
+          </>,
+          <>
+            Balanced executive leadership with hands-on architecture, establishing code
+            standards, review processes, and accessibility compliance frameworks across
+            client engagements.
           </>,
         ],
         images: [],
       },
       {
         company: "OpenConcept Consulting Inc.",
-        timeframe: "September 2008 - October 2011",
-        role: "Software Consultant",
+        timeframe: "Sep 2008 – Oct 2011",
+        role: "Consultant",
         achievements: [
           <>
-            Developed customized web applications based on business requirements,
-            working directly with clients through all implementation phases.
+            Delivered multilingual, accessibility-compliant Drupal platforms for
+            public-sector and nonprofit clients, building complex content models to
+            support scalable international delivery.
           </>,
           <>
-            Built multilingual content platforms supporting English, French, Hebrew,
-            and Arabic with bidirectional text rendering.
-          </>,
-          <>
-            Implemented WCAG 2.0 accessibility standards across web applications,
-            creating reusable installation profiles to accelerate project delivery.
+            Translated high-fidelity design systems into responsive, WCAG-aligned Drupal
+            themes, guiding projects from architecture through deployment in
+            multi-stakeholder environments.
           </>,
         ],
         images: [],
@@ -233,13 +255,14 @@ const about: About = {
         name: "University of the West Indies, Mona",
         description: (
           <>
-            BSc. Computer Science and Electronics (double major), 2002-2006. Graduated
-            with honors from the Faculty of Pure and Applied Sciences.
+            BSc. Computer Science and Electronics (double major), 2002–2006.
+            <br />
+            Graduated with honors from the Faculty of Pure and Applied Sciences.
           </>
         ),
       },
       {
-        name: "Acquia Certified Site Builder - Drupal 9",
+        name: "Acquia Certified Site Builder – Drupal 9",
         description: (
           <>
             Certified Drupal 9 Site Builder, demonstrating expertise in building and
@@ -256,15 +279,6 @@ const about: About = {
           </>
         ),
       },
-      {
-        name: "Udemy Machine Learning A-Z™",
-        description: (
-          <>
-            Hands-On Python & R In Data Science certification, covering machine learning
-            fundamentals and practical applications.
-          </>
-        ),
-      },
     ],
   },
   technical: {
@@ -272,27 +286,50 @@ const about: About = {
     title: "Technical skills",
     skills: [
       {
-        title: "AI-Augmented Development",
+        title: "Community Contributor",
         description: (
           <>
-            Leveraging AI coding assistants (Claude, Cursor, GitHub Copilot) to ship at 10-100x
-            speed while maintaining code quality. Expert at prompt engineering, AI code review,
-            and knowing when to trust AI output vs. when to intervene. Building workflows that
-            combine AI speed with human judgment for zero-regret deployments.
+            Maintaining and co-maintaining Drupal contrib projects used by governments,
+            nonprofits, and enterprises worldwide. Contributing to enterprise-grade open-source
+            tooling supporting modernization and upgrade initiatives:{" "}
+            <a
+              href="https://www.drupal.org/project/disable_messages"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Disable Messages
+            </a>
+            {", "}
+            <a
+              href="https://www.drupal.org/project/upgrade_status"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Upgrade Status
+            </a>
+            {", "}
+            <a href="https://www.drupal.org/project/funding" target="_blank" rel="noreferrer">
+              Funding
+            </a>
+            {", "}
+            <a href="https://www.drupal.org/project/ga_dashboard" target="_blank" rel="noreferrer">
+              Google Analytics Dashboard
+            </a>
+            {", "}
+            <a href="https://www.drupal.org/project/search404" target="_blank" rel="noreferrer">
+              Search 404
+            </a>
+            .
           </>
         ),
         tags: [
           {
-            name: "Claude",
-            icon: "sparkle",
+            name: "Drupal Contributor",
+            icon: "grid",
           },
           {
-            name: "Cursor",
-            icon: "code",
-          },
-          {
-            name: "Copilot",
-            icon: "github",
+            name: "Open Source",
+            icon: "globe",
           },
         ],
         images: [],
@@ -335,7 +372,7 @@ const about: About = {
         tags: [
           {
             name: "Svelte",
-            icon: "code",
+            icon: "svelte",
           },
           {
             name: "Python",
