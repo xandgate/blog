@@ -90,7 +90,7 @@ const home: Home = {
     ),
     "ai-enabled": (
       <>
-        <Text as="span" size="xl" weight="strong">AI-augmented information architect for public and enterprise systems.</Text>
+        <Text as="span" size="xl" weight="strong">AI-augmented engineering at enterprise scale.</Text>
       </>
     ),
   },
