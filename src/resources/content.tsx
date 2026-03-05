@@ -62,7 +62,7 @@ const home: Home = {
   description: `Portfolio of ${person.name}: Enterprise platform modernization, accessibility & GovTech specialist`,
   headline: (
     <>
-      <Text as="span" size="xl" weight="strong">I build the platforms governments depend on.</Text>
+      <Text as="span" size="xl" weight="strong">Architecting complex systems that matter.</Text>
     </>
   ),
   featured: {
@@ -79,31 +79,30 @@ const home: Home = {
     href: "/work/modernizing-data-visualization",
   },
   subline: (
-    <>
-      Enterprise architect for federal agencies, state portals, and regulated healthcare systems. Drupal at scale, Section 508, SAML, long-term governance — built in from the start.
+    <>Information architect for mission-critical systems.
     </>
   ),
   headlineBySegment: {
     govtech: (
       <>
-        <Text as="span" size="xl" weight="strong">I build the platforms governments depend on.</Text>
+        <Text as="span" size="xl" weight="strong">Architecting complex systems that matter.</Text>
       </>
     ),
     "ai-enabled": (
       <>
-        <Text as="span" size="xl" weight="strong">Most AI content is written by people who've never shipped a regulated platform.</Text>
+        <Text as="span" size="xl" weight="strong">AI-augmented information architect for public and enterprise systems.</Text>
       </>
     ),
   },
   sublineBySegment: {
     govtech: (
       <>
-        Enterprise architect for federal agencies, state portals, and regulated healthcare systems. Drupal at scale, Section 508, SAML, long-term governance — built in from the start.
+        Federal agencies, state portals, regulated healthcare — built for the long game.
       </>
     ),
     "ai-enabled": (
       <>
-        I have. Writing about AI-augmented engineering from inside environments where failure has real consequences — not a demo, a production practice.
+        Designing resilient platforms for complex organizations.
       </>
     ),
   },
