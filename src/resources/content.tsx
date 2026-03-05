@@ -62,29 +62,51 @@ const home: Home = {
   description: `Portfolio of ${person.name}: Enterprise platform modernization, accessibility & GovTech specialist`,
   headline: (
     <>
-      <Text as="span" size="xl" weight="strong">AI writes code.</Text>{" "}
-      I architect outcomes.
+      <Text as="span" size="xl" weight="strong">I build the platforms governments depend on.</Text>
     </>
   ),
   featured: {
     display: true,
     title: (
       <Row gap="12" vertical="center">
-        <strong className="ml-4">Enterprise Platform Architect</strong>{" "}
+        <strong className="ml-4">Enterprise Architect</strong>{" "}
         <Line background="brand-alpha-strong" vert height="20" />
         <Text marginRight="4" onBackground="brand-medium">
           Featured work
         </Text>
       </Row>
     ),
-    href: "/work/building-once-ui-a-customizable-design-system",
+    href: "/work/modernizing-data-visualization",
   },
   subline: (
     <>
-      The code is automated.{" "}
-      The judgment is not.
+      Enterprise architect for federal agencies, state portals, and regulated healthcare systems. Drupal at scale, Section 508, SAML, long-term governance — built in from the start.
     </>
   ),
+  headlineBySegment: {
+    govtech: (
+      <>
+        <Text as="span" size="xl" weight="strong">I build the platforms governments depend on.</Text>
+      </>
+    ),
+    "ai-enabled": (
+      <>
+        <Text as="span" size="xl" weight="strong">Most AI content is written by people who've never shipped a regulated platform.</Text>
+      </>
+    ),
+  },
+  sublineBySegment: {
+    govtech: (
+      <>
+        Enterprise architect for federal agencies, state portals, and regulated healthcare systems. Drupal at scale, Section 508, SAML, long-term governance — built in from the start.
+      </>
+    ),
+    "ai-enabled": (
+      <>
+        I have. Writing about AI-augmented engineering from inside environments where failure has real consequences — not a demo, a production practice.
+      </>
+    ),
+  },
 };
 
 const about: About = {
@@ -456,10 +478,25 @@ const about: About = {
 const blog: Blog = {
   path: "/blog",
   label: "Blog",
-  title: "Writing about AI-augmented engineering and building at 100x speed",
-  description: `Lessons from the frontier of AI-assisted development: what works, what doesn't, and how senior engineers can leverage AI to ship faster without sacrificing quality`,
-  // Create new blog posts by adding a new .mdx file to app/blog/posts
-  // All posts will be listed on the /blog route
+  title: "Enterprise architecture for government and regulated industries",
+  description: "Practical writing on Drupal, accessibility, security, and long-term platform governance — from someone who's built these systems.",
+  headingBySegment: {
+    govtech: {
+      title: "Enterprise architecture for government and regulated industries",
+      description:
+        "Practical writing on Drupal, accessibility, security, and long-term platform governance — from someone who's built these systems.",
+    },
+    "ai-enabled": {
+      title: "AI-augmented engineering from the high-stakes end of the stack",
+      description:
+        "What AI actually changes — and doesn't — when the platform can't fail. Notes from an enterprise architect in regulated environments.",
+    },
+    international: {
+      title: "AI-augmented engineering from the high-stakes end of the stack",
+      description:
+        "What AI actually changes — and doesn't — when the platform can't fail. Notes from an enterprise architect in regulated environments.",
+    },
+  },
 };
 
 const work: Work = {

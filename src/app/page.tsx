@@ -62,10 +62,16 @@ export default async function Home() {
             <PersonalizedFeaturedBadge />
           </RevealFx>
           <RevealFx translateY="4" fillWidth horizontal="center" paddingBottom="16">
-            <PersonalizedHeadline fallback={home.headline} />
+            <PersonalizedHeadline
+              fallback={home.headline}
+              bySegment={home.headlineBySegment}
+            />
           </RevealFx>
           <RevealFx translateY="8" delay={0.2} fillWidth horizontal="center" paddingBottom="32">
-            <PersonalizedSubline fallback={home.subline} />
+            <PersonalizedSubline
+              fallback={home.subline}
+              bySegment={home.sublineBySegment}
+            />
           </RevealFx>
           <RevealFx paddingTop="12" delay={0.4} horizontal="center" paddingLeft="12">
             <Button

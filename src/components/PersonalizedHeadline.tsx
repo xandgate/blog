@@ -1,75 +1,34 @@
 "use client";
 
-import { Heading, Text } from "@once-ui-system/core";
-import { useEffect, useState } from "react";
-import type { VisitorSegment } from "@/lib/geo/types";
+import { Heading } from "@once-ui-system/core";
+import { useVisitorContext } from "./VisitorContextProvider";
 
 interface PersonalizedHeadlineProps {
   fallback: React.ReactNode;
+  bySegment?: {
+    govtech?: React.ReactNode;
+    "ai-enabled"?: React.ReactNode;
+  };
 }
 
-interface VisitorData {
-  segment: VisitorSegment;
-  greeting: string;
-  contextualMessage: string;
-}
+/**
+ * Home page headline. Renders segment-specific copy when available.
+ * govtech → government/enterprise positioning (no AI mention).
+ * ai-enabled → AI engineering practitioner positioning.
+ * Falls back to content.tsx home.headline for undetected segments.
+ */
+export function PersonalizedHeadline({ fallback, bySegment }: PersonalizedHeadlineProps) {
+  const { segment, isLoading } = useVisitorContext();
 
-export function PersonalizedHeadline({ fallback }: PersonalizedHeadlineProps) {
-  const [visitorData, setVisitorData] = useState<VisitorData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchVisitorContext() {
-      try {
-        const response = await fetch("/api/visitor-context");
-        if (response.ok) {
-          const data = await response.json();
-          setVisitorData({
-            segment: data.affinity.segment,
-            greeting: data.affinity.greeting,
-            contextualMessage: data.affinity.contextualMessage,
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch visitor context:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchVisitorContext();
-  }, []);
-
-  // Show fallback while loading or if fetch fails
-  if (isLoading || !visitorData) {
-    return <>{fallback}</>;
-  }
-
-  // Explicit focus overrides take priority; fall back to geo-based detection.
-  // ai-enabled segment (manual or international geo) → AI Engineering Focus
-  // everything else → GovTech
-  const isAgenticFocus =
-    visitorData.segment === "ai-enabled" || visitorData.segment === "international";
+  const segmentKey = segment as keyof typeof bySegment;
+  const content =
+    !isLoading && bySegment && bySegment[segmentKey]
+      ? bySegment[segmentKey]
+      : fallback;
 
   return (
-    <>
-      <Heading wrap="balance" variant="display-strong-l">
-        {isAgenticFocus ? (
-          <>
-            <Text as="span" size="xl" weight="strong">
-              AI writes code.
-            </Text>{" "}
-            I architect outcomes.
-          </>
-        ) : (
-          <>
-            <Text as="span" size="xl" weight="strong">
-            Mission-critical
-            </Text>{" "}
-            platforms.
-          </>
-        )}
-      </Heading>
-    </>
+    <Heading wrap="balance" variant="display-strong-l">
+      {content}
+    </Heading>
   );
 }

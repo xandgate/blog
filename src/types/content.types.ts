@@ -101,6 +101,16 @@ export interface Home extends BasePageConfig {
   };
   /** The sub text which appears below the headline */
   subline: React.ReactNode;
+  /** Segment-specific headline overrides. govtech = no AI mention. ai-enabled = AI practitioner framing. */
+  headlineBySegment?: {
+    govtech?: React.ReactNode;
+    "ai-enabled"?: React.ReactNode;
+  };
+  /** Segment-specific subline overrides. govtech = enterprise/gov credibility. ai-enabled = high-stakes AI context. */
+  sublineBySegment?: {
+    govtech?: React.ReactNode;
+    "ai-enabled"?: React.ReactNode;
+  };
 }
 
 /**
@@ -215,7 +225,14 @@ export interface About extends BasePageConfig {
  * Blog page configuration.
  * @description Configuration for the Blog page, including metadata and navigation label.
  */
-export interface Blog extends BasePageConfig {}
+export interface Blog extends BasePageConfig {
+  /** Segment-specific title and description for the blog page heading. govtech = no AI. ai-enabled = AI practitioner. */
+  headingBySegment?: {
+    govtech?: { title: string; description: string };
+    "ai-enabled"?: { title: string; description: string };
+    international?: { title: string; description: string };
+  };
+}
 
 /**
  * Work/projects page configuration.

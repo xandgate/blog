@@ -1,165 +1,64 @@
 import type { AffinityProfile, GeoLocation, VisitorSegment, ContentInterest } from "./types";
 import { determineSegment } from "./detect";
 
-/**
- * Contextual greetings based on visitor segment
- */
+/** Segments used in practice: US → govtech, non-US → international, or ?segment= override */
 const GREETINGS: Record<VisitorSegment, string> = {
-  local: "Hey neighbor! 👋",
+  local: "Welcome",
   "tech-hub": "Welcome",
   federal: "Welcome",
-  "drupal-community": "Hello, Drupal friend!",
+  "drupal-community": "Welcome",
   healthcare: "Welcome",
-  international: "Welcome from across the globe",
+  international: "Welcome",
   general: "Welcome",
   govtech: "Welcome",
   "ai-enabled": "Welcome",
 };
 
-/**
- * Greetings for content interest (used when interest overrides segment)
- */
-const INTEREST_GREETINGS: Record<ContentInterest, string | null> = {
-  frontend: null, // Use segment greeting
-  drupal: "Hello, Drupal friend!",
-  govtech: "Welcome", // Professional, understated
-  general: null,
-};
-
-/**
- * Contextual messages to display based on segment
- * US visitors: Focus on Drupal & govtech consulting
- * International: Focus on AI-enabled architecture
- */
+/** US/govtech: enterprise & government. International/ai-enabled: agentic developer focus. */
 const CONTEXTUAL_MESSAGES: Record<VisitorSegment, string> = {
-  local:
-    "Drupal architect based in the DC metro area. 20 years delivering government web platforms.",
-  "tech-hub":
-    "Drupal architect specializing in government platforms. Federal & state agency experience.",
-  federal:
-    "20 years delivering web platforms for federal and state agencies. Deep Drupal expertise, security clearance available.",
-  "drupal-community":
-    "Active Drupal contributor with 20 years of experience. From small sites to federal platforms.",
-  healthcare:
-    "Currently building HIPAA-compliant healthcare platforms at Express Scripts with Drupal backend.",
+  local: "Drupal architect with 20 years delivering government platforms. Federal & state agency experience.",
+  "tech-hub": "Drupal architect with 20 years delivering government platforms. Federal & state agency experience.",
+  federal: "Drupal architect with 20 years delivering government platforms. Federal & state agency experience.",
+  "drupal-community": "Drupal architect with 20 years delivering government platforms. Federal & state agency experience.",
+  healthcare: "Drupal architect with 20 years delivering government platforms. Federal & state agency experience.",
   international:
     "AI-enabled full-stack architect. Leveraging LLMs and modern tooling to accelerate enterprise development.",
   general: "Drupal architect with 20 years delivering government platforms. Federal & state agency experience.",
   govtech:
     "20 years delivering Drupal platforms for federal and state agencies. Section 508, procurement cycles, multi-site at scale — I know the territory.",
   "ai-enabled":
-    "Building with Claude, Cursor, and MCP servers. 15 years of engineering judgment, now running at machine speed.",
+    "Building with Claude, Cursor, and MCP servers. Engineering judgment at machine speed.",
 };
 
-/**
- * Contextual messages for content interest (used when interest overrides segment)
- */
-const INTEREST_CONTEXTUAL_MESSAGES: Record<ContentInterest, string | null> = {
-  frontend: null, // Use segment message
-  drupal: "Deep Drupal expertise from small nonprofits to federal platforms.",
-  govtech: "20 years delivering web platforms for government. I understand compliance, accessibility, and the procurement process.",
-  general: null,
-};
-
-/**
- * Featured content suggestions based on segment
- */
 const FEATURED_CONTENT_BY_SEGMENT: Record<VisitorSegment, string> = {
   local: "/blog/why-drupal-dominates-government",
-  "tech-hub": "/blog/architecture-decisions-ai-cant-make",
+  "tech-hub": "/blog/why-drupal-dominates-government",
   federal: "/blog/why-drupal-dominates-government",
   "drupal-community": "/blog/why-drupal-dominates-government",
-  healthcare: "/blog/what-government-gets-wrong-about-website-migrations",
+  healthcare: "/blog/why-drupal-dominates-government",
   international: "/blog/context-graphs-for-ai-agents",
   general: "/blog/why-drupal-dominates-government",
   govtech: "/blog/why-drupal-dominates-government",
   "ai-enabled": "/blog/context-graphs-for-ai-agents",
 };
 
-// Map content slugs to interests for better matching
-const CONTENT_INTEREST_MAP: Record<string, ContentInterest> = {
-  // Frontend-focused projects
-  "building-once-ui-a-customizable-design-system": "frontend",
-  "automate-design-handovers-with-a-figma-to-code-pipeline": "frontend",
-  "simple-portfolio-builder": "frontend",
-  // Drupal-focused projects (add when you have them)
-  // "drupal-federal-platform": "drupal",
-  // "enterprise-cms-migration": "drupal",
-};
-
 /**
- * Featured content suggestions based on content interest.
- * Overrides segment-based content when interest is detected.
- */
-const FEATURED_CONTENT_BY_INTEREST: Record<ContentInterest, string> = {
-  frontend: "/work/building-once-ui-a-customizable-design-system",
-  drupal: "/work/building-once-ui-a-customizable-design-system", // Update when you have Drupal-specific projects
-  govtech: "/blog/what-government-gets-wrong-about-website-migrations", // Update when you have govtech-specific projects
-  general: "/work/building-once-ui-a-customizable-design-system",
-};
-
-/**
- * Build affinity profile for a visitor.
- * US visitors: Drupal/govtech messaging
- * International: AI-enabled architect messaging
+ * Build affinity profile from geo.
+ * US → govtech (enterprise/gov focus). Non-US → international (agentic focus).
+ * Single avatar for all; no location-based avatar variants.
  */
 export function buildAffinityProfile(
   geo: GeoLocation,
-  interest?: ContentInterest | null,
+  _interest?: ContentInterest | null,
 ): AffinityProfile {
   const segment = determineSegment(geo);
-
-  // Use interest-based content if available, otherwise use segment-based
-  const featuredContent = interest && interest !== "general"
-    ? FEATURED_CONTENT_BY_INTEREST[interest]
-    : FEATURED_CONTENT_BY_SEGMENT[segment];
-
-  // Use interest-based greeting if available, otherwise use segment-based
-  const greeting = (interest && INTEREST_GREETINGS[interest]) || GREETINGS[segment];
-
-  // Use interest-based contextual message if available, otherwise use segment-based
-  const contextualMessage = (interest && INTEREST_CONTEXTUAL_MESSAGES[interest]) || CONTEXTUAL_MESSAGES[segment];
-
   return {
     segment,
-    greeting,
-    avatarVariant: "/images/avatar.jpg", // Single avatar, no geo-based variants
-    contextualMessage,
-    featuredContent,
-    interest: interest || undefined,
+    greeting: GREETINGS[segment],
+    avatarVariant: "/images/avatar.jpg",
+    contextualMessage: CONTEXTUAL_MESSAGES[segment],
+    featuredContent: FEATURED_CONTENT_BY_SEGMENT[segment],
   };
-}
-
-/**
- * Get personalized headline based on visitor context
- * US visitors see Drupal/govtech focus
- * International visitors see AI-enabled architect focus
- */
-export function getPersonalizedHeadline(segment: VisitorSegment, interest?: ContentInterest | null): string {
-  // Interest-based headlines take priority
-  if (interest && interest !== "general") {
-    const interestHeadlines: Record<ContentInterest, string> = {
-      frontend: "Modern frontend architecture for enterprise",
-      drupal: "Drupal architect with 20 years of government experience",
-      govtech: "Government web platforms built right",
-      general: "Drupal architect & govtech consultant",
-    };
-    return interestHeadlines[interest];
-  }
-
-  const headlines: Record<VisitorSegment, string> = {
-    local: "Drupal architect & government technology consultant",
-    "tech-hub": "Drupal architect specializing in government platforms",
-    federal: "Trusted Drupal architect for government web platforms",
-    "drupal-community": "Drupal contributor & enterprise architect",
-    healthcare: "Drupal architect building HIPAA-compliant platforms",
-    international: "AI-enabled architect building enterprise platforms faster",
-    general: "Drupal architect & govtech consultant",
-    govtech: "Drupal architect. 20 years in government.",
-    "ai-enabled": "AI writes code. I architect what it builds.",
-  };
-
-  return headlines[segment];
 }
 
 /**

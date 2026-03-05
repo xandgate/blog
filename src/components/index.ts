@@ -23,3 +23,5 @@ export { SegmentIndicator } from "@/components/SegmentIndicator";
 export { ContentInteractionTracker } from "@/components/ContentInteractionTracker";
 export { PersonalizedHeadline } from "@/components/PersonalizedHeadline";
 export { PersonalizedSubline } from "@/components/PersonalizedSubline";
+export { PersonalizedBlogHeading } from "@/components/PersonalizedBlogHeading";
+export { PersonalizedPosts } from "@/components/PersonalizedPosts";

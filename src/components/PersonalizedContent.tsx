@@ -37,10 +37,18 @@ export function usePersonalizedContent(
   const flags = getFeatureFlags();
 
   return useMemo(() => {
-    // Filter excluded posts
-    const filteredPosts = exclude.length
-      ? posts.filter((post) => !exclude.includes(post.slug))
-      : posts;
+    // GovTech segment: hide AI-category posts (tag "AI Engineering")
+    let filteredPosts = posts;
+    if (affinity?.segment === "govtech") {
+      filteredPosts = filteredPosts.filter(
+        (post) => post.metadata.tag !== "AI Engineering"
+      );
+    }
+
+    // Filter excluded posts (e.g. current post on single view)
+    if (exclude.length) {
+      filteredPosts = filteredPosts.filter((post) => !exclude.includes(post.slug));
+    }
 
     // Sort by date (newest first)
     const sortedPosts = [...filteredPosts].sort((a, b) => {
@@ -89,6 +97,7 @@ export function usePersonalizedContent(
     posts,
     defaultRange,
     exclude,
+    affinity?.segment,
     affinity?.featuredContent,
     isLoading,
     isOptedOut,

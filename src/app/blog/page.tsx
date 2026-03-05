@@ -1,6 +1,5 @@
 import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
-import { Mailchimp } from "@/components";
-import { Posts } from "@/components/blog/Posts";
+import { Mailchimp, PersonalizedBlogHeading, PersonalizedPosts } from "@/components";
 import { baseURL, blog, person, newsletter } from "@/resources";
 import { getPosts, getPostsDir } from "@/utils/utils";
 
@@ -35,17 +34,19 @@ export default async function Blog() {
           image: `${baseURL}${person.avatar}`,
         }}
       />
-      <Heading marginBottom="l" variant="heading-strong-xl" marginLeft="24">
-        {blog.title}
-      </Heading>
+      <PersonalizedBlogHeading
+        fallbackTitle={blog.title}
+        fallbackDescription={blog.description}
+        bySegment={blog.headingBySegment}
+      />
       <Column fillWidth flex={1} gap="40">
-        <Posts range={[1, 1]} thumbnail posts={allBlogPosts} />
-        <Posts range={[2, 3]} columns="2" thumbnail direction="column" posts={allBlogPosts} />
+        <PersonalizedPosts range={[1, 1]} thumbnail posts={allBlogPosts} />
+        <PersonalizedPosts range={[2, 3]} columns="2" thumbnail direction="column" posts={allBlogPosts} />
         <Mailchimp marginBottom="l" />
         <Heading as="h2" variant="heading-strong-xl" marginLeft="l">
           Earlier posts
         </Heading>
-        <Posts range={[4]} columns="2" posts={allBlogPosts} />
+        <PersonalizedPosts range={[4]} columns="2" posts={allBlogPosts} />
       </Column>
     </Column>
   );

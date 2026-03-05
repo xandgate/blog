@@ -1,24 +1,12 @@
 import { headers } from "next/headers";
-import {
-  GeoLocation,
-  VisitorSegment,
-  TECH_HUB_CITIES,
-  DC_METRO_CITIES,
-  DRUPAL_CONFERENCE_CITIES,
-  HEALTHCARE_HUBS,
-} from "./types";
+import type { GeoLocation } from "./types";
 
 /**
- * Mock geo data for local development testing.
- * Change these values to test different visitor segments:
- * - DC Metro: city="Fairfax", region="VA"
- * - Tech Hub: city="San Francisco", region="CA"
- * - International: country="GB", city="London"
- * - Healthcare: city="Boston", region="MA"
- * - Drupal: city="Portland", region="OR"
+ * Mock geo for local development when no real geo headers exist.
+ * Set countryCode to "US" for govtech focus, or any other (e.g. "GB") for international/agentic.
  */
 const DEV_MOCK_GEO = {
-  country: "US",
+  countryCode: "US",
   region: "VA",
   city: "Fairfax",
   timezone: "America/New_York",
@@ -26,94 +14,46 @@ const DEV_MOCK_GEO = {
 
 /**
  * Detect visitor geolocation from request headers (SERVER-ONLY).
- * Works with Vercel, Cloudflare, and falls back to mock data in development
+ * Supports Vercel, Cloudflare, and optional x-test-country for testing.
+ * In development with no geo headers, uses DEV_MOCK_GEO.
  */
 export async function detectGeoLocation(): Promise<GeoLocation> {
   const headersList = await headers();
 
-  // Check for test headers from middleware first (for testing different segments)
-  const testContinent = headersList.get("x-test-continent");
+  // Testing: override country via header (e.g. curl -H "x-test-country: GB" ...)
+  const testCountry = headersList.get("x-test-country");
 
-  // Try Vercel headers first
   const vercelCountry = headersList.get("x-vercel-ip-country");
   const vercelRegion = headersList.get("x-vercel-ip-country-region");
   const vercelCity = headersList.get("x-vercel-ip-city");
   const vercelTimezone = headersList.get("x-vercel-ip-timezone");
-
-  // Try Cloudflare headers
   const cfCountry = headersList.get("cf-ipcountry");
   const cfCity = headersList.get("cf-ipcity");
   const cfTimezone = headersList.get("cf-timezone");
 
-  // Check if we have real geo headers (production) or test headers
-  const hasRealGeoHeaders = vercelCountry || cfCountry;
+  const hasRealGeo = vercelCountry || cfCountry;
 
-  // In development without real headers, use mock data
-  if (!hasRealGeoHeaders && process.env.NODE_ENV === "development") {
-    const continent = getContinent(DEV_MOCK_GEO.country);
+  if (!hasRealGeo && process.env.NODE_ENV === "development") {
+    const code = testCountry || DEV_MOCK_GEO.countryCode;
     return {
-      country: getCountryName(DEV_MOCK_GEO.country),
-      countryCode: DEV_MOCK_GEO.country,
+      country: getCountryName(code),
+      countryCode: code,
       region: DEV_MOCK_GEO.region,
       city: DEV_MOCK_GEO.city,
       timezone: DEV_MOCK_GEO.timezone,
-      continent,
+      continent: getContinent(code),
     };
   }
 
-  // Use real headers (production) or test headers (from middleware)
-  const countryCode = vercelCountry || cfCountry || "US";
-  const continent = testContinent || getContinent(countryCode);
-
+  const countryCode = testCountry || vercelCountry || cfCountry || "US";
   return {
     country: getCountryName(countryCode),
     countryCode,
     region: vercelRegion || "",
     city: decodeURIComponent(vercelCity || cfCity || ""),
     timezone: vercelTimezone || cfTimezone || "America/New_York",
-    continent,
+    continent: getContinent(countryCode),
   };
-}
-
-/**
- * Determine visitor segment based on geolocation (CLIENT-SAFE).
- * This function doesn't use server-only APIs, so it can be used in client components.
- */
-export function determineSegment(geo: GeoLocation): VisitorSegment {
-  const { city, countryCode, region } = geo;
-  const cityLower = city.toLowerCase();
-
-  // Check if international
-  if (countryCode !== "US") {
-    return "international";
-  }
-
-  // Check DC Metro area (local)
-  if (
-    DC_METRO_CITIES.some((c) => cityLower.includes(c.toLowerCase())) ||
-    region === "VA" ||
-    region === "MD" ||
-    region === "DC"
-  ) {
-    return "local";
-  }
-
-  // Check healthcare hubs
-  if (HEALTHCARE_HUBS.some((c) => cityLower.includes(c.toLowerCase()))) {
-    return "healthcare";
-  }
-
-  // Check Drupal conference cities
-  if (DRUPAL_CONFERENCE_CITIES.some((c) => cityLower.includes(c.toLowerCase()))) {
-    return "drupal-community";
-  }
-
-  // Check tech hubs
-  if (TECH_HUB_CITIES.some((c) => cityLower.includes(c.toLowerCase()))) {
-    return "tech-hub";
-  }
-
-  return "general";
 }
 
 function getContinent(countryCode: string): string {

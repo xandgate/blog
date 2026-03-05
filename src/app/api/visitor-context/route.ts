@@ -40,9 +40,9 @@ export async function GET() {
         timezone: "America/New_York",
         continent: "North America",
       },
-      segment: "general",
+      segment: "govtech",
       affinity: {
-        segment: "general",
+        segment: "govtech",
         greeting: "Welcome",
         avatarVariant: "/images/avatar.jpg",
         contextualMessage: "Drupal architect with 20 years delivering government platforms. Federal & state agency experience.",
