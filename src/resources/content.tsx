@@ -85,24 +85,24 @@ const home: Home = {
   headlineBySegment: {
     govtech: (
       <>
-        <Text as="span" size="xl" weight="strong">Architecting complex systems that matter.</Text>
+        <Text as="span" size="xl" weight="strong">Government platforms fail quietly.</Text>
       </>
     ),
     "ai-enabled": (
       <>
-        <Text as="span" size="xl" weight="strong">AI-augmented engineering at enterprise scale.</Text>
+        <Text as="span" size="xl" weight="strong">AI handles the implementation. Judgment is still the expensive part.</Text>
       </>
     ),
   },
   sublineBySegment: {
     govtech: (
       <>
-        Federal agencies, state portals, regulated healthcare — built for the long game.
+        Federal agencies, state portals, regulated healthcare — I build them so they don't.
       </>
     ),
     "ai-enabled": (
       <>
-        Designing resilient platforms for complex organizations.
+        Enterprise architect writing about AI-augmented engineering from inside regulated environments — government platforms, healthcare systems, federal security audits.
       </>
     ),
   },
