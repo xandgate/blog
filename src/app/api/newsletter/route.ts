@@ -1,67 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
 
-const SUBSCRIBERS_FILE = path.join(process.cwd(), 'data', 'subscribers.json');
-
-interface Subscriber {
-  email: string;
-  timestamp: number;
-  segment?: string;
-  userAgent?: string;
-}
-
-interface SubscribersData {
-  subscribers: Subscriber[];
-}
+const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
+const MAILCHIMP_AUDIENCE_ID = process.env.MAILCHIMP_AUDIENCE_ID;
+const MAILCHIMP_SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX;
 
 // Rate limiting: track IPs to prevent spam
 const recentSubmissions = new Map<string, number>();
 const RATE_LIMIT_MS = 60000; // 1 minute between submissions per IP
 
-async function loadSubscribers(): Promise<SubscribersData> {
-  try {
-    const data = await fs.readFile(SUBSCRIBERS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    // File doesn't exist yet, return empty
-    return { subscribers: [] };
-  }
-}
-
-async function saveSubscribers(data: SubscribersData): Promise<void> {
-  const dir = path.dirname(SUBSCRIBERS_FILE);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(SUBSCRIBERS_FILE, JSON.stringify(data, null, 2));
-}
-
 export async function POST(request: NextRequest) {
+  if (!MAILCHIMP_API_KEY || !MAILCHIMP_AUDIENCE_ID || !MAILCHIMP_SERVER_PREFIX) {
+    console.error('Mailchimp environment variables not configured');
+    return NextResponse.json(
+      { error: 'Newsletter service not configured' },
+      { status: 503 }
+    );
+  }
+
   try {
     const body = await request.json();
-    const { email, honeypot, segment } = body;
+    const { email, honeypot } = body;
 
-    // 1. Honeypot check (if honeypot field is filled, it's a bot)
+    // 1. Honeypot check
     if (honeypot) {
-      return NextResponse.json(
-        { error: 'Invalid submission' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid submission' }, { status: 400 });
     }
 
     // 2. Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
 
     // 3. Rate limiting by IP
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     const now = Date.now();
     const lastSubmission = recentSubmissions.get(ip);
-    
+
     if (lastSubmission && now - lastSubmission < RATE_LIMIT_MS) {
       return NextResponse.json(
         { error: 'Please wait before submitting again' },
@@ -69,49 +44,49 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 4. Load existing subscribers
-    const data = await loadSubscribers();
+    // 4. Subscribe via Mailchimp API
+    const url = `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_AUDIENCE_ID}/members`;
 
-    // 5. Check for duplicates
-    const exists = data.subscribers.some(sub => sub.email.toLowerCase() === email.toLowerCase());
-    if (exists) {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${Buffer.from(`anystring:${MAILCHIMP_API_KEY}`).toString('base64')}`,
+      },
+      body: JSON.stringify({
+        email_address: email.toLowerCase(),
+        status: 'subscribed',
+        tags: ['blog'],
+      }),
+    });
+
+    const data = await response.json();
+
+    // Already subscribed — treat as success (don't leak subscription status)
+    if (response.status === 400 && data.title === 'Member Exists') {
+      return NextResponse.json({ success: true, message: 'Successfully subscribed!' }, { status: 200 });
+    }
+
+    if (!response.ok) {
+      console.error('Mailchimp error:', data);
       return NextResponse.json(
-        { error: 'Email already subscribed' },
-        { status: 400 }
+        { error: 'Could not subscribe. Please try again.' },
+        { status: 500 }
       );
     }
 
-    // 6. Add new subscriber
-    const subscriber: Subscriber = {
-      email: email.toLowerCase(),
-      timestamp: now,
-      segment,
-      userAgent: request.headers.get('user-agent') || undefined,
-    };
-
-    data.subscribers.push(subscriber);
-    await saveSubscribers(data);
-
-    // 7. Update rate limit tracking
+    // 5. Update rate limit tracking
     recentSubmissions.set(ip, now);
-
-    // Clean up old rate limit entries (older than 5 minutes)
     for (const [key, timestamp] of recentSubmissions.entries()) {
-      if (now - timestamp > 300000) {
-        recentSubmissions.delete(key);
-      }
+      if (now - timestamp > 300000) recentSubmissions.delete(key);
     }
 
     return NextResponse.json(
       { success: true, message: 'Successfully subscribed!' },
       { status: 200 }
     );
-
   } catch (error) {
     console.error('Newsletter subscription error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
