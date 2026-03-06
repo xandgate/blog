@@ -57,7 +57,7 @@ const home: Home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: `${person.name} – Software Architect`,
+  title: `${person.name} – Enterprise Architect`,
   description: `Portfolio of ${person.name}: Enterprise platform modernization, accessibility & GovTech specialist`,
   headline: (
     <>
