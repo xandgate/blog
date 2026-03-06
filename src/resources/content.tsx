@@ -14,12 +14,11 @@ const person: Person = {
 
 const newsletter: Newsletter = {
   display: true,
-  title: <>Newsletter, TBD</>,
+  title: <>The Long Game</>,
   description: (
     <>
-      No newsletter yet—I'll start one if there's interest. Sign up to vote yes.
-      Topics: enterprise and civic tech, modern tooling, and what actually works
-      when shipping production systems.
+      Practical writing on enterprise platforms, government tech, and what AI 
+      actually changes when the stakes are real. Occasional. Worth it.
     </>
   ),
 };
@@ -90,7 +89,7 @@ const home: Home = {
     ),
     "ai-enabled": (
       <>
-        <Text as="span" size="xl" weight="strong">AI handles the implementation. Judgment is still the expensive part.</Text>
+        <Text as="span" size="xl" weight="strong">Code is getting cheaper. Judgment isn't. </Text>
       </>
     ),
   },
@@ -102,7 +101,7 @@ const home: Home = {
     ),
     "ai-enabled": (
       <>
-        Enterprise architect writing about AI-augmented engineering from inside regulated environments — government platforms, healthcare systems, federal security audits.
+        Enterprise architect in government platforms and regulated healthcare.
       </>
     ),
   },
@@ -129,11 +128,9 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        I design and deliver secure, compliant digital infrastructure for federal, state, and regulated enterprise organizations.
+        I've been building digital platforms for governments and enterprises since 2008 — starting with a small consultancy in Jamaica delivering web services for Caribbean governments, and most recently architecting platforms at Cigna handling four million visitors a month. In between: dozens of state and federal agencies, healthcare systems, a lot of late nights with systems that couldn't fail. 
         <br /><br />
-        My work focuses on architecting scalable, accessibility-aligned platforms that meet stringent governance, security, and operational requirements.
-        <br /><br />
-        I specialize in translating complex policy, compliance, and stakeholder needs into resilient, enterprise-grade systems built for long-term sustainability and modernization.
+        I care about platforms that are still running well in year ten, accessibility that actually works for people who depend on it, and the judgment to know when AI helps and when it doesn't.
       </>
     ),
   },
