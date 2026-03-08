@@ -131,9 +131,51 @@ const work: Work = {
 const gallery: Gallery = {
   path: "/gallery",
   label: "Gallery",
-  title: "Gallery",
-  description: "",
-  images: [],
+  title: "Photos",
+  description: "Photos by Varun Baker.",
+  // Photos by Varun Baker
+  images: [
+    {
+      src: "/images/gallery/horizontal-1.jpg",
+      alt: "Photo by Varun Baker",
+      orientation: "horizontal",
+    },
+    {
+      src: "/images/gallery/vertical-1.jpg",
+      alt: "Photo by Varun Baker",
+      orientation: "vertical",
+    },
+    {
+      src: "/images/gallery/horizontal-2.jpg",
+      alt: "Photo by Varun Baker",
+      orientation: "horizontal",
+    },
+    {
+      src: "/images/gallery/vertical-2.jpg",
+      alt: "Photo by Varun Baker",
+      orientation: "vertical",
+    },
+    {
+      src: "/images/gallery/horizontal-3.jpg",
+      alt: "Photo by Varun Baker",
+      orientation: "horizontal",
+    },
+    {
+      src: "/images/gallery/vertical-3.jpg",
+      alt: "Photo by Varun Baker",
+      orientation: "vertical",
+    },
+    {
+      src: "/images/gallery/horizontal-4.jpg",
+      alt: "Photo by Varun Baker",
+      orientation: "horizontal",
+    },
+    {
+      src: "/images/gallery/vertical-4.jpg",
+      alt: "Photo by Varun Baker",
+      orientation: "vertical",
+    },
+  ],
 };
 
 export { person, social, newsletter, home, about, blog, work, gallery };
