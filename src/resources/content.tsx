@@ -40,12 +40,6 @@ const social: Social = [
     essential: true,
   },
   {
-    name: "Instagram",
-    icon: "instagram",
-    link: "https://www.instagram.com/varunbaker",
-    essential: false,
-  },
-  {
     name: "Email",
     icon: "email",
     link: `mailto:${person.email}`,
@@ -84,9 +78,15 @@ const home: Home = {
   headlineBySegment: {
     govtech: (
       <>
-        <Text as="span" size="xl" weight="strong">Government platforms fail quietly.</Text>
+        <Text as="span" size="xl" weight="strong">Code is getting cheaper. Judgment isn't. </Text>
       </>
     ),
+    // Original govtech headline (may restore later):
+    // govtech: (
+    //   <>
+    //     <Text as="span" size="xl" weight="strong">Government platforms fail quietly.</Text>
+    //   </>
+    // ),
     "ai-enabled": (
       <>
         <Text as="span" size="xl" weight="strong">Code is getting cheaper. Judgment isn't. </Text>
@@ -96,9 +96,15 @@ const home: Home = {
   sublineBySegment: {
     govtech: (
       <>
-        Federal agencies, state portals, regulated healthcare — I build them so they don't.
+        Enterprise architect in government platforms and regulated healthcare.
       </>
     ),
+    // Original govtech subline (may restore later):
+    // govtech: (
+    //   <>
+    //     Federal agencies, state portals, regulated healthcare — I build them so they don't.
+    //   </>
+    // ),
     "ai-enabled": (
       <>
         Enterprise architect in government platforms and regulated healthcare.
