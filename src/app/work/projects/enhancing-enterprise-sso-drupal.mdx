@@ -1,105 +1,100 @@
 ---
-title: "Enhancing Enterprise SSO: Drupal SAML Authentication"
-publishedAt: "2025-08"
-summary: "Improved single sign-on reliability by extending the saml_auth module to support environment-specific configurations"
+title: "Making Drupal SAML Authentication Environment-Aware"
+publishedAt: "2026-03"
+summary: "Built environment-aware SAML authentication for a regulated Drupal platform using ConfigFactoryOverrideInterface and the Key module — zero upstream changes, full environment parity from local dev to production. Contributed the pattern back upstream."
 images:
   - "/images/projects/sso/cover.png"
 team:
   - name: "Varun Baker"
-    role: "Senior Software Engineer"
+    role: "Enterprise Architect"
     avatar: "/images/avatar.jpg"
-link: "https://www.drupal.org/project/saml_auth"
+link: "https://www.drupal.org/project/samlauth/issues/3578383"
 published: true
 ---
 
 ## Overview
 
-Improved single sign-on reliability and security by extending the `saml_auth` module to store Identity Provider (IdP) and Service Provider (SP) settings in environment variables instead of Drupal's database-stored configuration. This shift addressed a critical DevOps challenge: SSO settings typically differ across dev, staging, and production environments, and database-stored config made environment-specific deployments error-prone and manual. By externalizing these settings, teams could deploy code confidently across environments while maintaining proper SSO configuration for each, reducing deployment friction and testing overhead.
+A regulated enterprise platform was managing SAML Identity Provider configuration the same way it managed most other Drupal configuration: in the database, synced via config management. That works for most settings. For SSO endpoints, it was a deployment hazard.
+
+The solution uses `ConfigFactoryOverrideInterface` to inject Key-module-resolved values into Drupal's config system at runtime — without modifying the upstream `samlauth` module. A companion upstream contribution extends the module's existing `key:` prefix pattern to the IdP string fields that were missing it.
 
 ## The Problem
 
-Traditional Drupal configuration lives in the database, synced via config management. This works well for most settings, but creates friction for environment-specific values like SSO endpoints:
+Drupal's config management assumes settings are environment-agnostic. For most of a site's configuration, that's true. But SAML Identity Provider settings are fundamentally environment-specific: `idp_entity_id`, the SSO endpoint URL, the SLO endpoint URL. Development, staging, and production each point to different IdP instances — or should.
 
-**Development**: Points to test IdP with relaxed security
-**Staging**: Points to pre-production IdP mimicking production
-**Production**: Points to live enterprise IdP with strict security
+When a team copies a production database to staging — a routine operation — they carry production IdP configuration into a non-production environment. In the best case, authentication fails loudly. In the worst case, it succeeds silently, and staging sessions authenticate against the live enterprise IdP.
 
-Storing these in the database meant:
-- Manual reconfiguration after each environment refresh
-- Risk of accidentally deploying wrong IdP settings
-- Complicated testing workflows
-- Configuration drift between environments
+Teams typically reach for one of three workarounds, each with its own failure mode.
 
-## Solution Architecture
+The `settings.php` override is the quickest:
 
-**Environment Variable Integration**
-- Extended `saml_auth` module to read IdP/SP settings from environment variables
-- Maintained backward compatibility with database config
-- Provided clear precedence: environment variables override database values
-
-**Key Configuration Points**
-- IdP entity ID and SSO endpoint URLs
-- Service Provider entity ID and ACS URLs
-- Certificate paths and security settings
-- Attribute mapping (when environment-specific)
-
-**Implementation Pattern**
 ```php
-// Pseudo-code example
-$idp_entity_id = getenv('SAML_IDP_ENTITY_ID') 
-  ?: $config->get('idp_entity_id');
+$config['samlauth.authentication']['idp_entity_id'] = getenv('SAML_IDP_ENTITY_ID');
 ```
 
-**Deployment Workflow**
-1. Define environment-specific variables in hosting platform
-2. Deploy code across all environments
-3. SSO automatically configures per-environment
-4. Test with confidence—no manual configuration
+It works, but it bypasses Drupal's config layer entirely. The config inspector shows the database value, not the live value. The override is invisible to anyone reading the configuration admin UI. `settings.php` becomes a graveyard of one-off workarounds that nobody audits and everyone inherits.
 
-## Technologies Used
+The `config_split` module is the more structured answer — it lets you define environment-specific config splits that activate based on a flag, keeping environment config out of your main sync directory. It is genuinely useful for feature flags and environment-scoped settings, but it fast becomes cumbersome for secrets management in practice. You are still storing the actual IdP values in configuration files, which means they live in or adjacent to version control. Rotating a credential means a config export, a commit, and a deploy. For values that need to stay out of the repository entirely — IdP certificates, endpoint URLs that vary per client — `config_split` solves the wrong problem.
 
-- **Drupal 9/10**: Enterprise CMS platform
-- **saml_auth module**: Drupal SAML authentication integration
-- **SimpleSAMLphp**: SAML 2.0 authentication library
-- **Environment variables**: 12-factor app configuration pattern
+The right tool for secrets is a secrets manager. In Drupal's ecosystem, that's the Key module.
 
-## DevOps Benefits
+## The Architecture
 
-**Reliable Deployments**
-- Zero manual configuration post-deployment
-- Consistent behavior across environment refreshes
-- Reduced deployment documentation
+### ConfigFactoryOverrideInterface
 
-**Testing Improvements**
-- Developers can test SSO locally with test IdP
-- Staging environment accurately mimics production
-- Faster QA cycles with working authentication
+The production solution is a lightweight custom module implementing Drupal's `ConfigFactoryOverrideInterface`. When Drupal loads `samlauth.authentication`, this module intercepts the config object and injects Key-resolved values before `samlauth` ever reads them.
 
-**Security Enhancements**
-- Production credentials never in version control
-- Clear separation between environment configurations
-- Easier credential rotation
+```php
+public function loadOverrides($names) {
+  if (!in_array('samlauth.authentication', $names)) {
+    return [];
+  }
+  return [
+    'samlauth.authentication' => [
+      'idp_entity_id'              => $this->resolveKey('saml_idp_entity_id'),
+      'idp_single_sign_on_service' => $this->resolveKey('saml_idp_sso_url'),
+      'idp_single_log_out_service' => $this->resolveKey('saml_idp_slo_url'),
+    ],
+  ];
+}
+```
 
-## Challenges & Solutions
+The module makes zero changes to upstream `samlauth`. When samlauth ships a new release, the override module survives the update unchanged. The separation is explicit: samlauth handles SAML protocol logic; this module handles environment-specific configuration injection. That boundary matters for a platform under active maintenance.
 
-**Challenge**: Supporting both legacy database config and new environment variable approach
-**Solution**: Implemented graceful fallback with clear precedence rules
+### The Key Module
 
-**Challenge**: Different teams had different hosting platforms with varying environment variable support
-**Solution**: Documented multiple approaches (`.env` files, platform-specific configs, Docker secrets)
+Rather than calling `getenv()` directly, the override resolves values through Drupal's Key module. Key entities are named secrets with swappable providers. An entity using the environment provider reads from `$_ENV` at runtime. The same entity can be switched to read from HashiCorp Vault, a file on disk, or a different variable — without changing PHP.
 
-**Challenge**: Debugging SAML issues when config sources weren't obvious
-**Solution**: Added admin UI indicators showing config source for each setting
+This matters in regulated environments. Credential rotation changes a Key entity's provider configuration, not code. The secret source is auditable through Drupal's admin UI. And local development, CI, staging, and production all use the same Key entity names with different providers per environment — no special-casing in application code.
 
-## Impact
+### The Gap in Upstream samlauth
 
-- **Eliminated** manual SSO reconfiguration after database refreshes
-- **Reduced** deployment errors related to SSO misconfiguration
-- **Accelerated** testing cycles with reliable environment-specific configs
-- **Improved** security posture through environment variable best practices
+The `samlauth` module has supported the Key module for certificate fields since version 3.3: store `key:my-cert-name` as the config value and `SamlService::reformatConfig()` resolves it at runtime. The gap was that IdP string fields — entity ID, SSO URL, SLO URL — didn't support the same `key:` prefix pattern. Only cert values did.
+
+The `ConfigFactoryOverrideInterface` module bridges this for production. But it means every team solving this problem has to write the same custom module. That is the upstream gap worth addressing.
+
+## Local Testing
+
+SAML development without a local identity provider is a productivity drain — every auth test requires a live IdP. The development environment runs SimpleSAMLphp as a mock IdP via a DDEV custom docker-compose service. Developers can exercise the full authentication loop locally without touching production credentials. Mock IdP, Key entities reading from DDEV environment configuration, local Drupal: the same configuration structure that deploys to staging and production, running entirely on a laptop.
+
+## The Upstream Contribution
+
+The custom module is the correct production approach when stability guarantees matter. It is not the right long-term answer for the ecosystem.
+
+The upstream contribution — [issue #3578383](https://www.drupal.org/project/samlauth/issues/3578383) against `samlauth` — extends the existing `key:` prefix pattern in `SamlService.php` to the three IdP string fields and adds corresponding form UI. The implementation adds a `resolveKeyValue()` static helper that mirrors the existing cert resolution logic, three callsites in `reformatConfig()`, and conditional form widgets controlled by `#states`. If it lands, teams configure environment-aware SAML directly through the samlauth admin interface — no custom module required.
+
+The measure of whether the upstream contribution succeeds is simple: the custom override module becomes unnecessary.
+
+## Technologies
+
+- **Drupal 10** — enterprise CMS platform
+- **samlauth** — SAML 2.0 authentication integration, contrib module
+- **Key** — Drupal secrets management with swappable providers
+- **SimpleSAMLphp** — used as mock identity provider for local development
+- **DDEV** — local development environment
 
 ## Outcome
 
-The enhancement transformed SSO from a deployment pain point into a non-issue. DevOps teams could deploy confidently knowing SSO would "just work" in each environment. The pattern proved valuable enough that the team adopted it for other environment-specific configurations beyond SAML.
+Database copies no longer carry wrong IdP configuration into non-production environments. The authentication layer resolves from the environment at runtime — a database refresh does not require a manual reconfiguration step.
 
-This project demonstrated that sometimes the most impactful engineering work isn't building new features—it's removing friction from existing workflows.
+The pattern transfers. Any Drupal configuration that varies by environment and involves credentials — OAuth client secrets, API keys, encryption keys — can use the same Key module and `ConfigFactoryOverrideInterface` approach. Getting SAML right was worth doing for its own sake. The architectural pattern it established was worth more.
