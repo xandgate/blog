@@ -1,0 +1,107 @@
+---
+title: "The Onion Problem: Why Economies Fail to Grow What They Already Need"
+publishedAt: "2026-03-13"
+summary: "Jamaica imports onions. Every household cooks with them daily. The soil grows them fine. This isn't an agricultural failure — it's an information failure. And China figured out how to solve it before anyone was paying attention."
+tag: "AI Engineering"
+image: "/images/blog/farm-credibly.jpg"
+---
+
+Jamaica imports onions.
+
+Every Jamaican household cooks with them. The climate is fine. The soil works. Labour is available. And yet, onions arrive in containers from abroad while local farmers grow other things or nothing at all.
+
+If you're waiting for a market to fix this, you've been waiting a while.
+
+This is not really a story about onions. It's a story about why economies fail to coordinate around obvious opportunities — and what it would take to change that. It's also a story about China, about a startup I built called Farm Credibly, and about what AI might finally make possible that blockchain couldn't.
+
+## Coordination is the hard part
+
+Standard economic thinking says markets are self-correcting. If there's unmet local demand for onions, prices signal that opportunity, farmers respond, problem solved.
+
+Except markets only self-correct when the participants have the same information. A Jamaican farmer considering whether to plant onions doesn't have access to buyer demand curves, import volumes, pricing trends, or knowledge of which distributors would actually switch to local supply. The distributor importing onions has an established supplier relationship that works — switching to local involves uncertainty they're not compensated for taking on. The bank that might finance the transition doesn't have reliable data on the farmer's income or land productivity.
+
+Everyone is acting rationally on incomplete information. The market doesn't fail because people are bad at economics. It fails because the information required to coordinate action across buyers, sellers, financiers, and producers simply isn't available to everyone who needs it.
+
+Economists call this the coordination problem. It's one of the oldest and least-solved problems in development economics. And while Western policy has mostly tried to solve it with grants, subsidies, and trade agreements, China took a different approach entirely.
+
+## What China actually built
+
+China's economic rise has been attributed to many things — cheap labour, government investment, scale. What gets less attention is the information infrastructure that makes their economy unusually responsive to deliberate steering.
+
+WeChat and Alipay didn't just replace cash. They created a unified transaction layer across an economy of 1.4 billion people. When a farmer in Sichuan sells peppers, that transaction is recorded in a system connected to the buyer's purchase history, the logistics company's delivery records, and the financial system that might extend credit against future harvests. The government, the banks, and the platforms all read from versions of the same data.
+
+The result is that China can do something most economies cannot: see a gap in domestic supply, identify the farmers with capacity to fill it, route capital to them specifically, and track whether production actually increases. Not in years — in months.
+
+This is not primarily a story about authoritarianism, though the surveillance costs are real and shouldn't be minimised. It's a story about **what becomes possible when you build an economy's information layer deliberately instead of letting it fragment across thousands of private databases that companies protect as competitive assets**.
+
+The free market, left to itself, produces no incentive for a supermarket chain to share its purchase data with a farmer's cooperative. It produces no incentive for a bank to share its credit data with a competitor's agricultural lending team. Everyone hoards information because information is competitive advantage. The aggregate effect is an economy flying partially blind.
+
+## Estonia proves you don't need authoritarianism to solve this
+
+Before this sounds like an argument for centralised control, consider Estonia.
+
+A country of 1.3 million people, Estonia built X-Road — a data exchange layer connecting government services, banks, healthcare providers, and businesses under a shared digital identity infrastructure. Every Estonian citizen has a digital ID that lets them interact with any registered institution. The data moves between systems through a protocol designed for interoperability, not a single government database.
+
+The result: Estonia can process most government services in minutes. Businesses can verify customers, assess credit, and access regulatory approvals with vastly lower friction than in countries where every institution maintains its own disconnected silo.
+
+Estonia didn't build this because of authoritarianism. It built it because it was small enough to move fast, had enough political will to push through the institutional resistance, and understood early that information infrastructure was as important as physical infrastructure.
+
+Jamaica is also small. That's an asset, not a limitation. Small countries can move at a speed that a country of 200 million cannot.
+
+## Why mobile money failed to take root in Jamaica
+
+The standard playbook for financial inclusion in developing economies points to M-Pesa. Kenya's mobile money service launched in 2007, and by 2018 over 96% of Kenyan households were using it. Surely, the logic goes, Jamaica could replicate that.
+
+It hasn't. Multiple mobile money initiatives have launched in Jamaica. None achieved the penetration that would make them a genuine economic infrastructure.
+
+The reasons are instructive. M-Pesa spread in Kenya partly because Kenya was large, cash was genuinely hard to move across the country, and Safaricom had over 80% of the mobile market — enough dominance to create network effects overnight. Jamaica is small enough that cash moves easily. No single telco had that dominance. And Jamaica's banking penetration, while deeply unequal, was already higher than Kenya's in 2007 — the population wasn't as dramatically underserved by basic financial infrastructure.
+
+The broader lesson is one that Farm Credibly learned: you cannot transplant a technology solution from one social context to another and expect the same outcome. Technology adoption is a social phenomenon. The infrastructure that made M-Pesa work was not just mobile phones — it was the specific combination of market structure, geography, and unmet need that existed in Kenya at that moment.
+
+This matters for anyone thinking about agritech, fintech, or development technology in the Caribbean. The solution cannot be "what worked elsewhere." It has to be designed for the actual social and economic conditions on the ground.
+
+## The blockchain attempt
+
+Farm Credibly was built on a specific insight: the reason Jamaican farmers can't access capital isn't that they're bad credit risks. It's that no one has the data to assess their creditworthiness.
+
+Modern accounting runs on double-entry bookkeeping — a system formalised in 1494 that made large-scale commerce possible by building verifiability into record-keeping. Most Jamaican subsistence farmers have no formal accounts. From a bank's perspective, they're invisible.
+
+Blockchain offered something interesting here: triple-entry accounting. Every transaction gets a third validation — an immutable record that no single party controls. If a farmer has supplied scotch bonnet peppers to the same agro-processor for three years, that transaction history exists on-chain as a verifiable asset. It's more reliable evidence of creditworthiness than most bank statements.
+
+We connected that data to investors through a crowdfunding model. The farmer expands production. The investor gets a return. The agro-processor gets supply. An information problem gets turned into a capital flow.
+
+Between 2013 and 2017, Jamaica's exports of fresh hot peppers grew by 713%. The demand was real. The farmers with capacity to supply it were real. The missing piece was a mechanism to turn three years of verified pepper sales into a loan.
+
+Farm Credibly built that mechanism. The harder problem was adoption — getting farmers, buyers, and investors onto a shared infrastructure when none of them had a prior relationship with blockchain, and when Jamaica's mobile money failures had already demonstrated that building new financial rails requires more than a compelling technical argument.
+
+## What changes with AI
+
+Blockchain asked farmers to do something unfamiliar: record transactions on a distributed ledger, manage digital wallets, interact with smart contracts. The technical barrier was real. The social barrier was higher.
+
+A large language model asks for something different: a conversation.
+
+In 2026, the tools exist to build a system where a farmer describes their operation in plain language — what they grow, who they sell to, how much, what their costs are — and that conversation gets structured into a verifiable, queryable credit profile. No wallet. No private key. No interface that requires financial literacy to navigate. Just a conversation.
+
+That's not the whole solution. Data from farmers still needs to connect to buyers, to banks, to government, to close the coordination gap that makes the onion problem persist. But it dramatically lowers the adoption barrier for the data collection layer that everything else depends on.
+
+The underlying problem hasn't changed since Farm Credibly: agriculture in developing economies is information-sparse, trust-expensive, and chronically underfinanced. What's changed is the tooling. And sometimes that's enough.
+
+## The takeaways that travel
+
+This is a Jamaica story, but the framework applies everywhere:
+
+**Economic development is a coordination problem before it's a capital problem.** Most developing economies don't lack the resources to produce what they consume. They lack the information infrastructure to coordinate buyers, producers, and financiers around the same opportunity simultaneously.
+
+**Data silos are a form of market failure.** When every participant in a supply chain protects their data as a competitive asset, the economy as a whole loses the ability to self-correct. The free market does not naturally produce the public good of economic coordination data.
+
+**China's edge is partly informational.** The West has been slow to recognise that part of China's economic planning capability comes from having built, through WeChat and Alipay and a regulatory environment that compelled data sharing, something that no Western economy has deliberately built: a unified view of its own economic activity.
+
+**Smallness is an advantage if you use it.** Countries like Estonia and Singapore built world-class data infrastructure precisely because their scale made coordination tractable. Jamaica has the same advantage. The question is political will, not technical capability.
+
+**Technology adoption is social, not technical.** M-Pesa didn't work in Jamaica because M-Pesa wasn't the variable. The specific social conditions that produced M-Pesa's success in Kenya weren't present. Any technology intervention that ignores this will fail regardless of how good the technology is.
+
+The onion is still being imported. But the framework for why — and what a genuine solution would require — is no longer as obscure as it once was. That feels like progress.
+
+---
+
+*Farm Credibly was founded to address agricultural finance gaps in Jamaica using distributed ledger technology. The author served as CEO.*
