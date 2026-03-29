@@ -1,0 +1,205 @@
+---
+title: "Before You Build Anything with OpenClaw, Do These Seven Things"
+subtitle: "A setup guide from someone who has watched a lot of people do this wrong"
+summary: "Most people who abandon OpenClaw do it in the first two weeks. Not because the tool is bad—because they set it up badly. Here's what I wish someone had told me on day one."
+image: "/images/gallery/openclaw-setup-guide.png"
+publishedAt: "2026-03-25"
+tag: "AI Engineering"
+---
+
+I've been watching people install OpenClaw for a while now. In forums, in Discord, in direct messages from people who read something I wrote. The pattern is remarkably consistent: someone installs it, spends their first three days amazed, their next three days confused, and somewhere in week two quietly stops using it.
+
+It's not the tool. It's the setup.
+
+There are about seven things that, if you do them before you build anything, will make the difference between an agent that's genuinely woven into how you work and one that quietly sits unused in a terminal somewhere. I'll go through them in order. Do them in order.
+
+---
+
+## 1. You're probably running the most expensive model. Change it.
+
+OpenClaw defaults you to Opus—or, depending on when you installed it, whichever the most capable model on the platform is at that moment. Opus is extraordinary for genuinely hard problems. It is complete overkill for "remind me to call the dentist" and "summarize this article."
+
+The first thing to do, before your first real conversation, is switch to Sonnet:
+
+```json
+{
+  "ai": {
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}
+```
+
+You will not notice the difference on everyday tasks. You will notice the difference when your bill arrives. I've seen people spending $40-50 a week without touching anything exotic—running their agent on Opus through normal daily use. The same agent on Sonnet costs $5-8 a month for moderate use. Same conversations, same outcomes, dramatically different economics.
+
+Get your costs predictable before you add any complexity. This is step one because everything else you configure builds on top of this.
+
+---
+
+## 2. Decide whether you're running locally or in the cloud—and then lock it down.
+
+This is where the decision tree splits, and where most tutorials assume something that isn't universally true.
+
+If you're running OpenClaw on your local machine—laptop, Mac mini, home server—you have one set of concerns. If you're running it on a cloud VPS, which is how I'd recommend most people do this, you have different ones.
+
+**On a VPS**, the first thing to check after installation:
+
+```bash
+openclaw config get | grep host
+```
+
+If that returns `0.0.0.0`—or returns nothing—your agent is reachable by anyone who finds your IP address. That means a stranger could message your agent. Your agent that's about to have access to your calendar, your email, your documents. Fix it immediately:
+
+```json
+{
+  "gateway": {
+    "host": "127.0.0.1"
+  }
+}
+```
+
+Then access it via SSH tunnel:
+
+```bash
+ssh -L 18789:localhost:18789 user@your-vps
+```
+
+This takes two minutes. Do it before you configure anything else.
+
+**On the cloud question more broadly**: I personally prefer running OpenClaw on a VPS rather than a local machine. It's always on, it doesn't die when you close your laptop, and heartbeat checks and cron jobs work properly when your machine isn't in sleep mode. Providers like Azin or Hostinger have entry-level plans that are more than sufficient—you're not running heavy workloads, just a persistent process that talks to an API. The SSH tunnel above is your ingress; it's not complicated to set up and it means you're not exposing anything to the public internet.
+
+The tradeoff is that your agent files live on a remote server rather than locally. If that matters to you for data residency reasons, local is fine. But for most people, the "always on" benefit of a cloud VPS is worth the small operational overhead.
+
+---
+
+## 3. Set up your SOUL.md before your first real conversation.
+
+Your first message to a new OpenClaw agent should not be a task. It should be setup.
+
+The agent ships with a `BOOTSTRAP.md` that walks you through its own initialization. Run through it. This is where you tell your agent its name, who you are, what you do, how you want it to communicate. Skip this and you get an agent that's technically functional and generically robotic. Every interaction will feel like talking to a very capable stranger who doesn't know you.
+
+If you've already skipped it—most people have, because they get excited and start asking questions immediately—create a `SOUL.md` manually:
+
+```markdown
+You are [name]. You assist [your name].
+
+Be direct. No filler. Match my tone.
+Answer the question first. Elaborate only if it adds something.
+Never say "absolutely", "great question", or "I'd be happy to."
+If you don't know something, say so. Don't guess.
+If a task will cost significant tokens, tell me before doing it.
+```
+
+Six lines. It works. Edit it over the next week based on what annoys you—specific "never do X" instructions work better than vague "try to be Y" aspirations. Your SOUL.md ends up being shaped more by irritation than planning, and that's fine. That's how it should work.
+
+---
+
+## 4. Install LCM before your agent builds up any history.
+
+By default, when a conversation grows beyond the model's context window, OpenClaw truncates older messages. That's the only thing it can do. Old context just disappears.
+
+[LCM (Lossless Context Management)](https://github.com/martian-engineering/lossless-claw) replaces that truncation with something better: every message is persisted to a local SQLite database, older chunks get summarized by an LLM into a DAG of condensed nodes, and each turn assembles context from those summaries plus your recent raw messages. Nothing is ever actually deleted. The summaries link back to their source messages, and the agent has tools—`lcm_grep`, `lcm_describe`, `lcm_expand`—to search and drill into anything that's been compacted.
+
+Install it in one command:
+
+```bash
+openclaw plugins install @martian-engineering/lossless-claw
+```
+
+One configuration worth setting immediately: pin the summarization to a cheaper model so LCM's compaction passes don't run on Sonnet when Haiku is more than adequate for summarizing conversation chunks:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "lossless-claw": {
+        "enabled": true,
+        "config": {
+          "summaryProvider": "anthropic",
+          "summaryModel": "claude-3-5-haiku"
+        }
+      }
+    }
+  }
+}
+```
+
+Also pair it with a longer session idle window so LCM has something meaningful to work with:
+
+```json
+{
+  "session": {
+    "reset": {
+      "mode": "idle",
+      "idleMinutes": 10080
+    }
+  }
+}
+```
+
+The subjective experience of this is hard to describe until you've had it. After a few weeks, the agent stops feeling like it has a goldfish memory. It remembers decisions you made two months ago, catches inconsistencies with things you said in passing, builds up a coherent model of your preferences and context over time. It feels less like a session and more like a relationship. Install it early, while your history is still empty and there's nothing to migrate.
+
+---
+
+## 5. Give your agent its own Bitwarden account.
+
+This one sounds like it belongs on week three. It doesn't. Get it right from the start.
+
+Your agent is going to need credentials: API keys, service logins, tokens for external integrations. The lazy approach is to put these directly in config files or environment variables. The problem with that approach is you now have no meaningful separation between what your agent can access and what you access—and no easy way to rotate or revoke.
+
+The cleaner approach: create a separate Bitwarden account for your agent. Not your Bitwarden account. A new one. Then use Bitwarden's CLI to let your agent retrieve exactly the credentials it needs:
+
+```bash
+bw login
+bw get password "OpenClaw API Key"
+```
+
+What this gives you is explicit, auditable, revocable access. Your agent has its logins. You have yours. When something needs rotating, you rotate it in one place. When you want to audit what your agent has access to, you look at one account. When you inevitably set up a second agent or hand access to someone else, the credential boundary is already drawn.
+
+The slight overhead of setting this up on day one is nothing compared to the overhead of untangling shared credentials six months in.
+
+---
+
+## 6. Learn /new before you think you need it.
+
+Every message you send in a session gets included in every subsequent API call. That's how context works. After a week of normal daily conversation, you're sending thousands of tokens of old history with every new message. That's money, and it's also degraded performance—agents get noisier and more confused as context windows fill up with old, irrelevant conversation.
+
+`/new` starts a fresh session. The agent doesn't forget anything—it still has SOUL.md, all its memory files, all its configured tools. You're just clearing the conversation buffer, which is not the same as memory.
+
+Use it:
+- Before any substantial task (research, writing, long analysis)
+- When the agent starts acting confused or giving unexpected responses
+- At least once a day as a habit
+
+Most people discover `/new` when something's going wrong and they're trying to fix it. The right time to build the habit is before anything's broken.
+
+---
+
+## 7. Don't install skills yet. Don't create a second agent yet.
+
+These are the two most common ways people derail themselves in week one, and they often happen in the same sitting.
+
+Skills first. Clawhub has thousands of them and they look impressive. Some of them are impressive. Some of them run loops silently in the background and burn tokens you'll discover on your next billing statement. Some inject into every conversation and fill your context window with overhead you didn't ask for. Several hundred have been flagged for malicious behavior—infostealers, backdoors, the usual. You don't yet know which is which, and you don't yet know what your agent is capable of without any of them.
+
+Use your agent without skills for a week. You'll be surprised what it handles natively. After that week, add one skill. Test it for a few days before you add another. Never install skills you haven't read the source of.
+
+Second agents: you don't need one. Every new agent you create is a separate token consumer with its own configuration, its own channel binding, and its own debugging surface. The instinct to create a "work agent" and a "personal agent" and a "coding agent" feels rational and immediately doubles or triples your problem space. Get one agent working well first. Most people who reach for a second agent do it because the first one isn't working the way they want—and the answer there is refinement, not proliferation.
+
+---
+
+## What the first two weeks should actually look like
+
+Days 1–2: set up SOUL.md and Bitwarden. Have normal conversations. Ask dumb questions. Get comfortable with how the agent responds and start shaping its personality through your SOUL.md.
+
+Days 3–5: real tasks. Calendar queries, web searches, summarizing things you don't have time to read. The useful-but-boring stuff. This is where you validate that your setup is sound.
+
+Days 6–7: review your costs. Check `openclaw status` or your API provider's dashboard. If you're on Sonnet with one agent and no skills, you should be at $3–8 for the week. If you're significantly over that, something's consuming tokens it shouldn't be and it's worth finding before it compounds.
+
+Week two: same, but more deliberate. Refine your SOUL.md. Start thinking about what skill, if any, you'd actually want to add. Begin evaluating whether LCM is set up the way you want it.
+
+That's it. No orchestration, no multi-agent setup, no cron jobs. One agent. Boring, stable, useful.
+
+The people who are still using OpenClaw two months from now all started exactly like this. The people who burned out started with eight agents and twenty skills on day one. There's something to that pattern that's worth sitting with.
+
+---
+
+*What's the thing that derailed your first week with an AI agent? The more specific, the more useful—there's probably a pattern in it.*
