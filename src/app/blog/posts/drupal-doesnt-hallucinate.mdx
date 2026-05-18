@@ -1,0 +1,108 @@
+---
+title: "Drupal Doesn't Hallucinate"
+subtitle: "Why structured content became the most valuable asset in an AI-first web — and why Drupal was already there."
+summary: "Machines became the majority of your web audience in 2024. AI systems are actively reasoning over your content to answer questions on behalf of users who will never visit your site. The organisations that get this right share one thing: structured, authoritative content. After attending the FOST Drupal AI Summit in New York, here's the argument for why your CMS choice is now a trust infrastructure decision."
+image: "/images/blog/drupal-ai.jpg"
+publishedAt: "2026-05-16"
+tag: "AI Engineering"
+---
+
+Sometime in 2024, machines quietly became the majority of your audience.
+
+Not bots scraping pages for SEO fraud. AI systems actively reasoning over your content — in real time, on behalf of human users who will never visit your site — to answer questions you'll never see asked.
+
+The problem this creates isn't a traffic problem. It's a trust problem. When an AI tells someone what your organisation does, gets your eligibility criteria wrong, or cites a policy you updated eighteen months ago — that's not the AI's credibility on the line. It's yours.
+
+**This is the question your content architecture either answers or doesn't: when a machine reasons over what you've published, what does it find?**
+
+I was at the FOST Drupal AI Summit in New York last week, sitting in a room of developers, architects, and product leads wrestling with exactly this. The demos were interesting. The case studies were sharper. But the insight that stayed with me wasn't about features. It was about foundations — and why the organisations that have invested in structured content for decades are suddenly, unexpectedly, ahead.
+
+## The Scale of the Problem You Already Have
+
+Here is the counterintuitive finding that stopped several conversations at the summit cold: publishers who blocked AI crawlers from their sites lost approximately [**7% of their weekly human traffic**](https://ppc.land/blocking-ai-crawlers-cost-news-publishers-7-of-traffic-study-finds/) within six weeks, according to a Wharton/Rutgers study. Blocking the machines cost them real human readers. AI visibility and human visibility are no longer separable.
+
+The scale behind that finding: in 2024, automated traffic [surpassed human traffic for the first time in a decade](https://www.imperva.com/resources/resource-library/reports/2025-bad-bot-report/) — accounting for 51% of all global web traffic per Imperva's Bad Bot Report. By 2025 it had [reached 53%](https://securitybrief.co.uk/story/bots-make-up-53-of-web-traffic-thales-report-says), with automated traffic growing [eight times faster](https://www.humansecurity.com/newsroom/2026-state-of-ai-traffic-cyberthreat-benchmark-report/) than human traffic according to HUMAN Security.
+
+The AI-specific numbers are even more instructive. [Cloudflare's 2025 crawler analysis](https://blog.cloudflare.com/from-googlebot-to-gptbot-whos-crawling-your-site-in-2025/) recorded GPTBot — OpenAI's training crawler — up 305% year-on-year. But the more revealing number is ChatGPT-User, up 2,825% in the same period. The distinction matters: GPTBot crawls your site to *train* models. ChatGPT-User visits your site *while reasoning* — in real time, mid-conversation, to answer a specific question. Your content is being actively consulted right now, by systems you didn't invite, to produce answers you won't review.
+
+The downstream effect on human traffic is already measurable. [Pew Research found](https://www.pewresearch.org/internet/2025/03/18/ai-overviews-in-search/) that for queries where an AI summary appeared, users clicked through to a source only 8% of the time, versus 15% without one. [Gartner and iO Digital](https://press.iodigital.com/io-predicts-organic-search-traffic-to-plummet-50-by-2028-as-ai-transforms-customer-behaviour) project a 50% decline in organic search traffic by 2028.
+
+Your content strategy was designed for human readers. That audience is now a minority — and shrinking.
+
+## Why AI Gets Things Wrong (And What Actually Fixes It)
+
+The hallucination problem is real, but it's frequently misdiagnosed. The dramatic version — AI invents citations, fabricates court cases — gets the attention. The costly version is subtler: AI gives a plausible-sounding answer that is *almost* right, drawn from content that is outdated, context-thin, or structurally ambiguous.
+
+The fix is not a better model. It's better source material.
+
+Most production AI assistants work through retrieval: before generating a response, the system searches a content corpus for relevant passages, then synthesises an answer from what it finds. The quality of the answer depends almost entirely on the quality of what it retrieves. Content that is clearly structured — typed fields, consistent vocabulary, explicit relationships between entities — produces better retrieval. Better retrieval produces more accurate answers. The content architecture decisions your organisation made five years ago are now directly shaping the quality of AI responses that cite you.
+
+Organisations that built in Drupal — with its enforced content types, taxonomies, and editorial workflows — have that foundation. Many others do not.
+
+## The Case That Proved It
+
+At the summit, this was the example that stopped the room.
+
+EPSO — the European Personnel Selection Office — runs EU Careers, the hiring portal for the entire European Commission. They built an AI assistant called Epsy, grounded in content managed through their Drupal system. Not a generic model. Not a search bar with a language layer on top. An assistant built on their own carefully maintained, human-reviewed content — competition procedures, eligibility criteria, account types, selection stages — structured in Drupal and kept current by editorial teams with clear ownership.
+
+Use it at [eu-careers.europa.eu/en/testing-ai](https://eu-careers.europa.eu/en/testing-ai). The first thing it asks: *which competition type, which stage, which account?* That is not friction. That is a system that knows its content has layers and respects them.
+
+It also tells you plainly that its answers may not always be fully accurate and asks for feedback to improve. Not a legal disclaimer. A design principle.
+
+This is what human-in-the-loop looks like when it's taken seriously: the AI is genuinely helpful, genuinely fallible, and genuinely accountable to the editorial process behind it. The CMS didn't just store the content. It enforced the quality standards that made the AI trustworthy enough to deploy.
+
+## When Your CMS Becomes an AI Endpoint
+
+The Drupal AI Initiative's dual strategy — and it is genuinely a strategy, not a feature list — maps directly onto this problem.
+
+The less architecturally interesting half is *inside-out*: AI embedded into the authoring experience itself. Field-level translation, summarisation, and rewriting. ECA (Event-Condition-Action) workflows for automatic tagging and metadata generation. A toolbar assistant that keeps editors in context. The goal is editorial velocity without sacrificing quality control — the human still approves before anything ships.
+
+The architecturally significant half is *outside-in*, specifically the implementation of the Model Context Protocol (MCP). A Drupal site with MCP enabled becomes a queryable endpoint: an external AI agent can retrieve structured data from your Drupal instance in real time, take actions on it, and do both within the permission model you've already defined. Your access controls, content types, and taxonomies carry over. The AI doesn't see what the user shouldn't see.
+
+The implication is a fundamentally different answer to the hallucination problem. Instead of training a model once and hoping its knowledge stays current, you give AI reasoning live, permission-aware access to a maintained content store. The answer is always as fresh as your last editorial update. This is not a chatbot bolted onto a website. It is content infrastructure designed to be reasoned over.
+
+## The Advantage That Doesn't Deprecate
+
+There is a harder argument to make for Drupal, and it's worth making plainly.
+
+When a change is proposed to Drupal core, it goes through review. Multiple contributors. Community consensus. Documented rationale. That process is slow by every measure that Silicon Valley uses to evaluate software development. It is also the reason that organisations with serious compliance requirements — government, healthcare, regulated finance — have consistently chosen Drupal for twenty years.
+
+The contrast with AI-generated code is not that AI skips review. You can wrap any review process around generated code. The contrast is what the review process carries. A patch from a Drupal contributor in 2018 carries the reasoning behind why a particular permission model was changed. An edge case that broke a previous approach is documented in the issue queue. The security considerations baked into an API design are traceable. That institutional knowledge does not transfer to an automated review tool. When you inherit a Drupal codebase, you inherit the thinking that produced it.
+
+That is the kind of trust that takes decades to build and cannot be replicated by a faster development cycle.
+
+**The honest counterargument:** Drupal is not the only CMS that supports structured content. Contentful, Sanity, and others offer typed content models and API-first delivery. The Drupal-specific advantage lies in its community review process, its depth of government adoption, and the maturity of its permission and workflow systems — not structured content alone. If your organisation doesn't need those things, the argument is weaker.
+
+## What This Means for Your Next Decision
+
+The question I get from clients has shifted. It used to be: *should we rebuild this on something more modern?* It is increasingly: *how do we make sure our content is ready for AI?*
+
+The answer is structured content — typed fields, clean taxonomies, separation of content from presentation, editorial workflows with clear ownership. These are not new ideas. They are what Drupal architects have been arguing for since before most current developers entered the industry, often to clients who wanted to move faster and structure later.
+
+Later is here.
+
+**Three things worth doing now:**
+
+1. **Audit your content types.** Are your fields typed? Are your taxonomies consistent? Are relationships between content explicit? If your content relies on freeform text fields and visual formatting to carry meaning, machines cannot reliably parse it.
+
+2. **Review your robots.txt.** Blanket blocking of AI crawlers has a documented cost to human traffic. A selective approach — distinguishing training crawlers from retrieval crawlers — is more defensible. Know what you're blocking and why.
+
+3. **Ask your CMS vendor what their MCP strategy is.** If they don't have a clear answer, that tells you something about how seriously they're treating the shift to machine-mediated content access.
+
+---
+
+Here is the irony that the Drupal community should own without apology: Drupal was never designed for machine consumption. It was built for human editorial teams managing complex content under regulatory pressure — teams that needed structure because *people* required accountability. Those constraints, which made Drupal feel heavy in the age of rapid iteration, are exactly what machines now reward.
+
+The web changed around Drupal. Drupal didn't need to change. It was already there.
+
+---
+
+## Sources
+
+- **Imperva 2025 Bad Bot Report** — 51% of web traffic automated in 2024: [imperva.com](https://www.imperva.com/resources/resource-library/reports/2025-bad-bot-report/)
+- **Thales 2026 Bad Bot Report** — 53% of web traffic automated in 2025: [securitybrief.co.uk](https://securitybrief.co.uk/story/bots-make-up-53-of-web-traffic-thales-report-says)
+- **HUMAN Security — 2026 State of AI Traffic & Cyberthreat Benchmark Report** — automated traffic growing 8x faster than human traffic: [humansecurity.com](https://www.humansecurity.com/newsroom/2026-state-of-ai-traffic-cyberthreat-benchmark-report/)
+- **Cloudflare — "From Googlebot to GPTBot: who's crawling your site in 2025"** — GPTBot +305%, ChatGPT-User +2,825%, Googlebot +96%: [blog.cloudflare.com](https://blog.cloudflare.com/from-googlebot-to-gptbot-whos-crawling-your-site-in-2025/)
+- **Wharton School & Rutgers Business School** — "Strategic Response of News Publishers to Generative AI" — blocking AI crawlers correlated with ~7% weekly traffic loss: [ppc.land summary](https://ppc.land/blocking-ai-crawlers-cost-news-publishers-7-of-traffic-study-finds/)
+- **Pew Research Center** — AI summaries reduce click-through from 15% to 8% for affected queries: [pewresearch.org](https://www.pewresearch.org/internet/2025/03/18/ai-overviews-in-search/)
+- **iO Digital / Gartner** — organic search traffic projected to fall 50% by 2028: [press.iodigital.com](https://press.iodigital.com/io-predicts-organic-search-traffic-to-plummet-50-by-2028-as-ai-transforms-customer-behaviour)
