@@ -154,28 +154,24 @@ const about: About = {
         role: "Drupal Developer (Lead)",
         achievements: [
           <>
-            Leading the Drupal 11 platform rebuild for the{" "}
-            <a href="https://www.nycstreetdesign.info" target="_blank" rel="noreferrer">
-              NYC Street Design Manual
-            </a>
-            {" "}— a reference platform used across city agencies — choosing a fresh D11 build
-            over in-place upgrade to eliminate legacy technical debt and establish a
-            maintainable, forward-compatible foundation.
+            Leading a ground-up Drupal 11 platform modernization for a New York City
+            government agency, rebuilding a public-facing digital reference system used
+            across city departments and engineering teams.
           </>,
           <>
-            Architecting and developing custom Drupal modules including a book navigation
-            block and a plant finder search interface, migrating complex jQuery-dependent
-            functionality to modern Drupal behaviors and accessible patterns.
+            Architecting custom content management solutions — structured navigation,
+            specialized search interfaces, and data-driven reference tools — replacing
+            legacy implementations with maintainable, accessible modern patterns.
           </>,
           <>
-            Managing phased content migration from Drupal 9 to Drupal 11 via migrate_plus,
-            covering 583 plant nodes, structured book content, and associated media assets
-            with zero data loss.
+            Managing phased migration of complex structured content, taxonomy hierarchies,
+            and media assets from a legacy Drupal platform, maintaining data integrity
+            and editorial continuity throughout.
           </>,
           <>
-            Scoping and delivering enhancements to the Spec &amp; Detail Finder, Siting
-            Guidelines database, revision tracking, and mobile layout — working onsite
-            with the IT&amp;T team and Urban Design Unit three days a week.
+            Embedded onsite three days a week, collaborating directly with agency IT and
+            design teams to scope, prioritize, and deliver across a multi-faceted content
+            platform serving both public and professional audiences.
           </>,
         ],
         images: [],
