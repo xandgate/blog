@@ -142,7 +142,7 @@ const about: About = {
         <br /><br />
         In an era of AI-driven development, the real value is judgment. Code is getting cheaper. Architectural decisions are getting more consequential. The stakes of digital infrastructure — for public health systems, government services, regulated data — keep rising. My expertise is knowing when technology helps and when it becomes a liability.
         <br /><br />
-        Born in Jamaica. Based in Fairfax, VA. Multilingual — English and Italian. Always building, always learning.
+        Born in Brazil. Based in Fairfax, VA. Multilingual — English and Italian. Always building, always learning.
       </>
     ),
   },
