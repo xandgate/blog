@@ -149,6 +149,38 @@ const about: About = {
     title: "Work Experience",
     experiences: [
       {
+        company: "NYC Department of Transportation",
+        timeframe: "Mar 2026 – Present",
+        role: "Drupal Developer (Lead)",
+        achievements: [
+          <>
+            Leading the Drupal 11 platform rebuild for the{" "}
+            <a href="https://www.nycstreetdesign.info" target="_blank" rel="noreferrer">
+              NYC Street Design Manual
+            </a>
+            {" "}— a reference platform used across city agencies — choosing a fresh D11 build
+            over in-place upgrade to eliminate legacy technical debt and establish a
+            maintainable, forward-compatible foundation.
+          </>,
+          <>
+            Architecting and developing custom Drupal modules including a book navigation
+            block and a plant finder search interface, migrating complex jQuery-dependent
+            functionality to modern Drupal behaviors and accessible patterns.
+          </>,
+          <>
+            Managing phased content migration from Drupal 9 to Drupal 11 via migrate_plus,
+            covering 583 plant nodes, structured book content, and associated media assets
+            with zero data loss.
+          </>,
+          <>
+            Scoping and delivering enhancements to the Spec &amp; Detail Finder, Siting
+            Guidelines database, revision tracking, and mobile layout — working onsite
+            with the IT&amp;T team and Urban Design Unit three days a week.
+          </>,
+        ],
+        images: [],
+      },
+      {
         company: "Express Scripts, The Cigna Group",
         timeframe: "Jun 2024 – Dec 2025",
         role: "Software Architect / Senior Drupal Engineer",
