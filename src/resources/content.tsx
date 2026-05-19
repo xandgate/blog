@@ -131,18 +131,16 @@ const about: About = {
   },
   intro: {
     display: true,
-    title: "Introduction",
+    title: "How I got here",
     description: (
       <>
-        I don't build software. I architect resilient platforms that transform how organisations think about technology.
+        I don't build software. I architect resilient platforms that transform how organizations think about technology.
         <br /><br />
         The work started in Jamaica — delivering web services to Caribbean governments, learning early that technology is never just code. It's problem-solving under constraint. Systems that have to work for people who depend on them, in environments that don't forgive failure. From there: state and federal agencies, regulated healthcare, platforms at Cigna handling four million visitors a month. Fifteen years of systems that couldn't afford to be wrong.
         <br /><br />
-        My work sits at the intersection of government digital transformation, enterprise platform resilience, and ethical AI integration — with accessibility as a first-class design principle, not an afterthought.
+        My work sits at the intersection of government digital transformation, enterprise platform resilience, and AI that earns its place in the stack — with accessibility as a first-class design principle, not an afterthought.
         <br /><br />
         In an era of AI-driven development, the real value is judgment. Code is getting cheaper. Architectural decisions are getting more consequential. The stakes of digital infrastructure — for public health systems, government services, regulated data — keep rising. My expertise is knowing when technology helps and when it becomes a liability.
-        <br /><br />
-        Born in Brazil. Based in Fairfax, VA. Multilingual — English and Italian. Always building, always learning.
       </>
     ),
   },
