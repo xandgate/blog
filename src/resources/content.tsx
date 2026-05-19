@@ -117,7 +117,7 @@ const about: About = {
   path: "/about",
   label: "About",
   title: `About – ${person.name}`,
-  description: `Meet ${person.name}, ${person.role} – Enterprise platform modernization, accessibility & GovTech specialist`,
+  description: `Enterprise Architect building resilient digital platforms for governments and regulated industries. 15+ years across federal agencies, healthcare systems, and Caribbean public services.`,
   tableOfContent: {
     display: true,
     subItems: false,
@@ -134,9 +134,15 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        I've been building digital platforms for governments and enterprises since 2008 — starting with a small consultancy in Jamaica delivering web services for Caribbean governments, and most recently architecting platforms at Cigna handling four million visitors a month. In between: dozens of state and federal agencies, healthcare systems, a lot of late nights with systems that couldn't fail. 
+        I don't build software. I architect resilient platforms that transform how organisations think about technology.
         <br /><br />
-        I care about platforms that are still running well in year ten, accessibility that actually works for people who depend on it, and the judgment to know when AI helps and when it doesn't.
+        The work started in Jamaica — delivering web services to Caribbean governments, learning early that technology is never just code. It's problem-solving under constraint. Systems that have to work for people who depend on them, in environments that don't forgive failure. From there: state and federal agencies, regulated healthcare, platforms at Cigna handling four million visitors a month. Fifteen years of systems that couldn't afford to be wrong.
+        <br /><br />
+        My work sits at the intersection of government digital transformation, enterprise platform resilience, and ethical AI integration — with accessibility as a first-class design principle, not an afterthought.
+        <br /><br />
+        In an era of AI-driven development, the real value is judgment. Code is getting cheaper. Architectural decisions are getting more consequential. The stakes of digital infrastructure — for public health systems, government services, regulated data — keep rising. My expertise is knowing when technology helps and when it becomes a liability.
+        <br /><br />
+        Born in Jamaica. Based in Fairfax, VA. Multilingual — English and Italian. Always building, always learning.
       </>
     ),
   },
