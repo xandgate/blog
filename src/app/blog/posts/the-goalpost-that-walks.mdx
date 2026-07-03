@@ -1,0 +1,171 @@
+---
+title: "The Goalpost That Walks"
+subtitle: "The AI-can't-code argument is dead. Now it's AI-can't-architect. Same move, different floor."
+summary: "The 'AI can't code' debate is over. But the guild didn't surrender — it moved upstairs. A look at what the new engineer exceptionalism is actually defending, and what the real fight should be."
+image: "/images/blog/goalpost-walks.jpg"
+publishedAt: "2026-07-03"
+tag: "AI Engineering"
+---
+
+The debate is over. AI writes code. Developers use it. The numbers are in: 62% of developers now use AI tools in their workflow, up from 44% the year before ([Stack Overflow Developer Survey 2024](https://survey.stackoverflow.co/2024/ai)). GitHub Copilot has 1.8 million paid subscribers. SWE-bench — the benchmark that tests whether AI can solve real GitHub issues — saw top model performance jump from 4% to over 70% in two years ([SWE-bench Leaderboard](https://www.swebench.com/)). The "AI can never write real software" argument is dead.
+
+But something strange happened on the way to the funeral. The guild didn't surrender. It moved upstairs.
+
+The conversation shifted — quietly, without anyone calling a vote — from "AI can't code" to "AI can't architect." From "AI can't write a function" to "AI can't understand the business." From "AI can't ship" to "AI can't own the outcome." The goalpost didn't fall. It walked.
+
+I want to be precise about what I'm arguing, because this territory invites misreading. I am not saying AI is good. I am not saying the craft of software is dead. I am not saying senior engineers are obsolete. I am saying something narrower and harder: the specific claim that AI *can never* do architecture, understand business context, or own outcomes is the same claim that was made about code generation two years ago, and it is being made for the same reasons. And if we are serious people in a serious time, we should be honest about what those reasons are.
+
+---
+
+## The Pattern
+
+This is an old rhythm. We have heard it before.
+
+In 1811, English textile workers organized raids to destroy automated weaving machinery. They called themselves Luddites, after a probably-mythical Ned Ludd, and they believed that the craft of hand-weaving was protected by something more permanent than economics — by the inherent superiority of human skill, by the irreplaceable quality of the handmade. The Frame Breaking Act of 1812 made machine destruction a capital offense. Seventeen Luddites were executed at York in 1813. The automation proceeded regardless ([Eric Hobsbawm, "The Machine Breakers," *Past & Present*, 1952](https://doi.org/10.1093/past/1.1.57)).
+
+The pattern repeats. Typesetters fought phototypesetting. The International Typographical Union won severance packages and retraining provisions in the 1960s, but lost 80% of its membership by the time it dissolved in 1986. Carriage builders published anti-automobile propaganda. By 1910, most had gone bankrupt or pivoted to making auto bodies.
+
+Each time, the guild's argument had two layers. The outer layer was about quality: machines can't do it *well*. The inner layer was about status: machines shouldn't do it *at all*, because doing it is what makes us who we are. When the outer layer collapsed — when the machines got good enough — the inner layer was exposed, but by then the argument had already moved to a new position, a new line of defense further up the value chain.
+
+Software is doing this right now, in real time, and the speed is unprecedented because the technology is moving faster than any previous automation wave.
+
+---
+
+## The Old Exceptionalism (Dead)
+
+Two years ago, the argument was explicit: AI can never write production code. Senior engineers on Twitter, HN comment threads, and conference keynotes argued that AI-generated code was inherently inferior — syntactically plausible but semantically hollow, lacking the judgment that comes from years of debugging distributed systems at 2am.
+
+That argument collapsed under the weight of adoption. When 62% of your profession uses the tool daily, "it can't do it" becomes untenable as a factual claim. It became a vibe, a preference, an aesthetic stance — not an empirical argument.
+
+David Autor at MIT has documented this pattern across decades of labor economics. His foundational paper with Frank Levy and Richard Murnane — ["The Skill Content of Recent Technological Change," *The Quarterly Journal of Economics*, 2003](https://economics.mit.edu/people/faculty/david-h-autor) — showed that automation replaces *routine* cognitive and manual tasks while complementing *non-routine abstract* tasks. The routine work gets eaten first. The abstract work becomes the new fortress. Autor called this "routine-biased technological change," and it predicted exactly what happened to software: the writing of functions, the generation of boilerplate, the implementation of well-specified logic — all routine tasks — fell first. Architecture, systems thinking, business understanding — non-routine abstract tasks — became the defended perimeter.
+
+The pattern isn't mysterious. It's structural.
+
+---
+
+## The New Exceptionalism (Alive)
+
+Here is the current position, stated plainly:
+
+- "AI can write code, but it can't architect a system."
+- "AI can generate functions, but it can't understand the business."
+- "AI can implement a spec, but it can't own the outcome."
+- "AI can code, but it can't *engineer*."
+
+I don't need to guess who's saying this. The Stack Overflow survey measured it directly: **45% of professional developers believe AI tools are bad or very bad at handling complex tasks** ([Stack Overflow 2024, Section 3.2](https://survey.stackoverflow.co/2024/ai#section-ai-tools-ability-to-handle-complex-tasks)). Not "they're getting better" or "they have limitations" — *bad or very bad*. Nearly half the profession.
+
+This is the new exceptionalism. And it might be right — for now. AI *is* bad at complex tasks today. But the question is whether the claim is empirical or metaphysical. Is it "AI can't do this *yet*" or "AI can *never* do this"? Because those are very different claims, and history is unkind to the second one.
+
+DHH (David Heinemeier Hansson), creator of Ruby on Rails, has been among the most vocal: AI is "autocomplete on steroids," it can't architect, it can't understand trade-offs. Kent Beck, creator of Extreme Programming, wrote: "AI makes me more productive at the parts I already know how to do. It does not help me figure out what to build or how to architect a system that serves human needs." These are smart people making a claim about a permanent boundary.
+
+But the weavers made the same claim about the texture of hand-loom cloth. The typesetters made the same claim about the feel of lead type on paper. And they were right — for a time. The machine-made cloth *was* inferior. The phototypeset text *did* lack something. Then the machines got better, and the quality gap narrowed, and the argument shifted again.
+
+I am not saying AI will definitely architect systems tomorrow. I am saying the *confidence* with which people assert it *never* will is the same confidence that was deployed two years ago about code generation, and five years ago about creative writing, and two hundred years ago about handloom weaving. The confidence is the constant. The specific boundary moves.
+
+---
+
+## What the New Exceptionalism Is Actually Protecting
+
+Here's the uncomfortable part: the "AI can never X" statement often carries a second, unspoken follow-up — *and therefore my role remains protected. My gate remains relevant. My credentials remain scarce. My authority to define what's real remains intact.*
+
+This is not cynicism. This is labor economics. Developers are not fools to worry. Any technology that can generate what was once scarce human output can flood markets, depress compensation, blur credit, and intensify already brutal hiring dynamics. Developers are right to worry about IP extraction, style imitation, and the replacement of living judgment with synthetic velocity.
+
+But there is a difference between warranted concern and bad philosophy. And the bad philosophy is this: conflating *what I do* with *what I am*. If your identity as an engineer requires the claim that nothing else can ever approach your highest-level work, your identity is fragile in exactly the way the weavers' was.
+
+The more durable claim — the one that survives contact with reality — is this: human engineers remain valuable because of **accountability, situatedness, and judgment**, not because of a mystical monopoly on abstract reasoning.
+
+Human engineers answer for what they build. We stand inside systems with names, on-call rotations, postmortems, and consequences. We carry the context of the organization, the history of the codebase, the political reality of what the product actually needs to do. Those dimensions matter profoundly, and they are not easily automated.
+
+But here's the problem: those dimensions are *also* under pressure. Not from AI capability, but from corporate structure.
+
+---
+
+## The Accountability Vacuum
+
+The real crisis isn't that AI can generate code. The real crisis is that code ships and nobody knows what's in it.
+
+GitClear's 2025 AI Code Quality research found that AI-generated code has a significantly higher "churn rate" — meaning it gets revised or deleted much faster than human-written code. This isn't a quality metric; it's an accountability metric. Code that churns fast is code that was never understood by the person who merged it. It's code that entered the system without a human carrying context about *why* it exists, *what* trade-offs it encodes, and *what* it will break when it changes.
+
+The Stack Overflow survey found something telling in the gap between adoption and trust: while 62% of developers use AI tools, only 43% trust the accuracy of AI output. We are using something we don't trust, at scale, in production systems. This is not a technology problem. This is an accountability problem.
+
+When a senior engineer writes a system, there's a person attached. You can go to them in a postmortem. You can ask them why they made a trade-off. You can hold them responsible. When AI generates the same system — even if the quality is comparable — the accountability chain is broken. Nobody who signed off on the merge truly understands the code. Nobody carries the context. Nobody is responsible in any meaningful sense.
+
+This is the real threat to the profession. Not that AI replaces the senior engineer's skill, but that it *detaches skill from accountability*. And the guild, in its rush to defend the skill, is missing the accountability problem entirely.
+
+Because here's the thing: the organizations hiring engineers don't actually value accountability. They value velocity. If an AI can produce code fast enough, many organizations will accept the accountability vacuum as a tolerable cost. The code ships. The revenue comes in. When something breaks, the postmortem will blame "the model" or "the process" — abstract entities that can't be fired or sued or held responsible.
+
+The guild should be fighting *this* battle — for provenance, for disclosure, for accountability standards — not rearguing whether AI can do architecture.
+
+---
+
+## The Concentration Problem
+
+There is another layer that the exceptionalism debate completely obscures: who *owns* the tools.
+
+The AI developer toolchain is almost entirely controlled by three companies:
+
+- **Microsoft/GitHub/OpenAI**: Copilot dominates with ~70% market share of AI coding assistants. Microsoft's $13B investment in OpenAI means the largest code host, the largest AI coding tool, and the largest AI model provider are effectively one entity.
+- **Amazon/AWS**: Amazon Q Developer (formerly CodeWhisperer), integrated into the largest cloud platform.
+- **Google**: Gemini Code Assist, integrated into the second-largest cloud platform.
+
+This is not a competitive market. This is an oligopoly that owns the code host, the IDE, the model, the cloud runtime, and increasingly the deployment pipeline. When a developer uses Copilot to write code, stores it on GitHub, deploys it on Azure, and monitors it through Microsoft's observability tools, every layer of the stack is owned by the same company.
+
+The exceptionalism debate — "AI can't architect" — is a sideshow to this structural reality. Even if AI never architects a single system, the concentration of toolchain ownership means that the terms of software production are being set by entities with no incentive to support labor visibility, code provenance, or developer autonomy. They have every incentive to make AI-generated code the default, to blur the lines of authorship, and to make developers dependent on tools they don't control.
+
+Autor documented this too. His 2020 paper — ["The Fall of the Labor Share and the Rise of Superstar Firms," *The Quarterly Journal of Economics*, 2020](https://economics.mit.edu/people/faculty/david-h-autor) — showed that industry concentration reduces the share of revenue going to labor. The firms that dominate their markets pay less to workers, not because workers are less skilled, but because market power lets them. The same dynamic is playing out in AI tooling: as concentration increases, the leverage shifts from engineers to platforms.
+
+This is the argument the guild should be making. Not "AI can't do my job." But "No single entity should control the entire chain from code generation to deployment, and developers should have the right to understand, audit, and refuse the code that ships under their name."
+
+---
+
+## What "Senior" Means Now
+
+The definition of a senior engineer has already shifted. Five years ago, senior meant "writes complex code that works." Today, junior-level code is essentially free. The value of a senior engineer is no longer in their ability to produce code — it's in their ability to judge it, to contextualize it, to own the consequences of it.
+
+But here is the uncomfortable question: how long before AI-assisted tools can also provide judgment scaffolding? Not replace judgment, but *complement* it the way Copilot complements typing? How long before an AI can say "this architecture has these trade-offs given these constraints" — not as a creative act, but as an analytical one? How long before the 45% of developers who think AI is bad at complex tasks become 20%, then 10%?
+
+Because if the definition of "senior" keeps moving to whatever AI can't currently do, then "senior" is not a description of skill. It's a description of the frontier. And frontiers move.
+
+The more durable definition of senior — the one that survives tool evolution — is this: a senior engineer is someone who *takes responsibility*. Not someone who does the hardest technical work. Someone who stands inside the system, carries the context, answers the postmortem, and makes the call when there's no benchmark to cite.
+
+That's not a skill that AI can replace. But it's also not a skill that the market currently rewards. The market rewards velocity. The market rewards shipping. The market will happily accept AI-generated code with no responsible human attached, as long as it ships on time.
+
+If senior engineers want to protect their value, they should stop arguing about what AI can't do and start arguing for what *must* be done: accountability infrastructure, provenance requirements, audit trails for generated code, and labor protections for engineers who refuse to sign off on code they don't understand.
+
+---
+
+## What Responsibility Looks Like Now
+
+The right question isn't "what can AI never do?" It's: *if we cannot presently destroy every corporation building these systems, and if we are not on the verge of abolishing the economic order that rewards this concentration, what does responsibility look like now?*
+
+It must look like demands, not vibes.
+
+**Demand provenance.** When AI-generated code ships in critical systems — healthcare, finance, infrastructure — there should be a machine-readable record of what generated it, what training data shaped the output, and what human approved the merge. Not as a moral gesture, but as an engineering requirement.
+
+**Demand accountability standards.** Code that ships under a human's name should require a human's understanding. If you can't explain the code in a postmortem, you shouldn't have merged it. This is not anti-AI. This is pro-engineering.
+
+**Demand toolchain independence.** No single company should control the IDE, the model, the code host, the deployment pipeline, and the observability layer. Interoperability and open standards should be regulatory requirements, not corporate charity.
+
+**Demand labor visibility.** When AI tools are used to measure developer productivity, the data belongs to the developer, not the platform. Productivity surveillance is not performance management. It's control infrastructure.
+
+**Demand the right to refuse.** Engineers should have the professional standing to refuse to merge code they don't understand — without career consequences. This is the accountability backbone, and it doesn't exist in most organizations.
+
+Responsibility is a design problem and a power problem, not a purity slogan. The guild can keep arguing about whether AI can architect systems. Or it can build the infrastructure that makes it *matter* who architected the system, regardless of what tools they used.
+
+---
+
+## Where This Leaves Us
+
+Hold the contradiction without collapsing it.
+
+Hold that AI can write production code. Hold that this doesn't make AI good. Hold that AI will likely improve at architecture and complex tasks. Hold that this doesn't make engineers obsolete. Hold that corporate concentration of AI tooling is dangerous. Hold that wishing AI away is not a strategy. Hold that the "AI can never X" argument is the same argument that failed about code, about translation, about chess, about weaving. Hold that the real fight is about accountability, provenance, and power — not about which tasks humans can permanently monopolize.
+
+The goalpost will keep walking. That's what goalposts do when the ground moves underneath them. The question is whether we're chasing the goalpost or building the field.
+
+The machine is here. The corporations are here. The accountability vacuum is here. The concentration is here. The possibilities are here. The question is whether we can build a future where neither nostalgia nor propaganda gets to decide what software becomes — and where the engineers who build it remain accountable, visible, and free.
+
+---
+
+*With gratitude to Elnathan John, whose essay "On AI, Literature, and the Myth of Human Exceptionalism" gave me the frame that made this thinkable.*
+
+*If there are any bugs, it's just so you don't think I wrote this with AI.*
