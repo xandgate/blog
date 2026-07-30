@@ -1,0 +1,87 @@
+---
+title: "Structured Content Won: Even the AI People Agree Now"
+subtitle: "A decade of 'just use a page builder' — and then the models arrived needing exactly what we built"
+summary: "For years, structured content in Drupal was called over-engineering. Now LLMs need exactly what Drupal was built to provide. The industry was wrong, and the very technology that was supposed to make structured content irrelevant is its strongest argument."
+image: "/images/blog/fost-drupal-cms-for-agents.jpg"
+publishedAt: "2026-07-30"
+tag: "AI Engineering"
+---
+
+Drupal turned 25 this year. That's older than the iPhone, older than Facebook, older than the job title "frontend developer."
+
+I've been working with it for most of those years — building government platforms where "we'll rebuild it in three years" is not an option, and the site has to still work in 2035. Currently on the NYC DOT Street Design Manual, which is exactly the kind of project that makes you grateful Drupal exists and terrified someone might suggest replacing it.
+
+For about a decade of those 25 years, we heard the same thing:
+
+**"Structured content is over-engineering. Just use a page builder."**
+
+Content types? Over-engineering. Entity references? Over-engineering. Taxonomy? Just tag things. Paragraphs? Why not just let editors drag-and-drop whatever they want onto a page?
+
+WordPress and its page builder ecosystem made this argument compelling. And for a lot of sites, they were right. A marketing landing page doesn't need a relational data model. A blog doesn't need content types.
+
+But then something happened.
+
+## The models arrived
+
+And they needed exactly what we'd been building.
+
+I saw this firsthand when I built a RAG system for my own knowledge base — an Obsidian vault backed by pgvector, with semantic search over ~2,000 notes. The retrieval quality depended entirely on how structured the source content was.
+
+Flat pages with no metadata? The model grabbed whatever words happened to be nearby. Semantic proximity, but no understanding of relationships.
+
+Content with frontmatter — type, tags, dates, confidence levels, project references? The model pulled exactly what was needed. Not because it was smarter, but because the structure gave it something to reason about.
+
+I ran the numbers. After tightening the retrieval threshold from 0.65 to 0.78, recall went from 67% to 83%. Precision at k jumped from 36% to 63%. Both negative control queries (things that shouldn't match) correctly returned nothing. The structure was doing the heavy lifting — the model just had to show up.
+
+## What the AI people are actually building
+
+Here's the thing nobody in the AI space wants to admit: **they're reinventing Drupal's architecture and calling it something different.**
+
+- "Semantic chunks" = content types with structured fields
+- "Knowledge graphs" = entity references + taxonomy
+- "Retrieval-augmented generation" = Views with a vector similarity sort
+- "Context windows" = paragraph-based field layout, where each component carries its own meaning
+
+The vocabulary changed. The architecture didn't.
+
+Dries said it at DrupalCon Chicago, and I keep repeating it to anyone who'll listen: **"Prototype fast with AI, build the lasting system in Drupal."** A decade of being told structured content was over-engineering, and it turns out structured content is exactly what these models need.
+
+## The DOT project made it undeniable
+
+I'm working on the NYC Street Design Manual right now. The siting guidelines — where you can place a bench, a tree, a fire hydrant on a sidewalk — are fundamentally relational data. Each object type has clearance rules relative to every other object type, conditional on zone, street type, and adjacent uses.
+
+Try putting that in a page builder.
+
+You could render each guideline as a flat page. "Bench clearance from fire hydrant: 5 feet." "Bench clearance from tree pit: 3 feet." But that's 50 pages of individual rules that the user has to mentally cross-reference to figure out whether a bench can go at a specific location.
+
+Or you can model it relationally: object types, clearance rules, zone configurations, conditional constraints. Then a simple algorithm can tell you exactly where on a given cross-section a bench is permitted — subtracting exclusion zones from valid placement regions, accounting for every existing object on the street.
+
+This isn't a Drupal problem or an AI problem. It's a **data modeling problem**. And it's the same one Drupal solved 20 years ago when it made nodes, fields, and entity references first-class concepts instead of afterthoughts.
+
+## The AI module numbers tell the story
+
+At DrupalCon Chicago, the AI Initiative launched with 31 partner organizations and $1.5 million in funding. The AI module is approaching 14,000 installs.
+
+Whatever you think about AI in a CMS, that is not a side project anymore.
+
+The European Commission's Europa Web Publishing Platform runs 770 live sites, 700 million visits a year, 2.2 billion page views, across 44 Commission services. One platform. Drupal. Those sites will be running in 2035 because the Commission can't afford to rebuild them, and because the structured content model makes it possible to evolve them without starting over.
+
+## What this means for you
+
+If you're building a content platform in 2026:
+
+1. **Don't let AI convince you to flatten your data.** The models work better with structured content, not worse. The RAG numbers prove it.
+
+2. **Prototype with AI. Ship with structure.** Use AI to generate drafts, suggest content, accelerate development. But when the prototype becomes a product, the structure has to be there — or the AI won't have anything to reason about.
+
+3. **Stop apologizing for content types.** The "just use a page builder" crowd was wrong. They were wrong in 2016, and they're especially wrong now. The question isn't whether you need structured content — it's whether you're willing to do the modeling work.
+
+4. **Think in relationships, not pages.** A page builder gives you a page. A content model gives you a system. Pages rot. Systems compound.
+
+Drupal is 25 because the architecture was right. The industry spent a decade saying it was over-engineering. Then the AI industry arrived and reinvented it from scratch.
+
+Structured content won. It just took the AI people to prove it.
+
+---
+
+*This post was inspired by [Hynek Načeradský's LinkedIn post](https://www.linkedin.com/posts/hynek-naceradsky_drupal-opensource-digitalsovereignty-share-7485948541643870208-1SgQ/) on Drupal's 25th birthday and Dries Buytaert's keynote at DrupalCon Chicago.*
