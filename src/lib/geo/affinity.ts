@@ -36,10 +36,10 @@ const FEATURED_CONTENT_BY_SEGMENT: Record<VisitorSegment, string> = {
   federal: "/blog/why-drupal-dominates-government",
   "drupal-community": "/blog/why-drupal-dominates-government",
   healthcare: "/blog/why-drupal-dominates-government",
-  international: "/blog/context-graphs-for-ai-agents",
+  international: "/blog/second-brain-rebuilt",
   general: "/blog/why-drupal-dominates-government",
   govtech: "/blog/why-drupal-dominates-government",
-  "ai-enabled": "/blog/context-graphs-for-ai-agents",
+  "ai-enabled": "/blog/second-brain-rebuilt",
 };
 
 /**
