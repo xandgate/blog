@@ -2,6 +2,7 @@ import "@once-ui-system/core/css/styles.css";
 import "@once-ui-system/core/css/tokens.css";
 import "@/resources/custom.css";
 
+import Script from "next/script";
 import classNames from "classnames";
 
 import {
@@ -120,6 +121,21 @@ export default async function RootLayout({
               })();
             `,
           }}
+        />
+        <Script
+          async
+          src="https://analytics.varunbaker.com/script.js"
+          data-website-id={
+            process.env.NEXT_PUBLIC_SITE_ID === "blankonpurpose"
+              ? "a26c7b3c-c2f3-4137-9996-5403bb38c5fc"
+              : "5e8d7dd2-633f-4020-9775-40c97e5cbddc"
+          }
+          data-domains={
+            process.env.NEXT_PUBLIC_SITE_ID === "blankonpurpose"
+              ? "blankonpurpose.com,www.blankonpurpose.com"
+              : "varunbaker.com,www.varunbaker.com"
+          }
+          strategy="afterInteractive"
         />
       </head>
       <Providers initialContext={initialContext}>
