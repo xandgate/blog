@@ -1,0 +1,150 @@
+---
+title: "My Second Brain, Rebuilt"
+subtitle: "I wrote a post about connecting Logseq to Claude. Six months later I use none of that. Here's what I actually built."
+summary: "In February I published a post about MCP-Logseq and context-aware AI. Since then I've moved off Logseq entirely and rebuilt the whole system. The numbers are better. The architecture is simpler. Here's what I learned."
+image: "/images/blog/second-brain-rebuilt.jpg"
+publishedAt: "2026-07-03"
+tag: "AI Engineering"
+---
+
+In February I published a post called ["Your Second Brain Just Got a Memory."](/blog/context-graphs-for-ai-agents) It was about MCP-Logseq — a bridge I built to let Claude navigate your Logseq knowledge graph the way you do. Blocks, backlinks, stable UUIDs, the whole model.
+
+I use none of that anymore.
+
+This isn't a retraction. The concept was right: context-aware AI is a fundamentally different thing from prompt-based AI, and your notes are the most accurate representation of how you actually think. That part holds. What changed was everything underneath it — the tooling, the architecture, the mental model of what a retrieval system is actually doing.
+
+Here's what I have now and what it took to get here.
+
+---
+
+## Why Logseq Stopped Working
+
+Logseq's block model is genuinely interesting. Every thought has a stable UUID. Backlinks are first-class. The graph is explicit and navigable. The problem is that all of that structure exists at render time, not storage time. Backlinks are computed on the fly. The EDN format has edge cases that are invisible until you're debugging them at midnight. Getting an AI to navigate blocks reliably — not just search them — required handling a layer of complexity that the MCP server had to paper over rather than solve.
+
+More practically: I moved off Logseq for other reasons. The graph model is powerful for certain workflows and actively annoying for others. I wanted a vault, not a graph — a place where notes could be long-form, structured, and still connected, without everything being expressed as blocks nested inside blocks. Obsidian does that. Logseq doesn't.
+
+When I migrated, I had a choice: rebuild the MCP bridge for Obsidian, or rethink what I was actually trying to accomplish.
+
+---
+
+## What I Actually Needed
+
+The original post was about navigation — teaching AI to traverse a knowledge graph the way a human would. That's a hard problem and I'm not sure it's the right one to solve first.
+
+The simpler problem is retrieval: given a question, find the notes most relevant to it. Not by keyword. By meaning.
+
+Turns out that's enough for most of what I was trying to do. When I'm working on a project and my AI assistant asks "what do you know about the DOT Street Design Manual?" — it doesn't need to traverse a graph. It needs to find the three or four notes that contain useful context and surface them. That's a retrieval problem, not a navigation problem.
+
+Once I reframed it that way, the architecture became obvious.
+
+---
+
+## The Architecture
+
+Here's what I built, called OB1 (for Open Brain):
+
+**Obsidian vault** (local, `~/Documents/Vault/`) — ~130 markdown notes with structured YAML frontmatter. The vault is iCloud-synced and git-tracked at `github.com/xandgate/openbrain-vault`.
+
+**Hermes VPS** (Hetzner, 12 vCPU / 24GB RAM, Nuremberg) — auto-pulls from GitHub every 30 minutes. An indexer runs every 6 hours and processes any new or changed notes.
+
+**Indexer pipeline:**
+1. Read each `.md` file
+2. Embed the content (truncated to 8K characters) via OpenRouter using `openai/text-embedding-ada-002` — 1,536-dimensional vectors
+3. Upsert into a `thoughts` table in Supabase (pgvector extension)
+
+**Query path:**
+- Embed the query using the same model
+- Run `match_thoughts` — a pgvector RPC that does cosine similarity against all stored embeddings
+- Return results above a similarity threshold, ranked by score
+
+**Access:**
+- Terminal: `vault-search "your question"` — a wrapper script on Hermes
+- AI assistant: Hermes agent queries the vault before every session, pulling relevant context automatically
+- Claude Desktop: via a Supabase Edge Function that wraps the same query endpoint
+
+That's it. No graph traversal. No block UUIDs. Just: embed, store, retrieve.
+
+---
+
+## The Numbers
+
+The system worked immediately. What took iteration was calibration.
+
+The default similarity threshold I started with was 0.65. At that level, results were noisy — the right notes would show up, but so would a lot of tangentially related ones. The model was finding semantic proximity without discriminating on relevance.
+
+I tightened the threshold to 0.78. Here's what happened to the retrieval metrics:
+
+| | Before (0.65) | After (0.78) |
+|---|---|---|
+| Recall | 67% | 83% |
+| Precision at k | 36% | 63% |
+| False positives | ~40% of results | ~15% |
+| Negative controls | Returned something | Returned nothing |
+
+The negative controls are the one I care about most. A good retrieval system should know when it doesn't know — when there's nothing in the vault that's relevant to the question. At 0.65, every query returned something. At 0.78, queries about things I haven't written about correctly return empty. That matters a lot when your assistant is deciding whether to surface context or work from first principles.
+
+---
+
+## What Structure Actually Does for Retrieval
+
+This is the part that surprised me most. I went into this thinking structure was about organization — making notes easier to find by hand. What I found is that structure is about signal density — making notes more informative to the embedding model.
+
+A flat note with no metadata is just words. The model embeds the words and finds other notes with similar words. That's okay.
+
+A note with structured frontmatter — `type`, `tags`, `confidence`, `status`, `relatedNotes`, `lastVerified` — gives the model something richer to embed. The frontmatter is part of the content. A note tagged `confidence: high` and `status: active` embeds differently from one tagged `confidence: speculative` and `status: superseded`. When you search for something, the model isn't just matching words — it's matching against the full context of what the note is and what it knows.
+
+I've aligned the vault schema to OKF (Open Knowledge Format), which adds a few more structured fields: `title`, `description`, `resource`, `timestamp`. Each addition is more signal for the embedding.
+
+The concrete result: notes that I've kept well-structured retrieve at noticeably higher similarity scores than notes I've left flat. The difference isn't in the words — it's in the surrounding metadata. Structure compounds over time.
+
+---
+
+## The Agent Layer
+
+The retrieval system is useful on its own. What makes it actually change how I work is the agent layer on top.
+
+Hermes — my self-hosted AI assistant, running on the same VPS — queries the vault automatically before sessions. When I open a conversation about a project, Hermes pulls the relevant notes and loads them as context. I don't paste anything. I don't explain the backstory. The assistant already has it.
+
+This is what the original Logseq post was gesturing at: not AI as a search engine you query manually, but AI as a collaborator that already knows what you know. The implementation got simpler. The experience got closer to what I was describing.
+
+The vault now has 131 notes. Hermes has semantic access to all of them. When I'm working on the NYC DOT Street Design Manual and ask about content migration strategies, the relevant project notes surface automatically. When I'm writing about civic technology and reference a CIVICUS report I read three months ago, the indexed version is there.
+
+---
+
+## What the Original Post Got Right and Wrong
+
+**Right:** The problem is real. Prompt-based AI — where you explain everything from scratch every session — is genuinely exhausting for any ongoing work. The context gap is the thing that makes AI assistants feel like tools rather than collaborators.
+
+**Right:** The solution involves your notes. Not a new note-taking app designed for AI, not a special database. Your existing notes, the ones that already capture how you think.
+
+**Wrong:** The implementation I described was too complex for what it was trying to do. Graph traversal, block navigation, backlink resolution — all of that is interesting but most of it is unnecessary overhead when what you actually need is a well-tuned retrieval system.
+
+**Wrong:** I focused on the MCP bridge as the interesting part. The interesting part is the corpus. The quality of the retrieval depends almost entirely on the quality and structure of what's in the vault. Better notes, better results. The plumbing matters much less than the content.
+
+---
+
+## What I'd Tell Myself From February
+
+Build the corpus first. Every hour you spend structuring notes — consistent frontmatter, accurate tags, confident metadata — pays off in retrieval quality. The embedding model is not magic; it amplifies whatever signal is already in your content.
+
+Use semantic search, not graph traversal. Navigation is a UI problem. Retrieval is an infrastructure problem. Solve the infrastructure problem first; you can build navigation on top of it later.
+
+Calibrate your threshold deliberately. The difference between 0.65 and 0.78 is the difference between a system that always says something and a system that knows when to say nothing. Test negative controls — queries about things you haven't written about — and treat false positives as a failure mode.
+
+Keep the pipeline simple. Auto-pull, embed, upsert, query. Every additional step is a point of failure. Mine runs unattended on a VPS and I have not touched it in weeks.
+
+---
+
+## The One Thing That Didn't Change
+
+Context isn't a feature. It's the whole point.
+
+The specific tool changed — Logseq to Obsidian, MCP bridge to pgvector, navigation to retrieval. The underlying claim didn't: an AI assistant with access to how you actually think is categorically different from one that starts from scratch every time. Building that access is worth the engineering. Keeping the notes that make it work is worth the discipline.
+
+The second brain got better. It just looks different than I expected.
+
+---
+
+*The OB1 indexer and query scripts aren't public yet — if you want them, reach out.*
+
+*Hero image: [Gray obsidian (flow-banded)](https://commons.wikimedia.org/wiki/File:Gray_obsidian_40.jpg) by [James St. John](https://www.flickr.com/photos/47445767@N05/), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/). Via Wikimedia Commons.*
