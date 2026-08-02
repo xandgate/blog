@@ -1,0 +1,92 @@
+---
+title: "The Crash Nobody Reports"
+subtitle: "Government websites don't fail loudly. The sidebar just disappears. That's the more dangerous kind of failure."
+summary: "A broken navigation sidebar on a government technical manual. No error message. No bug report. Just missing. Here's why silent failures in practitioner-facing government tools are more consequential than the ones that get escalated — and who's left to catch them."
+image: "/images/blog/govtech-migrations.jpg"
+publishedAt: "2026-08-04"
+tag: "GovTech"
+---
+
+Earlier this year I fixed a navigation bug on the NYC Street Design Manual.
+
+The fix itself was unremarkable — a null crash in a Drupal book navigation block, caught by switching to `RouteMatchInterface` instead of the deprecated method it was using and pulling the full book tree with `bookTreeAllData()`. Half a day's work. The kind of thing you write a one-line commit message for and move on.
+
+What stayed with me was how long it had been broken without anyone reporting it.
+
+## What the failure looked like
+
+The Street Design Manual lives at nycstreetdesign.info. It's the primary reference document for street design in New York City — a structured, chapter-by-chapter technical manual governing standards for everything from sidewalk widths to bike lane geometry to street furniture placement. The Fourth Edition launched in 2026. It's the document that design professionals, contractors, and city engineers consult before anything gets built in the public right-of-way.
+
+The sidebar navigation — the panel that lets you move through the manual's chapters and sections — was crashing silently on certain pages. Not with an error message. Not with a 500 response or a broken layout. The page loaded normally. The content was there. The sidebar just wasn't.
+
+A null check was failing. The block returned nothing instead of throwing an exception. From a user's perspective, the page looked fine. The navigation simply didn't appear.
+
+That is the specific character of government tech failure that nobody writes about. It doesn't crash loudly. It degrades quietly, in a way that's easy to work around and hard to notice, until someone who knows what to look for actually looks.
+
+## Nobody reported it
+
+This is the part I keep thinking about.
+
+If you hit a 404 on a government website, you know something is wrong. You might report it. If a form fails to submit, you know your transaction didn't complete. If a page times out, you try again or you call. These are legible failures — they signal their own brokenness.
+
+A missing sidebar is different. It's a silent failure. The user doesn't know that navigation is supposed to be there if they've never seen it. They don't know what they're missing. They work around the absence, load the page they need directly, navigate by URL or search. They adapt, as users always do when software doesn't cooperate, and the failure becomes invisible precisely because it's been accommodated.
+
+That accommodation is what keeps silent failures alive. Nobody files a bug report for a missing sidebar if they've been working around it for months. The absence of complaints is not evidence that everything is working. It's evidence that users have learned to expect less.
+
+## Who actually uses this
+
+The civic tech conversation almost always centers on citizen-facing services — benefits applications, permit submissions, tax filings, license renewals. The framing is: a citizen needs to do something, a government website makes it unnecessarily hard, that friction has real human costs. This is true and worth fixing.
+
+But a large and mostly unexamined category of government digital infrastructure isn't citizen-facing at all. It serves practitioners — the architects, engineers, landscape designers, private developers, DOT project managers, and urban planners who work within the public right-of-way every day.
+
+The Street Design Manual is not something a New York City resident visits to look something up. It's something a consulting engineer opens before specifying a curb radius. It's what an architect checks before designing a streetscape in a commercial corridor. It's what a contractor references to verify whether a proposed installation meets city standards. It's a working document for people making decisions that get built.
+
+The practitioners using this manual are not having a one-time interaction with government. They're using it as professional infrastructure — repeatedly, daily, for years. And their decisions don't stay on their screens. They get translated into specifications, bids, permits, construction. A standard missed or misread doesn't affect one person's experience of a website. It affects how a street gets built.
+
+This is the leverage point that the civic tech framing tends to miss. Fix the form a citizen fills out once, you help one person complete one transaction. Fix the tool a practitioner uses daily, and you improve every decision that practitioner makes with that tool, compounded across every project they touch, indefinitely.
+
+The sidebar was broken. The professionals using the manual to make infrastructure decisions were navigating without it. Nobody said anything.
+
+## The procurement dynamic that creates silent failures
+
+Silent failures don't accumulate by accident. There's a structural reason they outlast loud ones.
+
+Loud failures — outages, broken forms, failed transactions — have clear consequences. Someone can't complete a task. They call. They escalate. The failure is legible to a program manager, a director, someone with authority to prioritize a fix. The procurement and maintenance cycle, as dysfunctional as it often is in government, has a path for responding to reported problems.
+
+Silent failures have no such path. They don't generate tickets. They don't appear in dashboards. They're not included in the incident reports that justify maintenance spending. And government procurement cycles, which are structurally biased toward new features and new projects over maintenance and quality, have no natural mechanism for catching failures that nobody is reporting.
+
+The result is an inverse relationship between visibility and consequence. The failures that get fixed fastest are the ones that break loudly — which tend to be the ones users can work around or retry. The failures that persist longest are the ones that silently degrade the quality of a tool that professionals depend on — because those users adapt, and the adaptation masks the failure, and the failure never makes it into a ticket.
+
+A broken sidebar on a practitioner reference document will outlast a broken payment form almost every time. The payment failure is obvious. The sidebar failure is quiet. In a procurement environment that responds to escalation, quiet is durable.
+
+## Who's left to catch them
+
+For a period, the United States had federal teams specifically organized to find and fix this category of problem. 18F — the digital services agency within the General Services Administration — spent over a decade doing this work: embedded with agencies, auditing digital infrastructure, finding the silent failures that program managers didn't know to report and procurement officers didn't know to budget for.
+
+18F was eliminated in March 2025.
+
+The United States Digital Service, which did similar work in partnership with major agencies, has been substantially reduced.
+
+The UK's Government Digital Service, which set the standard for this kind of institutional capacity with GOV.UK and the design system, has navigated its own rounds of restructuring.
+
+The institutional infrastructure for finding silent failures in government digital tools has contracted significantly. What remains is unevenly distributed across agencies, dependent on individual program managers who happen to care about quality, and increasingly reliant on contractors — people like me, on time-limited engagements, working against scope documents that were written to deliver features, not to conduct audits.
+
+This is not an argument for rebuilding those agencies in their original form. It's an observation about what their absence means in practice: the silent crashes accumulate. They get worked around. They become load-bearing absences — things users have adapted to so completely that fixing them creates its own disruption. The longer a silent failure persists, the more invisible it becomes and the less likely it is to ever be fixed.
+
+## The unremarkable fix and what it means
+
+The navigation block on the Street Design Manual works now. Practitioners can move through the document the way it was designed to be navigated — chapter to chapter, section to section, with cross-references intact. The manual is easier to use as a professional reference. Whoever opens it on a project this month will find what they're looking for faster and more completely than they would have a year ago.
+
+That's the unglamorous version of what good government technology work looks like. Not a redesign. Not a new feature. Not a launch. A null check, a method replacement, a sidebar that renders correctly.
+
+What makes it consequential isn't the fix itself. It's what the fix is adjacent to: a technical standard that governs how streets get built in the most-walked city in the world, used daily by the professionals who translate those standards into physical space.
+
+Most of the work that matters in government technology looks like this — unremarkable, maintenance-shaped, invisible until it isn't working and often invisible even then. The people doing it are largely contractors, largely isolated from each other, working in procurement environments that have every structural incentive to build new things and almost none to maintain the things that already exist.
+
+The sidebar wasn't broken because anyone made a bad decision. It was broken because software degrades, and the conditions that would make its degradation visible — sustained institutional attention, feedback loops between practitioners and maintainers, procurement that values quality over novelty — largely don't exist.
+
+It's fixed now. Something else isn't. Nobody's reported it yet.
+
+---
+
+*The NYC Street Design Manual is a public resource at [nycstreetdesign.info](https://www.nycstreetdesign.info). The author is a Drupal developer currently working on the D11 migration and modernisation of the platform.*
