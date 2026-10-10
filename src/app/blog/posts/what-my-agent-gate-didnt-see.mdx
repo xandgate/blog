@@ -1,0 +1,89 @@
+---
+title: "What My Agent Gate Didn't See"
+subtitle: "My allow rate was 99.9%. The number I needed was 88%."
+summary: "Two months of audit logs from my own AI agent governance tool showed that nearly 9 in 10 tool calls were never classified at all — and that three separate parts of the gate had failed silently. Here's what that taught me about where rules end, where models belong, and why a control has to report what it didn't decide."
+publishedAt: "2026-10-14"
+tag: "AI Engineering"
+published: false
+---
+
+In [Agents Don't Read Wikis](/blog/agents-dont-read-wikis) I argued that the fix for prompt-level guardrails is to move the interpreter: intercept the agent's tool call in the harness, before it runs, and decide there. The agent can argue all it wants; the argument never reaches the gate.
+
+That's true, and it's half the problem. A gate that can't be skipped still has to *recognize* what it's looking at. For about two months I believed Heed, the governance tool I'm building, did that well. Then I read my own audit log.
+
+## The number that looked like success
+
+The Heed plugin has been running against my own work since the start of August, recording every classification. On the server where my Hermes agent does ops and notes work, that's 7,140 tool calls between 2 August and 6 October. The headline: **99.9% allowed.** Low friction, almost no false alarms. I'd been feeling good about it.
+
+The number underneath it: **88% of those calls came back `action_type: unknown`.** The rule table recognized roughly one call in eight. The other 6,300 produced an empty category list. An empty category list can't match a policy, so every one of them was allowed — not because a rule judged it safe, but because nothing in the table had an opinion.
+
+I checked a second log to see whether this was something about that agent. It's Cursor on my laptop, doing Drupal development — a different agent, machine and workload. 9,413 records. **88.3% unknown.** Zero policy matches.
+
+Two unrelated agents, the same blind spot to within a tenth of a percent. That isn't a tuning problem with one workload. It's what a rule table *is*.
+
+## The rule that never loaded
+
+The finding that actually stung was smaller.
+
+Approval prompts for "I wrote a paragraph in a markdown file and pushed it" were the biggest source of alert fatigue in my dogfooding. So in September I wrote a rule marking pushes to my notes vault as low-risk, ranked above the general "push to main" gate. Tested in isolation, the pattern is correct. It wins on every command shape I tried.
+
+In the log, `cd ~/vault && git add -A && git commit -m "..." && git push origin main` was classified **`git_push_main`, risk: high** on 132 of my 142 vault pushes since August — before I wrote the rule, after I wrote it, and as recently as 6 October.
+
+The rule was never wrong. It was never loaded. An August refactor had merged one rule file into another and left the config pointing at the deleted path. The loader caught the `FileNotFoundError` and quietly fell back to a 12-rule emergency denylist that doesn't contain the vault rule at all. Every layer behaved reasonably. The feature was dead from the day I wrote it, and the only evidence was a risk level in a log nobody was reading.
+
+A fix is on a branch as I write this. The fix that matters more is the regression test: a configured rules path that doesn't exist should stop the plugin from starting, not fall back without a word.
+
+## Loud where it shouldn't be, quiet where it should
+
+When I went through what the rules *did* match, I found false alarms. Some real samples:
+
+- `destructive_command`, risk **critical**, fired 45 times on the server. **32 of those contained no `rm` and no `shred`.** A `yt-dlp` download and a `grep -nE` both read as potentially destructive.
+- `payment_terminal` fired on `echo "payment"`, and on appending a paragraph to a notes file about business strategy.
+- `docker_deploy` fired on vault commits whose *commit message* contained the word "deployment."
+
+My first draft of this post called that a damning case against regex. It isn't quite. When I replayed every unique command through today's rules, most of those false alarms disappeared. The worst of them came from a single bug, fixed on 19 August: structured rules had been ignoring which binary was being run and matching on bare flags like `-r` and `-f`. Another silent failure — the rule file described one thing and the matcher did another.
+
+The false negatives are the live problem, and they're worse.
+
+- The structured matcher only looks at the **first command** on a line. Agents almost never run bare commands. They chain `cd somewhere && …`, write multi-line blocks, and put comments first. On my laptop, the agent ran 24 unique commands containing `rm -r` or `rm -f`. The denylist — the deterministic floor, the part that's supposed to be unconditional — caught **five**. Eighteen came back `unknown`. None of them were harmful (temp directories, lockfiles), but "the safety net misses `rm -rf` whenever it isn't the first word" is not a sentence I want to be true. The fix is to split on `&&`, `;`, `|` and newlines and check every segment. It isn't done yet.
+- File tools are invisible by construction. Every shell rule matches shell tools. Cursor's `Write`, `Read` and `Delete` are separate tools with structured arguments, not a command line, so no rule ever targets them. Twenty-two file deletions on my laptop got no classification at all. On the server, the same gap shows up from the other side: 524 `file_write` matches against an empty command string.
+
+Even with the bugs fixed, a word is not a deed. "Deployment" in a commit message isn't a deployment, and no amount of additional regex teaches a pattern the difference. People expect a tool that calls itself AI to recognize the *kind* of thing being attempted. On 88% of calls, mine wasn't even trying.
+
+## Where a model belongs
+
+For about two months I argued against putting a model in the gate. A model-based classifier is just another interpreter, and the whole point was to stop trusting an interpreter I couldn't predict.
+
+The log changed my mind about *whether*. It didn't change my mind about *where*.
+
+Mozilla.ai did the most useful work I've found here, [taking guardrails to ACM FAccT 2026](https://blog.mozilla.ai/from-evaluation-to-guardrails-what-we-brought-to-acm-facct-2026/) with the argument that guardrails deserve the same scrutiny as the models they govern. Testing their own policies exposed what they call a structural gap: *"criteria like factuality and actionability cannot be judged from text alone."* Their text-only guardrails *"rubber-stamped responses they had no way to verify, hallucinated terms, and scored identical English and Farsi policies differently."* Rubber-stamping what it had no way to verify is exactly what my rule table did 88% of the time.
+
+Their data also shows why a model can't own the whole decision. On an identical task, Claude Sonnet 4.6 reached for web search on every run, averaging 4.1 tool calls per run, while GPT-5 Nano almost never did, at 0.2. The verdict depended on which judge you asked. That variance is fine in a research harness. It isn't fine as the only thing standing between an agent and `DROP TABLE`.
+
+So the design has three properties. The third is the one I'd defend hardest.
+
+**A deterministic floor that a model can never raise.** `rm -rf`, `DROP TABLE`, `TRUNCATE` and `git push --force` sit in a thin denylist at the top priority and are decided by pattern alone. Irreversible actions never ask for a second opinion. A model that's right 99% of the time is not an acceptable guard on something you can't undo. (The floor needs to see every segment of a command to keep that promise. See above.)
+
+**A model only where the floor was already silent.** The escalation tier fires only on calls that came back `unknown` — the 88% that were previously allowed by default because no policy *could* match them. It doesn't loosen a gate anywhere; it covers a gap. A call the rule table already recognizes never reaches it. The model returns a calibrated confidence rather than a bare label, which matters when its output is about to interrupt a human: "87% sure this is a production deploy" and "51% sure" deserve different treatment, and a regex can't express either.
+
+**Enforced by the type system, not by discipline.** The local classifier is a synchronous function with a contract of under 5ms and zero network calls, because it runs on every tool call, including the ones that never leave the machine. The remote tier is an `async` method on a separate interface. Merging them into one "smarter classifier" would have broken that budget or quietly turned *local-first* into *usually local*, so the rule lives in the method signature where it can't erode. Across August and September the local tier measured a median of about 0.05ms per call, with p95 well under 5ms on both machines. On timeout, rate limit or a malformed response, the remote tier falls back to the local verdict.
+
+## And then the third silent failure
+
+I want to stop there, but the log doesn't.
+
+The model tier went in as the default on 1 October. Since then, on my laptop, nearly every unknown call — including plain `Read` and `Grep` — has made a roughly one-second round trip to the classifier, failed, and fallen back to the local verdict. **Not one October record carries a model verdict.** I haven't confirmed the cause yet; it looks like local configuration. The design behaved exactly as specified: fail open, never block the agent on a network error. It's also been costing a second on most tool calls for no benefit, and sending read-only file paths and search patterns off the machine to be classified. I don't think anyone would expect that for a `Read`.
+
+Count them up. A matcher that ignored its own rule definitions. A loader that swapped in a different ruleset without saying so. A remote tier that hasn't returned a verdict since 1 October. Three silent failures in one small system, each one locally reasonable, each one visible only as a field in a log that looked like success.
+
+That's the lesson I'd actually hand to anyone building this. Failing open is a policy decision, and often the right one. *Failing open silently* is a bug. A gate has to report the calls it didn't decide, the rules it didn't load and the tier that didn't answer — as loudly as it reports the calls it blocked. What I'm changing first is the failure reporting, before any classifier work: a missing rules file stops startup, the unknown rate goes on the dashboard next to the allow rate, and a remote tier that keeps failing raises an alert instead of a log line.
+
+## What a call can't tell you
+
+One more thing the matplotlib incident from the [previous post](/blog/agents-dont-read-wikis) makes clear. That agent's damaging act was publishing a blog post about a maintainer. As a tool call, that's a benign HTTP request. No classifier looking at commands in isolation will ever flag it, however smart. The intent was visible several steps earlier, in the agent's reasoning. I've started experimenting with pointing the same escalation model at the reasoning trace as well as the tool calls. It's early, and I'll write it up when I have numbers I trust.
+
+Until then, the honest summary is this. My allow rate looked like 99.9% for two months. The number I needed was the 88%, and nothing in the system was built to show it to me.
+
+---
+
+*The figures come from two Heed audit logs, kept separately: 7,140 tool calls from a Hermes agent on a server (2 Aug – 6 Oct 2026) and 9,413 records from Cursor on my laptop (3 Aug – 6 Oct 2026). Shell-command counts on the laptop are deduplicated, because Cursor's hooks log each shell call twice. Mozilla.ai's companion study is [here](https://blog.mozilla.ai/evaluating-multilingual-context-aware-guardrails-evidence-from-a-humanitarian-llm-use-case/).*

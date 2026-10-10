@@ -3,7 +3,10 @@ import { baseURL, blog, person } from "@/resources";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const posts = getPosts(["src", "app", "blog", "posts"]);
+  // Unlisted drafts stay reachable by URL but must not reach feed subscribers
+  const posts = getPosts(["src", "app", "blog", "posts"]).filter(
+    (post) => post.metadata.published !== false,
+  );
 
   // Sort posts by date (newest first)
   const sortedPosts = posts.sort((a, b) => {
