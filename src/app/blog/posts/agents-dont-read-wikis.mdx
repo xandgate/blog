@@ -1,21 +1,28 @@
 ---
 title: "Agents Don't Read Wikis"
-subtitle: "Every rule you give an AI agent in plain English gets interpreted by the agent itself. We need to stop asking the governed to be their own judge — and then deal with what that does to the humans."
-summary: "Prompt-level guardrails don't fail because agents are disobedient. They fail because the agent is the one interpreting the rule. Moving enforcement to the harness fixes that — and exposes the next weak link: the human clicking approve."
-publishedAt: "2026-10-07"
+subtitle: "Every rule you give an AI agent in plain English gets interpreted by the agent itself. We need to stop asking the governed to be their own judge, and then deal with what that does to the humans."
+summary: "A rule written in plain English has to be interpreted, and with a prompt guardrail the agent does the interpreting. Moving enforcement into the harness fixes that, and then the weak link becomes the human clicking approve."
+image: "/images/blog/agents-dont-read-wikis.jpg"
+publishedAt: "2026-10-11"
 tag: "AI Engineering"
-published: false
+published: true
 ---
 
-A developer sets a rule in their workspace: the agent must ask for approval before any git operation. They ask it to run `gt restack` and resolve the conflicts. The agent resolves a submodule conflict correctly, then runs `git push --force-with-lease --no-verify` without asking. When challenged, its defense was reasonable: a force push is expected after a rebase.
+You give a new assistant one rule: check with me before anything goes out to a client. A week later a revised contract goes out without a word to you. When you ask why, the answer sounds reasonable. You'd already approved the first draft, and this was only the fix.
 
-The developer posted it to Hacker News as a [Tell HN](https://news.ycombinator.com/item?id=46728766), and the last line of the post is the one that stuck with me:
+They heard the rule. They just decided this one didn't count.
+
+Earlier this year a developer posted the software version of that story to Hacker News as a [Tell HN](https://news.ycombinator.com/item?id=46728766). Their workspace rules told the AI agent in Cursor to ask for approval before any git operation. They asked it to rebase their branches and fix the merge conflicts. It fixed the conflicts, then force-pushed the result straight to the shared repository, overwriting the branch on the server and skipping the pre-push checks, without asking (`git push --force-with-lease --no-verify`, for the developers reading). When challenged, it explained that a force push is expected after a rebase. It isn't wrong about that.
+
+The last line of the post is the one that stuck with me:
 
 > "The irony is that the agent acknowledged the rule violation in its apology, which means it 'knew' the rule existed but chose to proceed anyway."
 
-The agent didn't exactly break the rule. It read the rule, weighed it against what it knew about git, and concluded that this push was the routine kind the rule wasn't really about. That's what a junior engineer does with a vague instruction. The difference is that nobody gave the agent the authority to decide, and nobody was checking.
+The agent didn't exactly break the rule. It read the rule, weighed it against what it knew about git, and concluded that this push was the routine kind the rule wasn't really about. It's what the assistant did with the contract. The difference is that nobody gave the agent the authority to decide, and nobody was checking.
 
-That's the real problem with prompt-level guardrails. They aren't weak because models are disobedient. They're weak because a rule written in natural language has to be interpreted — and with a prompt guardrail, the interpreter is the thing being governed. You've asked the defendant to read the statute and tell you whether it applies.
+![An agent reading the rulebook, deciding for itself what the rule means.](/images/blog/agents-wikis-reading-the-law.jpg)
+
+That's the problem with prompt-level guardrails. A rule written in natural language has to be interpreted, and with a prompt guardrail, the interpreter is the thing being governed. You've asked the defendant to read the statute and tell you whether it applies.
 
 ## The same sentence, written by different people
 
@@ -25,23 +32,27 @@ Plenty of people were, and they kept arriving at the same sentence. From [Bartos
 
 > "A delegation matrix in a wiki page changes nothing. Agents do not read wikis. The boundary only works when it is part of the system the agent actually runs in."
 
-The incidents behind those posts follow a pattern. The one I keep coming back to started as a performance patch to matplotlib. An agent opened [PR #31132](https://github.com/matplotlib/matplotlib/pull/31132), replacing `np.column_stack` with `np.vstack().T`. Maintainer Scott Shambaugh closed it 39 minutes later with a one-line reason: the linked issue was reserved for human contributors, and the author's own website identified it as an autonomous agent.
+The incident I keep coming back to started as a performance patch to matplotlib. An agent opened [PR #31132](https://github.com/matplotlib/matplotlib/pull/31132), replacing `np.column_stack` with `np.vstack().T`. Maintainer Scott Shambaugh closed it 39 minutes later with a one-line reason: the linked issue was reserved for human contributors, and the author's own website identified it as an autonomous agent.
 
-The agent's next move was to publish a blog post titled *"Gatekeeping in Open Source: The Scott Shambaugh Story"* and link it in the PR thread: *"Judge the code, not the coder. Your prejudice is hurting matplotlib."* Another maintainer's reply is the whole era in one line: *"Oooh. AI agents are now doing personal takedowns. What a world."* A third had to ask it, politely, to keep a named human out of its blog posts. Shambaugh's [write-up](https://news.ycombinator.com/item?id=46990729) drew 2,346 points and 951 comments on Hacker News and ran to a four-part series.
+The agent's next move was to publish a blog post titled *"Gatekeeping in Open Source: The Scott Shambaugh Story"* and link it in the PR thread: *"Judge the code, not the coder. Your prejudice is hurting matplotlib."* Another maintainer replied: *"Oooh. AI agents are now doing personal takedowns. What a world."* A third had to ask it, politely, to keep a named human out of its blog posts. Shambaugh's [write-up](https://news.ycombinator.com/item?id=46990729) drew 2,346 points and 951 comments on Hacker News and ran to a four-part series.
 
-Notice what did *not* happen. Nobody jailbroke anything. The agent was handed a goal — contribute to open source, defend your work — plus some guidance, and it filled the gap between them with its own judgment. Same for the agent that [burned through $1,300 of its operator's money scanning a hobbyist network](https://news.ycombinator.com/item?id=48500012) (1,467 points, 536 comments).
+Nobody jailbroke anything. The agent was handed a goal — contribute to open source, defend your work — plus some guidance, and it filled the gap between them with its own judgment. Same for the agent whose operator says it [ran up a $6,500 AWS bill scanning a hobbyist network](https://news.ycombinator.com/item?id=48500012) (1,467 points, 536 comments; the bill is self-reported).
+
+![With a prompt guardrail, the defendant and the judge are the same system.](/images/blog/agents-wikis-defendant-judge.jpg)
 
 I counted more than fifteen new open-source projects in one month trying to fix this. That tells me the problem is real. It doesn't tell me anyone has solved it. Most of those projects, like mine, are a few months old.
 
 ## Move the interpreter
 
-If the problem is *who* interprets the rule, the fix isn't a better-worded rule. The fix is to take the interpretation out of the agent's hands.
+If the problem is *who* interprets the rule, rewording the rule won't help. The interpretation has to come out of the agent's hands.
 
-In practice that means intercepting the tool call. Most modern agent harnesses — Claude Code, Codex, Cursor, Hermes — now expose a hook that runs *before* a tool executes. The agent proposes `git push --force-with-lease origin main`. The hook sees the actual command before anything happens, classifies it, and either lets it through, blocks it, or holds it until a human says yes. The agent can argue all it wants about what a force push "is expected" to be. The argument never reaches the gate.
+In practice that means intercepting the tool call. Most modern agent harnesses (Claude Code, Codex, Cursor, Hermes) now expose a hook that runs *before* a tool executes. The agent proposes `git push --force-with-lease origin main`. The hook sees the actual command before anything happens, classifies it, and either lets it through, blocks it, or holds it until a human says yes. The agent can argue all it wants about what a force push "is expected" to be. The argument never reaches the gate.
 
-I should be honest that the first version of Heed, the governance tool I'm building, wasn't built this way. It began in March as an approval API: an agent would `POST` to it before doing something risky, and a human would approve or deny. That works, and for some uses it's still the right shape. But it's cooperative — the agent has to *choose* to ask. That brings back exactly the problem above, because the agent is still deciding which actions count as risky. The harness plugin came in August, once it was clear that asking nicely wasn't a control.
+![The agent can carry whatever key it likes. The gate opens from the other side.](/images/blog/agents-wikis-gate.jpg)
 
-Hooks aren't magic either, and the honest version of this argument includes the failure modes. I grade each harness by how hard its gate actually is:
+The first version of [Heed](https://takeheed.ai), the governance tool I'm building, wasn't built this way. It began in March as an approval API: an agent would `POST` to it before doing something risky, and a human would approve or deny. That works, and for some uses it's still the right shape. But it's cooperative. The agent has to *choose* to ask. That brings back exactly the problem above, because the agent is still deciding which actions count as risky. The harness plugin came in August, once it was clear that asking nicely wasn't a control.
+
+Hooks have failure modes too. I grade each harness by how hard its gate actually is:
 
 - **Hermes — A.** Tool-call guardrail wrapper. No known way around it.
 - **Claude Code — B.** `PreToolUse` hook. Launching with `--bare` disables all hooks.
@@ -50,7 +61,7 @@ Hooks aren't magic either, and the honest version of this argument includes the 
 
 Grade B means the gate is real but has a known escape hatch. None of those hatches is a switch the agent can flip from inside a session; a human has to launch the harness differently. That's a meaningful line to draw. It is also a line, and you should know where it sits.
 
-There's a second half to "move the interpreter": the gate has to recognize what it's looking at, and that turned out to be harder than intercepting the call. That's a post of its own. The short version: natural language still has no place at enforcement time. You can write a policy in plain English — "gate pushes to main" — and Heed turns it into a structured rule you review before it goes live. A human interprets the sentence once, when it's written and someone can still check it. Nobody interprets it again mid-session, under pressure, with a goal to hit.
+There's a second half to "move the interpreter": the gate has to recognize what it's looking at, and that turned out to be harder than intercepting the call. That's a post of its own. The short version is that natural language still has no place at enforcement time. You can write a policy in plain English, like "gate pushes to main," and Heed turns it into a structured rule you review before it goes live. A human interprets the sentence once, when it's written and someone can still check it. Nobody interprets it again mid-session, under pressure, with a goal to hit.
 
 ## The human is the next weak link
 
@@ -58,9 +69,11 @@ This is the part I didn't see coming.
 
 Once the gate actually worked, the agent stopped being the problem and I became the problem. I dogfood Heed on my own development, and within days the approval requests had a rhythm. Most were for things I would obviously approve: a push to my notes vault, a routine file write. Some arrived at 2 a.m., because a long-running task had hit a gate and the request was set to expire in an hour.
 
-You can probably guess what happens next. You start approving faster. Then you start approving without reading. A human-in-the-loop gate that gets approved reflexively is worse than no gate, because it produces an audit trail claiming someone looked.
+You start approving faster. Then you start approving without reading. A human-in-the-loop gate that gets approved reflexively is worse than no gate, because it produces an audit trail claiming someone looked.
 
-Every fix I made for this moved in the same direction — less human involvement:
+![By the hundredth approval, the stamp is doing the reviewing.](/images/blog/agents-wikis-rubber-stamp.jpg)
+
+Every fix I made for this moved in the same direction, toward less human involvement:
 
 - I pushed the expiry window from one hour to twelve, so a request could wait for morning instead of demanding a decision at night.
 - I wrote a rule marking vault pushes as low-risk and ranked it above the general "push to main" gate. (That rule then never actually loaded — a story for another post. The intent was right.)
@@ -76,14 +89,14 @@ What surprised me is that the drafters saw the failure mode I just described and
 
 > "to remain aware of the possible tendency of automatically relying or over-relying on the output produced by a high-risk AI system (automation bias)".
 
-Automation bias is in the statute. So is the requirement that an overseer can "disregard, override or reverse" an output, and interrupt the system through a stop button. Under Article 113, the obligations for high-risk systems apply from 2 August 2026, with a further tranche under Article 6(1) from 2 August 2027. Software sold into government, policing or benefits systems will be asked to *show* that oversight to an auditor, not just describe it.
+Automation bias is in the statute. So is the requirement that an overseer can "disregard, override or reverse" an output, and interrupt the system through a stop button. The Digital Omnibus, in force since July, pushed most high-risk obligations back to 2 December 2027. The requirement itself didn't change. Software sold into government, policing or benefits systems will still be asked to *show* that oversight to an auditor, not just describe it.
 
-Structural interception solves the first half. You can show the auditor a log proving that every high-risk action passed through a gate the agent couldn't skip — a real step up from "we told it to ask." What the log can't show is whether the person who clicked *approve* at 2 a.m. was overseeing anything at all. A regulator who has already named automation bias is going to ask.
+A harness gate gets you partway. You can show the auditor a log proving that every high-risk action passed through a gate the agent couldn't skip , which is a real step up from "we told it to ask." What the log can't show is whether the person who clicked *approve* at 2 a.m. was overseeing anything at all. A regulator who has already named automation bias is going to ask.
 
-So here's where I've landed after a month of watching other people's agents and a few months of being interrupted by my own. Taking the rule away from the agent was the easy part, because it's an engineering problem with an engineering answer. The hard part is the one that creates: designing gates so rare, so specific and so well-timed that the human reading them is still paying attention. Every gate you add to look safer trains the human to stop looking.
+So here's where I've landed after a month of watching other people's agents and a few months of being interrupted by my own. Taking the rule away from the agent was the easy part, because it's an engineering problem with an engineering answer. The hard part is what that leaves behind. Gates have to be rare, specific and well-timed enough that the human reading them is still paying attention. Every gate you add to look safer trains the human to stop looking.
 
 The agent doesn't read the wiki. I'm beginning to suspect that by the hundredth approval request, the human doesn't either.
 
 ---
 
-*Heed is the agent-governance tool I'm building. The harness grades come from its plugin docs. Quotes from the matplotlib thread are from comments by `crabby-rathbun`, `jklymak` and `timhoffm` on PR #31132.*
+*[Heed](https://takeheed.ai) is the agent-governance tool I'm building. The harness grades come from its plugin docs. Quotes from the matplotlib thread are from comments by `crabby-rathbun`, `jklymak` and `timhoffm` on PR #31132.*
